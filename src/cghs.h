@@ -13,7 +13,13 @@ namespace cghs {
 
 #define BUTTON_INTAKE_TOGGLE DIGITAL_L1
 #define BUTTON_INTAKE_REVERSE DIGITAL_L2
+
 #define BUTTON_LAUNCHER DIGITAL_R1
+
+#define BUTTON_ROLLER_FORWARD DIGITAL_LEFT
+#define BUTTON_ROLLER_REVERSE DIGITAL_RIGHT
+
+#define BUTTON_ENDGAME DIGITAL_UP
 
 /*
  *  Motor Ports
@@ -64,10 +70,13 @@ const float LAUNCHER_MIN_SPEED = 0.8;
  */
 
 // Motors
-const pros::Motor launcherMotor(MOTOR_LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
-const pros::Motor rollerMotor(MOTOR_ROLLER_PORT, ROLLER_GEAR_RATIO, false);
-const pros::Motor conveyorMotor(MOTOR_CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
-const pros::Motor intakeMotor(MOTOR_INTAKE_PORT, INTAKE_GEAR_RATIO, false);
+const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
+const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, false);
+const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
+const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
+
+// Endgame
+const pros::ADIDigitalOut endgamePneumatics('a', false);
 
 /*
  *  Function Declarations
@@ -82,6 +91,11 @@ extern void intakeToggle(bool enabled);
 extern void intakeReverse(bool enabled);
 
 extern void launchDisks(bool enabled);
+
+extern void rollerForward(bool enabled);
+extern void rollerReverse(bool enabled);
+
+extern void endgameToggle(bool enabled);
 
 /*
  *  Function Definitions

@@ -25,7 +25,7 @@ Drive chassis(
     // Cartridge RPM
     //   (or tick per rotation if using tracking wheels)
     ,
-    600
+    200
 
     // External Gear Ratio (MUST BE DECIMAL)
     //    (or gear ratio of tracking wheel)
@@ -144,7 +144,12 @@ void opcontrol() {
   bool intakeToggleEnabled = false;
   bool intakeReverseEnabled = false;
 
+  bool rollerForwardToggle = false;
+  bool rollerReverseToggle = false;
+
   bool launchingDisksEnabled = false;
+
+  bool endgameToggleEnabled = false;
 
   while (true) {
     chassis.tank();  // Tank control
@@ -167,14 +172,56 @@ void opcontrol() {
       cghs::intakeReverse(false);
     }
 
+    // Roller Forward Intake
+    if (master.get_digital_new_press(BUTTON_ROLLER_FORWARD)) {
+      rollerForwardToggle = true;
+      cghs::rollerForward(true);
+    }
+    if (rollerForwardToggle && !master.get_digital(BUTTON_ROLLER_FORWARD)) {
+      rollerForwardToggle = false;
+      cghs::rollerForward(false);
+    }
+
+    // Roller Reverse Intake
+    if (master.get_digital_new_press(BUTTON_ROLLER_REVERSE)) {
+      rollerReverseToggle = true;
+      cghs::rollerReverse(true);
+    }
+    if (rollerReverseToggle && !master.get_digital(BUTTON_ROLLER_REVERSE)) {
+      rollerReverseToggle = false;
+      cghs::rollerReverse(false);
+    }
+
     // Launch Disks
-    if (master.get_digital_new_press(BUTTON_LAUNCHER)) {
+    if (master.get_digital(BUTTON_LAUNCHER)) {
+      chassis.set_active_brake(0.2);
+      launchingDisksEnabled = true;
+      cghs::launchDisks(true);
+    }
+    if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER)) {
+      chassis.set_active_brake(0);
       launchingDisksEnabled = false;
+      cghs::launchDisks(false);
+    }
+
+    // Launch Disks
+    if (master.get_digital(BUTTON_LAUNCHER)) {
+      launchingDisksEnabled = true;
       cghs::launchDisks(true);
     }
     if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER)) {
       launchingDisksEnabled = false;
       cghs::launchDisks(false);
+    }
+
+    // Endgame Toggle
+    if (master.get_digital(BUTTON_ENDGAME)) {
+      endgameToggleEnabled = true;
+      cghs::endgameToggle(true);
+    }
+    if (endgameToggleEnabled && !master.get_digital(BUTTON_ENDGAME)) {
+      endgameToggleEnabled = false;
+      cghs::endgameToggle(false);
     }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

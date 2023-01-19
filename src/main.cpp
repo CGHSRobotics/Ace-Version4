@@ -2,22 +2,20 @@
 
 #include "cghs.h"
 
-
-
 // Chassis constructor
 Drive chassis(
     // Left Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
-    {-11, -12}
+    {-cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT}
 
     // Right Chassis Ports (negative port will reverse it!)
     //   the first port is the sensored port (when trackers are not used!)
     ,
-    {1, 20}
+    {cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT}
 
     // IMU Port
     ,
-    19
+    cghs::IMU_PORT
 
     // Wheel Diameter (Remember, 4" wheels are actually 4.125!)
     //    (or tracking wheel diameter)
@@ -142,12 +140,42 @@ void autonomous() {
 void opcontrol() {
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
+
+  bool intakeToggleEnabled = false;
+  bool intakeReverseEnabled = false;
+
+  bool launchingDisksEnabled = false;
+
   while (true) {
     chassis.tank();  // Tank control
-    // chassis.arcade_standard(ez::SPLIT); // Standard split arcade
-    // chassis.arcade_standard(ez::SINGLE); // Standard single arcade
-    // chassis.arcade_flipped(ez::SPLIT); // Flipped split arcade
-    // chassis.arcade_flipped(ez::SINGLE); // Flipped single arcade
+
+    // Toggle Intake
+    if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
+      intakeToggleEnabled = !intakeToggleEnabled;
+      cghs::intakeToggle(intakeToggleEnabled);
+    }
+
+    // Emergency Reverse Intake
+    if (master.get_digital_new_press(BUTTON_INTAKE_REVERSE)) {
+      intakeToggleEnabled = false;
+      cghs::intakeToggle(false);
+      intakeReverseEnabled = true;
+      cghs::intakeReverse(true);
+    }
+    if (intakeReverseEnabled && !master.get_digital(BUTTON_INTAKE_REVERSE)) {
+      intakeReverseEnabled = false;
+      cghs::intakeReverse(false);
+    }
+
+    // Launch Disks
+    if (master.get_digital_new_press(BUTTON_LAUNCHER)) {
+      launchingDisksEnabled = false;
+      cghs::launchDisks(true);
+    }
+    if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER)) {
+      launchingDisksEnabled = false;
+      cghs::launchDisks(false);
+    }
 
     pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
   }

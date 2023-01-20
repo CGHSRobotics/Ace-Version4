@@ -4,22 +4,7 @@
 
 // Spin Motor with Percent
 void cghs::spinMotor(pros::Motor motor, float percent) {
-  switch (motor.get_gearing()) {
-    case MOTOR_GEARSET_06:
-      motor.move_velocity(600 * percent);
-      break;
-
-    case MOTOR_GEARSET_18:
-      motor.move_velocity(200 * percent);
-      break;
-
-    case MOTOR_GEARSET_36:
-      motor.move_velocity(100 * percent);
-      break;
-
-    default:
-      break;
-  }
+  motor.move_voltage(12000.0 * (percent / 100.0));
 }
 
 // Reset all Inputs
@@ -53,26 +38,43 @@ void cghs::intakeReverse(bool enabled) {
 }
 
 // Launch Disks
-void cghs::launchDisks(bool enabled) {
-  if (enabled) {
-
-    if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * SPEED_LAUNCHER) {
-      spinMotor(launcherMotor, SPEED_LAUNCHER);
-      conveyorMotor.move_voltage(0);
-      rollerMotor.move_voltage(0);
-      intakeMotor.move_voltage(0);
-    } else {
-      launcherMotor.move_voltage((12000 / 100) * SPEED_LAUNCHER);
-      spinMotor(conveyorMotor, SPEED_CONVEYOR_LAUNCHER);
+float cghs::launcherTimerDelay = 0;
+void cghs::launchDisksLong(float speed) {
+  if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * SPEED_LAUNCHER) {
+    spinMotor(launcherMotor, 100);
+    spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+    spinMotor(intakeMotor, 0);
+    spinMotor(conveyorMotor, 0);
+    cghs::launcherTimerDelay = 0;
+  } else {
+    spinMotor(launcherMotor, speed);
+    spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+    if (launcherTimerDelay >= launcherTimerDelayMax) {
       spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
-      spinMotor(rollerMotor, SPEED_ROLLER_LAUNCHER);
+      spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER_LONG);
+    } else if (launcherTimerDelay / 1000.0 < launcherTimerDelayMax) {
+      launcherTimerDelay += 10.0 / 1000.0;
+    }
+  }
+}
+void cghs::launchDisks(bool enabled, float speed) {
+  if (enabled) {
+    if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * SPEED_LAUNCHER) {
+      spinMotor(launcherMotor, speed);
+      spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+      spinMotor(intakeMotor, 0);
+      spinMotor(conveyorMotor, 0);
+    } else {
+      spinMotor(launcherMotor, speed);
+      spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+      spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
+      spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
     }
   } else {
-
-    launcherMotor.move_voltage(0.0);
-    conveyorMotor.move_voltage(0);
-    rollerMotor.move_voltage(0);
-    intakeMotor.move_voltage(0);
+    spinMotor(launcherMotor, 0);
+    spinMotor(rollerMotor, 0);
+    spinMotor(intakeMotor, 0);
+    spinMotor(conveyorMotor, 0);
   }
 }
 

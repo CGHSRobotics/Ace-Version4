@@ -309,8 +309,8 @@
       "compress_bin": true,
       "description": "making code ez-pz",
       "remote_name": "EZ-Template",
-      "slot": 2,
-      "icon": "pros"
+      "slot": 1,
+      "icon": "X"
     }
   }
 }

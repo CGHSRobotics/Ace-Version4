@@ -194,24 +194,19 @@ void opcontrol() {
 
     // Launch Disks
     if (master.get_digital(BUTTON_LAUNCHER)) {
-      chassis.set_active_brake(0.2);
+      chassis.set_active_brake(0);
       launchingDisksEnabled = true;
-      cghs::launchDisks(true);
+      cghs::launchDisks(true, cghs::SPEED_LAUNCHER);
     }
-    if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER)) {
+    if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
+      chassis.set_active_brake(0);
+      launchingDisksEnabled = true;
+      cghs::launchDisksLong(cghs::SPEED_LAUNCHER_LONG);
+    }
+    if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
       chassis.set_active_brake(0);
       launchingDisksEnabled = false;
-      cghs::launchDisks(false);
-    }
-
-    // Launch Disks
-    if (master.get_digital(BUTTON_LAUNCHER)) {
-      launchingDisksEnabled = true;
-      cghs::launchDisks(true);
-    }
-    if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER)) {
-      launchingDisksEnabled = false;
-      cghs::launchDisks(false);
+      cghs::launchDisks(false, 0.0);
     }
 
     // Endgame Toggle

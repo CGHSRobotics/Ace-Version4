@@ -15,6 +15,7 @@ namespace cghs {
 #define BUTTON_INTAKE_REVERSE DIGITAL_L2
 
 #define BUTTON_LAUNCHER DIGITAL_R1
+#define BUTTON_LAUNCHER_LONG DIGITAL_R2
 
 #define BUTTON_ROLLER_FORWARD DIGITAL_LEFT
 #define BUTTON_ROLLER_REVERSE DIGITAL_RIGHT
@@ -55,15 +56,20 @@ const float SPEED_INTAKE_LAUNCHER = 100;
 
 // Conveyor Motor
 const float SPEED_CONVEYOR_INTAKE = 100;
-const float SPEED_CONVEYOR_LAUNCHER = 100;
+const float SPEED_CONVEYOR_LAUNCHER = 50;
+const float SPEED_CONVEYOR_LAUNCHER_LONG = 35;
 
 // Roller Motor
 const float SPEED_ROLLER = 20;
 const float SPEED_ROLLER_LAUNCHER = 100;
 
 // Launcher Motor
-const float SPEED_LAUNCHER = 100;
-const float LAUNCHER_MIN_SPEED = 0.8;
+const float SPEED_LAUNCHER = 75;
+const float SPEED_LAUNCHER_LONG = 100;
+const float LAUNCHER_MIN_SPEED = 0.9;
+
+extern float launcherTimerDelay;
+const float launcherTimerDelayMax = 1.5;
 
 /*
  *  Device Declarations
@@ -90,7 +96,8 @@ extern void resetInputs();
 extern void intakeToggle(bool enabled);
 extern void intakeReverse(bool enabled);
 
-extern void launchDisks(bool enabled);
+extern void launchDisks(bool enabled, float speed);
+extern void launchDisksLong(float speed);
 
 extern void rollerForward(bool enabled);
 extern void rollerReverse(bool enabled);

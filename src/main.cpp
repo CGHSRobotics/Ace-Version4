@@ -138,6 +138,11 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+  // Screen
+  pros::lcd::shutdown();
+
+  
+
   // This is preference to what you like to drive on.
   chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 

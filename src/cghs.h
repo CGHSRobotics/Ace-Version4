@@ -34,7 +34,7 @@ const int ROLLER_PORT = 10;
 const int CONVEYOR_PORT = 15;
 const int INTAKE_PORT = 16;
 
-const int IMU_PORT = 2;
+const int IMU_PORT = 18;
 
 /*
  *  Physical Constants
@@ -49,6 +49,12 @@ const int IMU_PORT = 2;
 /*
  *  Speed Constants
  */
+
+// Drive Speeds
+const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
+const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
+
+const float SPEED_TURN_AUTO = 0.5 * 127.0;
 
 // Intake Motor
 const float SPEED_INTAKE = 100;
@@ -69,7 +75,7 @@ const float SPEED_LAUNCHER_LONG = 100;
 const float LAUNCHER_MIN_SPEED = 0.9;
 
 extern float launcherTimerDelay;
-const float launcherTimerDelayMax = 1.5;
+const float launcherTimerDelayMax = 1;
 
 /*
  *  Device Declarations
@@ -88,6 +94,7 @@ const pros::ADIDigitalOut endgamePneumatics('a', false);
  *  Function Declarations
  */
 
+// Util Functions
 extern void spinMotor(pros::Motor motor, float percent);
 
 // User Control
@@ -104,9 +111,14 @@ extern void rollerReverse(bool enabled);
 
 extern void endgameToggle(bool enabled);
 
-/*
- *  Function Definitions
- */
+// Autonomous
+
+extern void launchDisks_Auto(float time, float speed);
+extern void launchDisksLong_Auto(float time);
+
+extern void threeSide_Auto();
+extern void twoSide_Auto();
+extern void theWholeShebang_Auto();
 
 }  // namespace cghs
 

@@ -59,7 +59,7 @@ void cghs::launchDisksLong(float speed) {
 }
 void cghs::launchDisks(bool enabled, float speed) {
   if (enabled) {
-    if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * SPEED_LAUNCHER) {
+    if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * speed) {
       spinMotor(launcherMotor, speed);
       spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
       spinMotor(intakeMotor, 0);
@@ -103,4 +103,32 @@ void cghs::endgameToggle(bool enabled) {
   } else {
     cghs::endgamePneumatics.set_value(0);
   }
+}
+
+/*
+ *   Autonomous
+ */
+
+void cghs::launchDisks_Auto(float time, float speed) {
+  float currTime = 0;
+  while (currTime < time) {
+    launchDisks(true, speed);
+
+    currTime += ez::util::DELAY_TIME;
+    pros::delay(ez::util::DELAY_TIME);
+  }
+
+  launchDisks(false, 0);
+}
+
+void cghs::launchDisksLong_Auto(float time) {
+  float currTime = 0;
+  while (currTime < time) {
+    launchDisksLong(cghs::SPEED_LAUNCHER_LONG);
+
+    currTime += ez::util::DELAY_TIME;
+    pros::delay(ez::util::DELAY_TIME);
+  }
+
+  launchDisks(false, 0);
 }

@@ -1,6 +1,5 @@
-#include "main.h"
-
 #include "cghs.h"
+#include "main.h"
 
 /////
 // For instalattion, upgrading, documentations and tutorials, check out website!
@@ -8,9 +7,9 @@
 /////
 
 const int DRIVE_SPEED = 110;  // This is 110/127 (around 87% of max speed).  We don't suggest making this 127.
-                              // If this is 127 and the robot tries to heading correct, it's only correcting by
-                              // making one side slower.  When this is 87%, it's correcting by making one side
-                              // faster and one side slower, giving better heading correction.
+// If this is 127 and the robot tries to heading correct, it's only correcting by
+// making one side slower.  When this is 87%, it's correcting by making one side
+// faster and one side slower, giving better heading correction.
 const int TURN_SPEED = 90;
 const int SWING_SPEED = 90;
 
@@ -59,8 +58,102 @@ void modified_exit_condition() {
 }
 
 ///
-// Drive Example
+// Autonomous Example
 ///
+
+//  Three Side Auto
+//  - Gets Roller and 3 in High Goal and 2 in Low Goal
+void cghs::threeSide_Auto() {
+  // Get Roller
+  chassis.set_drive_pid(-4, 0.5 * 127.0, false);
+  chassis.wait_drive();
+  cghs::rollerForward(true);
+  pros::delay(250);
+  cghs::rollerForward(false);
+  chassis.set_drive_pid(4, 0.5 * 127.0, false);
+  chassis.wait_drive();
+
+  // Turn 90 Degrees and get 2 Low Goals
+  chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+  chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
+  chassis.wait_drive();
+  cghs::launchDisks_Auto(4000, 60);
+
+  // Turn 45 Degrees to the Right
+  chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+
+  // Charge Forward and push disks
+  chassis.set_drive_pid(65, SPEED_DRIVE_AUTO, true);
+  chassis.wait_until(36);
+  cghs::intakeToggle(true);
+  chassis.set_max_speed(SPEED_DRIVE_AUTO_INTAKE);
+  chassis.wait_drive();
+  cghs::intakeToggle(false);
+
+  cghs::intakeReverse(true);
+  pros::delay(250);
+  cghs::intakeReverse(false);
+
+  cghs::intakeToggle(true);
+  chassis.set_turn_pid(-47, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(4, SPEED_DRIVE_AUTO, true);
+  chassis.wait_drive();
+  cghs::intakeToggle(false);
+
+  cghs::launchDisksLong_Auto(8000);
+}
+
+//  Two Side Auto
+//  - Gets Roller and 3 in High Goal and 2 in Low Goal
+void cghs::twoSide_Auto() {
+
+  // Fire two low goals
+  cghs::launchDisks_Auto(4000, 80);
+
+  chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
+  chassis.wait_drive();
+  chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+  chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
+  chassis.wait_drive();
+
+  cghs::rollerForward(true);
+  pros::delay(1000);
+  cghs::rollerForward(false);
+
+  chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+
+  chassis.set_drive_pid(68, SPEED_DRIVE_AUTO);
+  chassis.wait_until(34);
+  cghs::intakeToggle(true);
+  chassis.set_max_speed(SPEED_DRIVE_AUTO);
+  chassis.wait_drive();
+
+  chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+  chassis.wait_drive();
+
+  cghs::intakeToggle(false);
+  cghs::launchDisksLong_Auto(8000);
+}
+
+//  The Whole Shebang Autos
+//  - Gets Roller and 3 in High Goal and other Roller
+void cghs::theWholeShebang_Auto() {
+  cghs::launchDisks_Auto(2, 80);
+}
+
+/*
+ *  Example Autons
+ */
+
 void drive_example() {
   // The first parameter is target inches
   // The second parameter is max speed the robot will drive at

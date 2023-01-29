@@ -61,6 +61,12 @@ void modified_exit_condition() {
 // Autonomous Example
 ///
 
+//  Null Auto
+//  - Gets Roller and 3 in High Goal and 2 in Low Goal
+void cghs::null_Auto() {
+  // Do Nothing
+}
+
 //  Three Side Auto
 //  - Gets Roller and 3 in High Goal and 2 in Low Goal
 void cghs::threeSide_Auto() {
@@ -110,7 +116,6 @@ void cghs::threeSide_Auto() {
 //  Two Side Auto
 //  - Gets Roller and 3 in High Goal and 2 in Low Goal
 void cghs::twoSide_Auto() {
-
   // Fire two low goals
   cghs::launchDisks_Auto(4000, 80);
 

@@ -67,10 +67,13 @@ void initialize() {
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.add_autons({
-      Auton("Three Side\n\nGets Roller Two Disks", cghs::threeSide_Auto),
-      // Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::twoSide_Auto)
-  });
+  ez::as::auton_selector.add_autons({Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::null_Auto),
+                                     Auton("Three Side\n\nGets Roller Two Disks", cghs::threeSide_Auto),
+                                     Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::twoSide_Auto),
+                                     Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::twoSide_Auto)});
+
+  chassis.toggle_modify_curve_with_controller(false);
+  chassis.set_curve_defaults(0, 0);
 
   // Initialize chassis and auton selector
   chassis.initialize();

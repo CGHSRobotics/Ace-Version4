@@ -66,7 +66,7 @@ void page_down() {
 
 void initialize() {
   // Initialize auto selector and LLEMU
-  //pros::lcd::initialize();
+  pros::lcd::initialize();
   ez::as::init_auton_selector();
 
   // Callbacks for auto selector

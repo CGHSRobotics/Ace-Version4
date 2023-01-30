@@ -9,12 +9,14 @@ void cghs::spinMotor(pros::Motor motor, float percent) {
 
 // Selects Auton and prints to screen
 void cghs::select_Auton() {
-  if (master.get_digital_new_press(DIGITAL_LEFT))
+  if (master.get_digital_new_press(DIGITAL_LEFT)) {
     ez::as::page_down();
-  if (master.get_digital_new_press(DIGITAL_RIGHT))
+    master.set_text(2, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.current_auton_page].Name);
+  }
+  if (master.get_digital_new_press(DIGITAL_RIGHT)) {
     ez::as::page_up();
-
-  master.set_text(2, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.current_auton_page].Name);
+    master.set_text(2, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.current_auton_page].Name);
+  }
 }
 
 // Sets Active Break
@@ -97,7 +99,7 @@ void cghs::launchDisks(bool enabled, float speed) {
 }
 
 // Roller Forward
-void cghs::rollerForward(bool enabled) {
+void cghs::rollerForward(bool enabled, float speed) {
   if (enabled) {
     spinMotor(cghs::rollerMotor, SPEED_ROLLER);
   } else {
@@ -106,7 +108,7 @@ void cghs::rollerForward(bool enabled) {
 }
 
 // Roller Reverse
-void cghs::rollerReverse(bool enabled) {
+void cghs::rollerReverse(bool enabled, float speed) {
   if (enabled) {
     spinMotor(cghs::rollerMotor, -SPEED_ROLLER);
   } else {

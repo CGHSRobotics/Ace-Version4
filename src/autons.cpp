@@ -81,9 +81,9 @@ void cghs::threeSide_Auto() {
   // Get Roller
   chassis.set_drive_pid(-4, 0.5 * 127.0, false);
   chassis.wait_drive();
-  cghs::rollerForward(true);
+  cghs::rollerForward(true, SPEED_ROLLER_AUTO);
   pros::delay(250);
-  cghs::rollerForward(false);
+  cghs::rollerForward(false, 0);
   chassis.set_drive_pid(4, 0.5 * 127.0, false);
   chassis.wait_drive();
 
@@ -134,9 +134,9 @@ void cghs::twoSide_Auto() {
   chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
   chassis.wait_drive();
 
-  cghs::rollerForward(true);
+  cghs::rollerForward(true, SPEED_ROLLER_AUTO);
   pros::delay(1000);
-  cghs::rollerForward(false);
+  cghs::rollerForward(false, 0);
 
   chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
   chassis.wait_drive();

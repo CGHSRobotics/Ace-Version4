@@ -71,6 +71,7 @@ const float SPEED_CONVEYOR_LAUNCHER_LONG = 35;
 
 // Roller Motor
 const float SPEED_ROLLER = 100;
+const float SPEED_ROLLER_AUTO = 25;
 const float SPEED_ROLLER_LAUNCHER = 100;
 
 // Launcher Motor
@@ -114,8 +115,8 @@ extern void intakeReverse(bool enabled);
 extern void launchDisks(bool enabled, float speed);
 extern void launchDisksLong(float speed);
 
-extern void rollerForward(bool enabled);
-extern void rollerReverse(bool enabled);
+extern void rollerForward(bool enabled, float speed);
+extern void rollerReverse(bool enabled, float speed);
 
 extern void endgameToggle(bool enabled);
 

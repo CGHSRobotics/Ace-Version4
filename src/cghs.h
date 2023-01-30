@@ -22,6 +22,8 @@ namespace cghs {
 
 #define BUTTON_ENDGAME DIGITAL_UP
 
+#define BUTTON_A_BRAKE_TOGGLE DIGITAL_DOWN
+
 /*
  *  Motor Ports
  */
@@ -50,7 +52,9 @@ const int IMU_PORT = 18;
  *  Speed Constants
  */
 
-// Drive Speeds
+// Drive Constants
+bool activeBreakEnabled = false;
+
 const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
 const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
 
@@ -97,6 +101,10 @@ const pros::ADIDigitalOut endgamePneumatics('a', false);
 // Util Functions
 extern void spinMotor(pros::Motor motor, float percent);
 
+extern void select_Auton();
+
+extern void active_brake(bool enabled, Drive chassis);
+
 // User Control
 extern void resetInputs();
 
@@ -116,6 +124,8 @@ extern void endgameToggle(bool enabled);
 extern void launchDisks_Auto(float time, float speed);
 extern void launchDisksLong_Auto(float time);
 
+extern void skills_Auto();
+extern void null_Auto();
 extern void threeSide_Auto();
 extern void twoSide_Auto();
 extern void theWholeShebang_Auto();

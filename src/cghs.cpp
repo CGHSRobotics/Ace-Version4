@@ -7,6 +7,24 @@ void cghs::spinMotor(pros::Motor motor, float percent) {
   motor.move_voltage(12000.0 * (percent / 100.0));
 }
 
+// Selects Auton and prints to screen
+void cghs::select_Auton() {
+  if (master.get_digital_new_press(DIGITAL_LEFT))
+    ez::as::page_down();
+  if (master.get_digital_new_press(DIGITAL_RIGHT))
+    ez::as::page_up();
+
+  master.set_text(2, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.current_auton_page].Name);
+}
+
+// Sets Active Break
+void cghs::active_brake(bool enabled, Drive chassis) {
+  if (enabled && cghs::activeBreakEnabled)
+    chassis.set_active_brake(0.1);
+  else
+    chassis.set_active_brake(0);
+}
+
 // Reset all Inputs
 void cghs::resetInputs() {
   cghs::launcherMotor.move_velocity(0);

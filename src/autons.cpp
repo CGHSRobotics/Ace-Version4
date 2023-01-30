@@ -61,6 +61,14 @@ void modified_exit_condition() {
 // Autonomous Example
 ///
 
+/*
+ *	Skills Auto
+ *	- does skills
+ */
+void cghs::skills_Auto() {
+  // Do Skills
+}
+
 //  Null Auto
 //  - Gets Roller and 3 in High Goal and 2 in Low Goal
 void cghs::null_Auto() {

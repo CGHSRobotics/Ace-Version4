@@ -67,13 +67,16 @@ void initialize() {
   // chassis.set_right_curve_buttons(pros::E_CONTROLLER_DIGITAL_Y,    pros::E_CONTROLLER_DIGITAL_A);
 
   // Autonomous Selector using LLEMU
-  ez::as::auton_selector.add_autons({Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::null_Auto),
-                                     Auton("Three Side\n\nGets Roller Two Disks", cghs::threeSide_Auto),
-                                     Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::twoSide_Auto),
-                                     Auton("Two Side\n\nGets Roller; 2 Low; 3 High", cghs::twoSide_Auto)});
+  ez::as::auton_selector.add_autons({
+      Auton("Skills Side", cghs::skills_Auto),
+      Auton("Null Side", cghs::null_Auto),
+      Auton("Three Side", cghs::threeSide_Auto),
+      Auton("Two Side", cghs::twoSide_Auto),
+      Auton("Shebang Side", cghs::theWholeShebang_Auto),
+  });
 
   chassis.toggle_modify_curve_with_controller(false);
-  chassis.set_curve_defaults(0, 0);
+  chassis.set_curve_default(0, 0);
 
   // Initialize chassis and auton selector
   chassis.initialize();
@@ -86,7 +89,11 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-  // . . .
+  while (true) {
+    cghs::select_Auton();
+
+    pros::delay(ez::util::DELAY_TIME);
+  }
 }
 
 /**
@@ -156,6 +163,12 @@ void opcontrol() {
     chassis.tank();  // Tank control
 
     // Toggle Intake
+    if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
+      cghs::activeBreakEnabled = !cghs::activeBreakEnabled;
+      master.set_text(2, 12, (cghs::activeBreakEnabled) ? "true" : "false");
+    }
+
+    // Toggle Intake
     if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
       intakeToggleEnabled = !intakeToggleEnabled;
       cghs::intakeToggle(intakeToggleEnabled);
@@ -195,7 +208,6 @@ void opcontrol() {
 
     // Launch Disks
     if (master.get_digital(BUTTON_LAUNCHER)) {
-      chassis.set_active_brake(0.1);
       launchingDisksEnabled = true;
       cghs::launchDisks(true, cghs::SPEED_LAUNCHER);
     }

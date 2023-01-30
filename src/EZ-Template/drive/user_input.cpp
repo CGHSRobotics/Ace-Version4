@@ -148,10 +148,12 @@ void Drive::modify_curve_with_controller() {
 
   auto sr = std::to_string(right_curve_scale);
   auto sl = std::to_string(left_curve_scale);
-  if (!is_tank)
-    master.set_text(2, 0, sl + "   " + sr);
-  else
-    master.set_text(2, 0, sl);
+  if (disable_controller) {
+    if (!is_tank)
+      master.set_text(2, 0, sl + "   " + sr);
+    else
+      master.set_text(2, 0, sl);
+  }
 }
 
 // Left curve function

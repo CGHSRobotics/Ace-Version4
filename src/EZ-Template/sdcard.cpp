@@ -66,13 +66,13 @@ void page_down() {
 
 void initialize() {
   // Initialize auto selector and LLEMU
-  pros::lcd::initialize();
+  //pros::lcd::initialize();
   ez::as::init_auton_selector();
 
   // Callbacks for auto selector
   ez::as::auton_selector.print_selected_auton();
-  pros::lcd::register_btn0_cb(ez::as::page_down);
-  pros::lcd::register_btn2_cb(ez::as::page_up);
+  //pros::lcd::register_btn0_cb(ez::as::page_down);
+  //pros::lcd::register_btn2_cb(ez::as::page_up);
 }
 
 void shutdown() {

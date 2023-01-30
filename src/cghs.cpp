@@ -58,7 +58,7 @@ void cghs::intakeReverse(bool enabled) {
 // Launch Disks
 float cghs::launcherTimerDelay = 0;
 void cghs::launchDisksLong(float speed) {
-  if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * SPEED_LAUNCHER) {
+  if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * speed) {
     spinMotor(launcherMotor, 100);
     spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
     spinMotor(intakeMotor, 0);

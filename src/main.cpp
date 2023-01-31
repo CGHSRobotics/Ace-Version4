@@ -2,11 +2,35 @@
 
 #include "cghs.h"
 
-using cghs::chassis;
-
 lv_obj_t* img_var;
+lv_obj_t* autonDDList;
 
-lv_obj_t* dropdown_var;
+static lv_res_t ddlist_action(lv_obj_t* ddlist)
+{
+	uint8_t id = lv_obj_get_free_num(ddlist);
+
+	char sel_str[32];
+	lv_ddlist_get_selected_str(ddlist, sel_str);
+	printf("Ddlist %d new option: %s \n", id, sel_str);
+
+	return LV_RES_OK; /*Return OK if the drop down list is not deleted*/
+}
+
+
+Drive chassis(
+	// Left Chassis Ports (negative port will reverse it!)
+	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
+	// Right Chassis Ports (negative port will reverse it!)
+	{ cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT },
+	// IMU Port
+	cghs::IMU_PORT,
+	// Wheel Diameter (Remember, 4" wheels are actually 4.125!)
+	3.25,
+	// Cartridge RPM
+	200,
+	// External Gear Ratio (MUST BE DECIMAL)
+	0.6
+);
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -25,12 +49,17 @@ void initialize() {
 
 	// Initialize chassis and auton selector
 	chassis.initialize();
+	//ez::as::initialize();
 
+	// Screen
+	pros::lcd::shutdown();
+
+	/*
 	// Screen Image
-	lv_fs_drv_t pcfs_drv;                      /*A driver descriptor*/
-	memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t)); /*Initialization*/
+	lv_fs_drv_t pcfs_drv;                      //A driver descriptor
+	memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t)); //Initialization
 
-	pcfs_drv.file_size = sizeof(pc_file_t); /*Set up fields...*/
+	pcfs_drv.file_size = sizeof(pc_file_t); //Set up fields...
 	pcfs_drv.letter = 'S';
 	pcfs_drv.open = pcfs_open;
 	pcfs_drv.close = pcfs_close;
@@ -42,9 +71,33 @@ void initialize() {
 	img_var = lv_img_create(lv_scr_act(), NULL);
 	lv_img_set_src(img_var, "S:/usd/ace.bin");
 	lv_obj_set_pos(img_var, 0, 0);  // set the position to center
+	*/
 
-	master.clear_line(2);
-	master.set_text(2, 0, ez::as::auton_selector.Autons[ez::as::auton_selector.current_auton_page].Name);
+
+	/*Create a drop down list*/
+	lv_obj_t* ddl1 = lv_ddlist_create(lv_scr_act(), NULL);
+	lv_ddlist_set_options(ddl1, "Apple\n"
+		"Banana\n"
+		"Orange\n"
+		"Melon\n"
+		"Grape\n"
+		"Raspberry");
+	lv_obj_align(ddl1, NULL, LV_ALIGN_IN_TOP_LEFT, 30, 10);
+	lv_obj_set_free_num(ddl1, 1);               /*Set a unique ID*/
+	lv_ddlist_set_action(ddl1, ddlist_action);  /*Set a function to call when anew option is chosen*/
+
+	/*Create a style*/
+	static lv_style_t style_bg;
+	lv_style_copy(&style_bg, &lv_style_pretty);
+	style_bg.body.shadow.width = 4; /*Enable the shadow*/
+	style_bg.text.color = LV_COLOR_MAKE(0x10, 0x20, 0x50);
+
+	/*Copy the drop down list and set the new style_bg*/
+	lv_obj_t* ddl2 = lv_ddlist_create(lv_scr_act(), ddl1);
+	lv_obj_align(ddl2, NULL, LV_ALIGN_IN_TOP_RIGHT, -30, 10);
+	lv_obj_set_free_num(ddl2, 2);       /*Set a unique ID*/
+	lv_obj_set_style(ddl2, &style_bg);
+
 }
 
 /**
@@ -88,7 +141,7 @@ void autonomous() {
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
-	ez::as::auton_selector.call_selected_auton();  // Calls selected auton from autonomous selector.
+	cghs::auton::threeSide_Auto(chassis);
 }
 
 /**
@@ -106,8 +159,6 @@ void autonomous() {
  */
 
 void opcontrol() {
-	// Screen
-	pros::lcd::shutdown();
 
 	// This is preference to what you like to drive on.
 	chassis.set_drive_brake(MOTOR_BRAKE_COAST);

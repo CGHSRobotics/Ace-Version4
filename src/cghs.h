@@ -1,4 +1,3 @@
-#pragma once
 
 #include "lvgl.cpp"
 #include "main.h"
@@ -32,21 +31,6 @@
 // namespace cghs
 namespace cghs {
 
-	// Chassis constructor
-	Drive chassis(
-		// Left Chassis Ports (negative port will reverse it!)
-		{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
-		// Right Chassis Ports (negative port will reverse it!)
-		{ cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT },
-		// IMU Port
-		cghs::IMU_PORT,
-		// Wheel Diameter (Remember, 4" wheels are actually 4.125!)
-		3.25,
-		// Cartridge RPM
-		200,
-		// External Gear Ratio (MUST BE DECIMAL)
-		0.6);
-
 	/*
 	 *  Motor Ports
 	 */
@@ -60,14 +44,13 @@ namespace cghs {
 	const int INTAKE_PORT = 16;
 
 	const int IMU_PORT = 18;
-
-
+	
 	/*
 	 *  Speed Constants
 	 */
 
 	 // Drive Constants
-	bool activeBreakEnabled = false;
+	const bool activeBreakEnabled = false;
 
 	const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
@@ -134,15 +117,30 @@ namespace cghs {
 
 	namespace auton {
 
+
+		class Selector {
+		public:
+			Selector();	// Constructor
+
+			void callSelectedAuton();
+
+
+
+
+		};
+
+		Selector selector();
+
+
 		// Autonomous
 		extern void launchDisks_Auto(float time, float speed);
 		extern void launchDisksLong_Auto(float time);
 
-		extern void skills_Auto();
-		extern void null_Auto();
-		extern void threeSide_Auto();
-		extern void twoSide_Auto();
-		extern void theWholeShebang_Auto();
+		extern void skills_Auto(Drive&);
+		extern void null_Auto(Drive&);
+		extern void threeSide_Auto(Drive&);
+		extern void twoSide_Auto(Drive&);
+		extern void theWholeShebang_Auto(Drive&);
 
 	}  // namespace auton
 

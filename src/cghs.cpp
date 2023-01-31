@@ -1,5 +1,4 @@
 
-
 #include "cghs.h"
 
 // Spin Motor with Percent
@@ -50,7 +49,7 @@ void cghs::intakeReverse(bool enabled) {
 // Launch Disks
 float cghs::launcherTimerDelay = 0;
 void cghs::launchDisksLong(float speed) {
-	if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * speed) {
+	if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= speed - 20.0) {
 		spinMotor(launcherMotor, 100);
 		spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 		spinMotor(intakeMotor, 0);
@@ -71,7 +70,7 @@ void cghs::launchDisksLong(float speed) {
 }
 void cghs::launchDisks(bool enabled, float speed) {
 	if (enabled) {
-		if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= LAUNCHER_MIN_SPEED * speed) {
+		if (cghs::launcherMotor.get_actual_velocity() / 6.0 <= speed - 20.0) {
 			spinMotor(launcherMotor, speed);
 			spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 			spinMotor(intakeMotor, 0);

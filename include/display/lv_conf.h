@@ -58,7 +58,7 @@
        automatically into RAM)*/
 
 /* Enable anti-aliasing (lines, and radiuses will be smoothed) */
-#define LV_ANTIALIAS 1 /*1: Enable anti-aliasing*/
+#define LV_ANTIALIAS 0 /*1: Enable anti-aliasing*/
 
 /*Screen refresh settings*/
 #define LV_REFR_PERIOD 40   /*Screen refresh period in milliseconds*/

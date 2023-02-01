@@ -5,17 +5,7 @@
 lv_obj_t* img_var;
 lv_obj_t* autonDDList;
 
-static lv_res_t ddlist_action(lv_obj_t* ddlist)
-{
-	uint8_t id = lv_obj_get_free_num(ddlist);
-
-	char sel_str[32];
-	lv_ddlist_get_selected_str(ddlist, sel_str);
-	printf("Ddlist %d new option: %s \n", id, sel_str);
-
-	return LV_RES_OK; /*Return OK if the drop down list is not deleted*/
-}
-
+cghs::auton::Selector autonSelector(autonDDList);
 
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
@@ -40,7 +30,7 @@ Drive chassis(
  */
 void initialize() {
 	// Print our branding over your terminal :D
-	ez::print_ez_template();
+	//ez::print_ez_template();
 
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
 
@@ -54,7 +44,6 @@ void initialize() {
 	// Screen
 	pros::lcd::shutdown();
 
-	/*
 	// Screen Image
 	lv_fs_drv_t pcfs_drv;                      //A driver descriptor
 	memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t)); //Initialization
@@ -70,33 +59,31 @@ void initialize() {
 
 	img_var = lv_img_create(lv_scr_act(), NULL);
 	lv_img_set_src(img_var, "S:/usd/ace.bin");
-	lv_obj_set_pos(img_var, 0, 0);  // set the position to center
-	*/
+	lv_obj_set_pos(img_var, 0, 0);  					// set the position to center
 
-
-	/*Create a drop down list*/
-	lv_obj_t* ddl1 = lv_ddlist_create(lv_scr_act(), NULL);
-	lv_ddlist_set_options(ddl1, "Apple\n"
-		"Banana\n"
-		"Orange\n"
-		"Melon\n"
-		"Grape\n"
-		"Raspberry");
-	lv_obj_align(ddl1, NULL, LV_ALIGN_IN_TOP_LEFT, 30, 10);
-	lv_obj_set_free_num(ddl1, 1);               /*Set a unique ID*/
-	lv_ddlist_set_action(ddl1, ddlist_action);  /*Set a function to call when anew option is chosen*/
-
-	/*Create a style*/
+	//	Create a style
 	static lv_style_t style_bg;
-	lv_style_copy(&style_bg, &lv_style_pretty);
-	style_bg.body.shadow.width = 4; /*Enable the shadow*/
-	style_bg.text.color = LV_COLOR_MAKE(0x10, 0x20, 0x50);
+	lv_style_copy(&style_bg, &lv_style_plain);
+	style_bg.text.color = LV_COLOR_RED;
+	style_bg.body.main_color = LV_COLOR_BLACK;
+	style_bg.body.grad_color = LV_COLOR_BLACK;
+	style_bg.text.font = &lv_font_dejavu_20;
 
-	/*Copy the drop down list and set the new style_bg*/
-	lv_obj_t* ddl2 = lv_ddlist_create(lv_scr_act(), ddl1);
-	lv_obj_align(ddl2, NULL, LV_ALIGN_IN_TOP_RIGHT, -30, 10);
-	lv_obj_set_free_num(ddl2, 2);       /*Set a unique ID*/
-	lv_obj_set_style(ddl2, &style_bg);
+	//	Create a drop down list
+	lv_obj_t* autonDDList = lv_ddlist_create(lv_scr_act(), NULL);
+	lv_ddlist_set_options(autonDDList,
+		"Skills\n"
+		"Null\n"
+		"Three\n"
+		"Two\n"
+		"Shebang\n"
+	);
+	lv_obj_align(autonDDList, NULL, LV_ALIGN_IN_TOP_RIGHT, 10, 100);
+	lv_obj_set_style(autonDDList, &style_bg);
+	lv_ddlist_set_anim_time(autonDDList, 0);
+	lv_obj_set_free_num(autonDDList, 1);				//	Set a unique ID
+	lv_ddlist_set_draw_arrow(autonDDList, true);		//	Turn On Arrow
+	lv_ddlist_set_action(autonDDList, ddlist_action);  	//	Set a function to call when anew option is chosen
 
 }
 
@@ -141,7 +128,8 @@ void autonomous() {
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
-	cghs::auton::threeSide_Auto(chassis);
+
+	autonSelector.callSelectedAuton(chassis);
 }
 
 /**
@@ -177,10 +165,10 @@ void opcontrol() {
 		chassis.tank();  // Tank control
 
 		// active break Intake
-		/*if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
-		  cghs::activeBreakEnabled = !cghs::activeBreakEnabled;
-		  master.set_text(2, 12, "true");
-		}*/
+		if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
+			cghs::activeBreakEnabled = !cghs::activeBreakEnabled;
+			master.set_text(2, 12, "true");
+		}
 
 		// Toggle Intake
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {

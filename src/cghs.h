@@ -19,6 +19,9 @@
 
 #define BUTTON_A_BRAKE_TOGGLE DIGITAL_DOWN
 
+#define BUTTON_AUTON_INCREASE DIGITAL_RIGHT
+#define BUTTON_AUTON_DECREASE DIGITAL_LEFT
+
 
 #define DRIVE_GEAR_RATIO MOTOR_GEARSET_18
 #define LAUNCHER_GEAR_RATIO MOTOR_GEARSET_06
@@ -44,13 +47,14 @@ namespace cghs {
 	const int INTAKE_PORT = 16;
 
 	const int IMU_PORT = 18;
-	
+
 	/*
 	 *  Speed Constants
 	 */
 
 	 // Drive Constants
-	const bool activeBreakEnabled = false;
+
+	extern bool activeBreakEnabled;
 
 	const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
@@ -68,7 +72,7 @@ namespace cghs {
 
 	// Roller Motor
 	const float SPEED_ROLLER = 100;
-	const float SPEED_ROLLER_AUTO = 25;
+	const float SPEED_ROLLER_AUTO = 10;
 	const float SPEED_ROLLER_LAUNCHER = 100;
 
 	// Launcher Motor
@@ -109,6 +113,7 @@ namespace cghs {
 
 	extern void launchDisks(bool enabled, float speed);
 	extern void launchDisksLong(float speed);
+	extern void launchDisksShort(float speed);
 
 	extern void rollerForward(bool enabled, float speed);
 	extern void rollerReverse(bool enabled, float speed);
@@ -120,27 +125,29 @@ namespace cghs {
 
 		class Selector {
 		public:
-			Selector();	// Constructor
+			Selector(lv_obj_t* givenAutonList);	/** @brief Constructor */
 
-			void callSelectedAuton();
+			void callSelectedAuton(Drive& chassis);
 
+			void checkButtons();
 
-
+			lv_obj_t* autonList;
+			int index = 0;
+			int numberAuton = 5;
 
 		};
-
-		Selector selector();
 
 
 		// Autonomous
 		extern void launchDisks_Auto(float time, float speed);
 		extern void launchDisksLong_Auto(float time);
+		extern void launchDisksShort_Auto(float time, float speed);
 
-		extern void skills_Auto(Drive&);
-		extern void null_Auto(Drive&);
-		extern void threeSide_Auto(Drive&);
-		extern void twoSide_Auto(Drive&);
-		extern void theWholeShebang_Auto(Drive&);
+		extern void skills_Auto(Drive& chassis);
+		extern void null_Auto(Drive& chassis);
+		extern void threeSide_Auto(Drive& chassis);
+		extern void twoSide_Auto(Drive& chassis);
+		extern void theWholeShebang_Auto(Drive& chassis);
 
 	}  // namespace auton
 

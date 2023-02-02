@@ -21,7 +21,108 @@ namespace cghs::auton {
 	 *
 	 */
 	void skills_Auto(Drive& chassis) {
-		// Do Skills
+
+		// Get Roller 1
+		chassis.set_drive_pid(-4, 0.5 * 127.0, false);
+		chassis.wait_drive();
+		rollerForward(true, SPEED_ROLLER_AUTO);
+		pros::delay(200);
+		rollerForward(false, 0);
+		chassis.set_drive_pid(8, 0.5 * 127.0, false);
+		chassis.wait_drive();
+
+
+		chassis.set_turn_pid(-45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		intakeToggle(true);
+		chassis.set_drive_pid(20, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		// Get Roller 2
+		chassis.set_drive_pid(-9, 0.5 * 127.0, false);
+		chassis.wait_drive();
+		intakeToggle(false);
+		rollerForward(true, SPEED_ROLLER_AUTO);
+		pros::delay(200);
+		rollerForward(false, 0);
+		chassis.set_drive_pid(11, 0.5 * 127.0, false);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(46, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(-10, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		// Shoot First 3
+		launchDisks_Auto(4500, 85.0);
+
+		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(-14, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		intakeToggle(true);
+		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(18, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(28, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(-45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		// Shoot Second Three
+		pros::delay(1000);
+		intakeToggle(false);
+		launchDisks_Auto(4000, 90.0);
+
+		chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		intakeToggle(true);
+		chassis.set_drive_pid(64, SPEED_DRIVE_AUTO);
+		chassis.wait_until(34);
+		chassis.set_max_speed(SPEED_DRIVE_AUTO_INTAKE);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(-90, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(40, SPEED_DRIVE_AUTO_INTAKE);
+		chassis.wait_drive();
+
+		// Shoot Third Three
+		intakeToggle(false);
+		launchDisks_Auto(4000, SPEED_LAUNCHER);
+
+		chassis.set_drive_pid(-52, SPEED_DRIVE_AUTO_INTAKE);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(-180, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(-6, 0.5 * 127.0, false);
+		chassis.wait_drive();
+		rollerForward(true, SPEED_ROLLER_AUTO);
+		pros::delay(200);
+		rollerForward(false, 0);
+		chassis.set_drive_pid(8, 0.5 * 127.0, false);
+		chassis.wait_drive();
 	}
 
 	/**
@@ -92,7 +193,7 @@ namespace cghs::auton {
 	void twoSide_Auto(Drive& chassis) {
 
 		// Fire two low goals
-		launchDisksShort_Auto(2000, 80);
+		launchDisksShort_Auto(1500, 100);
 
 		chassis.set_drive_pid(-24, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -116,10 +217,10 @@ namespace cghs::auton {
 		chassis.wait_drive();
 		chassis.set_drive_pid(10, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
-		chassis.set_drive_pid(-10, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(0, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_turn_pid(135, SPEED_TURN_AUTO);
+		chassis.set_turn_pid(133, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_drive_pid(6, SPEED_DRIVE_AUTO);
@@ -156,92 +257,6 @@ namespace cghs::auton {
 		// Do Nothing
 	}
 }
-
-
-/**
- *
- *	Auton Selector
- *
- */
-namespace cghs::auton {
-
-	/**
-	 *	@brief Constructor for auton selector class
-	 *
-	 *  @param givenAutonList Reference to ddlist object that stores string of selected auton
-	 */
-	Selector::Selector(lv_obj_t* givenAutonList) {
-		printf("Initializing cghs::auton Selector...");
-		printf("Hacking the mainframe...");
-		printf("Establishing Backdoor access...");
-
-		autonList = givenAutonList;
-	}
-
-
-	/**
-	 *	@brief Calls Auton based on string stored in ddlist
-	 *
-	 *  @param chassis Reference to chassis object
-	 */
-	void Selector::callSelectedAuton(Drive& chassis) {
-
-		char sel_str[32];
-		lv_ddlist_get_selected_str(autonList, sel_str);
-
-		if (sel_str == "Skills")
-		{
-			skills_Auto(chassis);
-		}
-		else if (sel_str == "Null")
-		{
-			null_Auto(chassis);
-		}
-		else if (sel_str == "Three")
-		{
-			threeSide_Auto(chassis);
-		}
-		else if (sel_str == "Two")
-		{
-			twoSide_Auto(chassis);
-		}
-		else if (sel_str == "Shebang")
-		{
-			theWholeShebang_Auto(chassis);
-		}
-		else
-		{
-			printf("ERROR: no skills found %d", sel_str);
-		}
-	}
-
-
-	void Selector::checkButtons() {
-
-		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))
-		{
-			index++;
-		}
-
-		if (master.get_digital_new_press(BUTTON_AUTON_DECREASE))
-		{
-			index--;
-		}
-
-		if (index < 0)
-		{
-			index += numberAuton;
-		}
-
-		if (index >= numberAuton)
-		{
-			index -= numberAuton;
-		}
-
-		lv_ddlist_set_selected(autonList, index);
-	}
-}
-
 
 /**
  *
@@ -287,5 +302,39 @@ namespace cghs::auton {
 		}
 
 		launchDisks(false, 0);
+	}
+
+	int autonIndex = 0;
+
+	// Updates auton selection and prints to screen
+	void updateAutonSelection() {
+		if (autonIndex < 0)
+		{
+			autonIndex += numAutons;
+		}
+		if (autonIndex >= numAutons)
+		{
+			autonIndex -= numAutons;
+		}
+
+		std::string str = autonArray[autonIndex];
+
+		master.set_text(2, 0, str.c_str());
+
+		printf("\n Auton Changed To: %s", str.c_str());
+	}
+
+	void checkAutonButtons() {
+
+		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))
+		{
+			autonIndex++;
+			updateAutonSelection();
+		}
+		if (master.get_digital_new_press(BUTTON_AUTON_DECREASE))
+		{
+			autonIndex--;
+			updateAutonSelection();
+		}
 	}
 }

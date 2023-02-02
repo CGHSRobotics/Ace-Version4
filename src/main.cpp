@@ -5,8 +5,6 @@
 lv_obj_t* img_var;
 lv_obj_t* autonDDList;
 
-cghs::auton::Selector autonSelector(autonDDList);
-
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
 	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
@@ -22,6 +20,16 @@ Drive chassis(
 	0.6
 );
 
+
+static lv_res_t ddlist_action(lv_obj_t* ddlist)
+{
+	cghs::auton::autonIndex = lv_ddlist_get_selected(ddlist);
+
+	cghs::auton::updateAutonSelection();
+
+	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -31,6 +39,8 @@ Drive chassis(
 void initialize() {
 	// Print our branding over your terminal :D
 	//ez::print_ez_template();
+
+	printf("\n Initializing... \n");
 
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
 
@@ -81,10 +91,12 @@ void initialize() {
 	lv_obj_align(autonDDList, NULL, LV_ALIGN_IN_TOP_RIGHT, 10, 100);
 	lv_obj_set_style(autonDDList, &style_bg);
 	lv_ddlist_set_anim_time(autonDDList, 0);
-	lv_obj_set_free_num(autonDDList, 1);				//	Set a unique ID
+	lv_obj_set_free_num(autonDDList, 2);				//	Set a unique ID
 	lv_ddlist_set_draw_arrow(autonDDList, true);		//	Turn On Arrow
 	lv_ddlist_set_action(autonDDList, ddlist_action);  	//	Set a function to call when anew option is chosen
 
+	lv_ddlist_set_selected(autonDDList, 0);
+	ddlist_action(autonDDList);
 }
 
 /**
@@ -94,6 +106,8 @@ void initialize() {
  */
 void disabled() {
 	while (true) {
+		cghs::auton::checkAutonButtons();
+
 		pros::delay(ez::util::DELAY_TIME);
 	}
 }
@@ -128,8 +142,35 @@ void autonomous() {
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
+	std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
 
-	autonSelector.callSelectedAuton(chassis);
+	printf("\n\nCalling Auton...	%s \n\n", str.c_str());
+
+	if (str == "Skills")
+	{
+		cghs::auton::skills_Auto(chassis);
+	}
+	else if (str == "Null")
+	{
+		cghs::auton::null_Auto(chassis);
+	}
+	else if (str == "Three")
+	{
+		cghs::auton::threeSide_Auto(chassis);
+	}
+	else if (str == "Two")
+	{
+		cghs::auton::twoSide_Auto(chassis);
+	}
+	else if (str == "Shebang")
+	{
+		cghs::auton::theWholeShebang_Auto(chassis);
+	}
+	else
+	{
+		printf("ERROR: no skills found %d", str);
+	}
+
 }
 
 /**
@@ -162,6 +203,8 @@ void opcontrol() {
 	bool endgameToggleEnabled = false;
 
 	while (true) {
+		cghs::auton::checkAutonButtons();
+
 		chassis.tank();  // Tank control
 
 		// active break Intake
@@ -214,7 +257,7 @@ void opcontrol() {
 			cghs::launchDisks(true, cghs::SPEED_LAUNCHER);
 		}
 		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
-			chassis.set_active_brake(0.1);
+			//chassis.set_active_brake(0.1);
 			launchingDisksEnabled = true;
 			cghs::launchDisksLong(cghs::SPEED_LAUNCHER_LONG);
 		}

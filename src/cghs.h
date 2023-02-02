@@ -57,7 +57,7 @@ namespace cghs {
 	extern bool activeBreakEnabled;
 
 	const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
-	const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
+	const float SPEED_DRIVE_AUTO_INTAKE = 0.5 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.5 * 127.0;
 
@@ -122,21 +122,15 @@ namespace cghs {
 
 	namespace auton {
 
+		// Autonomous Selector
 
-		class Selector {
-		public:
-			Selector(lv_obj_t* givenAutonList);	/** @brief Constructor */
+		extern int autonIndex;
+		const int numAutons = 5;
+		const std::string autonArray[10] = { "Skills", "Null", "Three", "Two", "Shebang" };
 
-			void callSelectedAuton(Drive& chassis);
 
-			void checkButtons();
-
-			lv_obj_t* autonList;
-			int index = 0;
-			int numberAuton = 5;
-
-		};
-
+		extern void updateAutonSelection();
+		extern void checkAutonButtons();
 
 		// Autonomous
 		extern void launchDisks_Auto(float time, float speed);

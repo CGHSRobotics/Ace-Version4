@@ -1,9 +1,6 @@
-#include "main.h"
+#include "scripts/cghs.h"
 
-#include "cghs.h"
-
-lv_obj_t* img_var;
-lv_obj_t* autonDDList;
+#include "scripts/lvgl.cpp"
 
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
@@ -20,15 +17,36 @@ Drive chassis(
 	0.6
 );
 
+int screenUpdateCounter = 0;
+const int screenUpdateCounterMax = 50;
 
-static lv_res_t ddlist_action(lv_obj_t* ddlist)
-{
-	cghs::auton::autonIndex = lv_ddlist_get_selected(ddlist);
+void screenUpdate() {
 
-	cghs::auton::updateAutonSelection();
+	if (screenUpdateCounter >= screenUpdateCounterMax) {
+		screenUpdateCounter -= screenUpdateCounterMax;
 
-	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+		std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
+		master.set_text(2, 0, str.c_str());
+
+		lv_label_set_text(labelTemp, (
+			(string)"Temperature in Celsius (Max is 55C): \n" +
+			"\nLeft Front: " + std::to_string(chassis.left_motors[0].get_temperature()) +
+			"\nLeft Back: " + std::to_string(chassis.left_motors[1].get_temperature()) +
+			"\nRight Front: " + std::to_string(chassis.right_motors[0].get_temperature()) +
+			"\nRight Back: " + std::to_string(chassis.right_motors[1].get_temperature()) +
+			"\n" +
+			"\nLauncher: " + std::to_string(cghs::launcherMotor.get_temperature()) +
+			"\nRoller: " + std::to_string(cghs::rollerMotor.get_temperature()) +
+			"\nConveyor: " + std::to_string(cghs::conveyorMotor.get_temperature()) +
+			"\nIntake: " + std::to_string(cghs::intakeMotor.get_temperature())
+			).c_str()
+
+		);
+	}
+	screenUpdateCounter += ez::util::DELAY_TIME;
 }
+
+
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -54,49 +72,7 @@ void initialize() {
 	// Screen
 	pros::lcd::shutdown();
 
-	// Screen Image
-	lv_fs_drv_t pcfs_drv;                      //A driver descriptor
-	memset(&pcfs_drv, 0, sizeof(lv_fs_drv_t)); //Initialization
-
-	pcfs_drv.file_size = sizeof(pc_file_t); //Set up fields...
-	pcfs_drv.letter = 'S';
-	pcfs_drv.open = pcfs_open;
-	pcfs_drv.close = pcfs_close;
-	pcfs_drv.read = pcfs_read;
-	pcfs_drv.seek = pcfs_seek;
-	pcfs_drv.tell = pcfs_tell;
-	lv_fs_add_drv(&pcfs_drv);
-
-	img_var = lv_img_create(lv_scr_act(), NULL);
-	lv_img_set_src(img_var, "S:/usd/ace.bin");
-	lv_obj_set_pos(img_var, 0, 0);  					// set the position to center
-
-	//	Create a style
-	static lv_style_t style_bg;
-	lv_style_copy(&style_bg, &lv_style_plain);
-	style_bg.text.color = LV_COLOR_RED;
-	style_bg.body.main_color = LV_COLOR_BLACK;
-	style_bg.body.grad_color = LV_COLOR_BLACK;
-	style_bg.text.font = &lv_font_dejavu_20;
-
-	//	Create a drop down list
-	lv_obj_t* autonDDList = lv_ddlist_create(lv_scr_act(), NULL);
-	lv_ddlist_set_options(autonDDList,
-		"Skills\n"
-		"Null\n"
-		"Three\n"
-		"Two\n"
-		"Shebang\n"
-	);
-	lv_obj_align(autonDDList, NULL, LV_ALIGN_IN_TOP_RIGHT, 10, 100);
-	lv_obj_set_style(autonDDList, &style_bg);
-	lv_ddlist_set_anim_time(autonDDList, 0);
-	lv_obj_set_free_num(autonDDList, 2);				//	Set a unique ID
-	lv_ddlist_set_draw_arrow(autonDDList, true);		//	Turn On Arrow
-	lv_ddlist_set_action(autonDDList, ddlist_action);  	//	Set a function to call when anew option is chosen
-
-	lv_ddlist_set_selected(autonDDList, 0);
-	ddlist_action(autonDDList);
+	init_lv_screen();
 }
 
 /**
@@ -106,7 +82,10 @@ void initialize() {
  */
 void disabled() {
 	while (true) {
+		cghs::resetMotors();
 		cghs::auton::checkAutonButtons();
+
+		screenUpdate();
 
 		pros::delay(ez::util::DELAY_TIME);
 	}
@@ -137,6 +116,9 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
+
+	cghs::resetMotors();
+
 	chassis.reset_pid_targets();                // Resets PID targets to 0
 	chassis.reset_gyro();                       // Reset gyro position to 0
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
@@ -189,6 +171,8 @@ void autonomous() {
 
 void opcontrol() {
 
+	cghs::resetMotors();
+
 	// This is preference to what you like to drive on.
 	chassis.set_drive_brake(MOTOR_BRAKE_COAST);
 
@@ -204,6 +188,7 @@ void opcontrol() {
 
 	while (true) {
 		cghs::auton::checkAutonButtons();
+		screenUpdate();
 
 		chassis.tank();  // Tank control
 

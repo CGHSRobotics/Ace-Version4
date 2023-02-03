@@ -1,5 +1,4 @@
 
-#include "lvgl.cpp"
 #include "main.h"
 
 #ifndef CGHS
@@ -56,8 +55,8 @@ namespace cghs {
 
 	extern bool activeBreakEnabled;
 
-	const float SPEED_DRIVE_AUTO = 0.75 * 127.0;
-	const float SPEED_DRIVE_AUTO_INTAKE = 0.5 * 127.0;
+	const float SPEED_DRIVE_AUTO = 0.90 * 127.0;
+	const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.5 * 127.0;
 
@@ -106,7 +105,7 @@ namespace cghs {
 	extern void active_brake(bool enabled, Drive chassis);
 
 	// User Control
-	extern void resetInputs();
+	extern void resetMotors();
 
 	extern void intakeToggle(bool enabled);
 	extern void intakeReverse(bool enabled);

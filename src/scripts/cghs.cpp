@@ -18,7 +18,7 @@ namespace cghs {
 	}
 
 	// Reset all Inputs
-	void resetInputs() {
+	void resetMotors() {
 		launcherMotor.move_velocity(0);
 		rollerMotor.move_velocity(0);
 		conveyorMotor.move_velocity(0);

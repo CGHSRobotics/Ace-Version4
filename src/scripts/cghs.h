@@ -55,10 +55,10 @@ namespace cghs {
 
 	extern bool activeBreakEnabled;
 
-	const float SPEED_DRIVE_AUTO = 0.90 * 127.0;
-	const float SPEED_DRIVE_AUTO_INTAKE = 0.25 * 127.0;
+	const float SPEED_DRIVE_AUTO = 0.9 * 127.0;
+	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 
-	const float SPEED_TURN_AUTO = 0.5 * 127.0;
+	const float SPEED_TURN_AUTO = 1 * 127.0;
 
 	// Intake Motor
 	const float SPEED_INTAKE = 100;
@@ -80,7 +80,7 @@ namespace cghs {
 	const float LAUNCHER_MIN_SPEED = 0.9;
 
 	extern float launcherTimerDelay;
-	const float launcherTimerDelayMax = 1;
+	const float launcherTimerDelayMax = 0.5;
 
 	/*
 	 *  Device Declarations

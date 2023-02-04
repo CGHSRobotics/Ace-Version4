@@ -132,7 +132,6 @@ static void init_lv_screen() {
 	style_bg.body.border.width = 1;
 	style_bg.body.padding.ver = 12;
 
-
 	// Init Screens
 	screenHome = lv_obj_create(NULL, NULL);
 	lv_obj_set_style(screenHome, &style_bg);
@@ -164,7 +163,6 @@ static void init_lv_screen() {
 	lv_style_copy(&style_tab, &style_bg);
 	style_tab.body.padding.ver = 20;
 
-
 	lv_style_copy(&style_red, &style_tab);
 	style_red.body.main_color = LV_COLOR_RED;
 	style_red.body.grad_color = LV_COLOR_RED;
@@ -176,7 +174,6 @@ static void init_lv_screen() {
 	lv_tabview_set_style(tabview, LV_TABVIEW_STYLE_BTN_PR, &style_tab);
 	lv_tabview_set_style(tabview, LV_TABVIEW_STYLE_BTN_REL, &style_tab);
 	lv_tabview_set_style(tabview, LV_TABVIEW_STYLE_INDIC, &style_red);
-
 
 	tab1 = lv_tabview_add_tab(tabview, "Home");
 	tab2 = lv_tabview_add_tab(tabview, "Skills");

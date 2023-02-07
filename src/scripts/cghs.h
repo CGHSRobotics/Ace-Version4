@@ -53,14 +53,16 @@ namespace cghs {
 
 	 // Drive Constants
 
+	const bool test = false;
+
 	extern bool activeBreakEnabled;
 
-	const float SPEED_DRIVE_AUTO = 0.9 * 127.0;
+	const float SPEED_DRIVE_AUTO = 0.8 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 
-	const float SPEED_TURN_AUTO = 1 * 127.0;
+	const float SPEED_TURN_AUTO = 0.75 * 127.0;
 
-	// Intake Motor
+	// Intake Motor 
 	const float SPEED_INTAKE = 100;
 	const float SPEED_INTAKE_LAUNCHER = 100;
 

@@ -23,7 +23,7 @@ namespace cghs::auton {
 	void skills_Auto(Drive& chassis) {
 
 		// Get Roller 1
-		chassis.set_drive_pid(-4, 0.5 * 127.0);
+		chassis.set_drive_pid(-6, 0.5 * 127.0);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO);
 		pros::delay(200);
@@ -67,7 +67,7 @@ namespace cghs::auton {
 		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-14, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-13, SPEED_DRIVE_AUTO, true);
 		chassis.wait_drive();
 
 		intakeToggle(true);
@@ -97,7 +97,7 @@ namespace cghs::auton {
 		chassis.set_drive_pid(34, 100 * 127, true);
 		chassis.wait_drive();
 		intakeReverse(true);
-		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-4, 100.0 * 127.0, true);
 		chassis.wait_drive();
 		pros::delay(100);
 		intakeToggle(true);
@@ -119,13 +119,13 @@ namespace cghs::auton {
 		chassis.set_turn_pid(-85, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-44, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-40, SPEED_DRIVE_AUTO, true);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-180, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-8, 0.5 * 127.0);
+		chassis.set_drive_pid(-10, 0.5 * 127.0);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO);
 		pros::delay(200);
@@ -155,7 +155,7 @@ namespace cghs::auton {
 		chassis.set_turn_pid(-135, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-4, 0.5 * 127.0);
+		chassis.set_drive_pid(-8, 0.5 * 127.0);
 		chassis.wait_drive();
 
 		if (true)
@@ -195,6 +195,7 @@ namespace cghs::auton {
 		chassis.wait_drive();
 		launchDisksShort_Auto(2000, 80);
 
+		/*
 		// Turn 45 Degrees to the Right
 		chassis.set_turn_pid(45, SPEED_TURN_AUTO);
 		chassis.wait_drive();
@@ -220,6 +221,7 @@ namespace cghs::auton {
 		intakeToggle(false);
 
 		launchDisksLong_Auto(8000);
+		*/
 	}
 
 	/**

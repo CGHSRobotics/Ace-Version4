@@ -22,7 +22,8 @@ lv_obj_t* tab3;
 lv_obj_t* tab4;
 
 lv_obj_t* buttonToHome;
-lv_obj_t* autonDDList;
+lv_obj_t* autonBtnMtrx;
+lv_obj_t* allianceBtnMtrx;
 
 lv_obj_t* labelTemp;
 
@@ -73,11 +74,19 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
 }
 
 // Function called when option on ddlist is selected
-static lv_res_t ddlist_action(lv_obj_t* ddlist)
+static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
-	cghs::auton::autonIndex = lv_ddlist_get_selected(ddlist);
+	cghs::auton::autonIndex = lv_btnm_get_toggled(btnm);
 
 	cghs::auton::updateAutonSelection();
+
+	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+}
+
+// Function called when option on ddlist is selected
+static lv_res_t btnm_action_alliance(lv_obj_t* btnm, const char* txt)
+{
+	cghs::alliance = lv_btnm_get_toggled(btnm);
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
@@ -200,6 +209,26 @@ static void init_lv_screen() {
 	label = lv_label_create(tab2, NULL);
 	lv_label_set_text(label, "Select Skills");
 
+	//	Create a drop down list
+	autonBtnMtrx = lv_btnm_create(tab2, NULL);
+	static const char* btnm_map[] = { "Skills", "Shebang", "\n", "Three", "Two", "Null", "" };
+	lv_btnm_set_map(autonBtnMtrx, btnm_map);
+	lv_btnm_set_action(autonBtnMtrx, btnm_action);
+	lv_btnm_set_toggle(autonBtnMtrx, true, 0);
+	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 0);
+	lv_obj_set_style(autonBtnMtrx, &style_bg);
+	lv_obj_set_free_num(autonBtnMtrx, 2);				//	Set a unique ID
+
+	//	Create a drop down list
+	allianceBtnMtrx = lv_btnm_create(tab2, NULL);
+	static const char* btnm_map_alliance[] = { "Red", "Blue", "" };
+	lv_btnm_set_map(allianceBtnMtrx, btnm_map_alliance);
+	lv_btnm_set_action(allianceBtnMtrx, btnm_action_alliance);
+	lv_btnm_set_toggle(allianceBtnMtrx, true, 0);
+	lv_obj_set_style(allianceBtnMtrx, &style_bg);
+	lv_obj_set_free_num(allianceBtnMtrx, 3);				//	Set a unique ID
+
+
 	// Tab 3
 
 	labelTemp = lv_label_create(tab3, NULL);
@@ -210,24 +239,6 @@ static void init_lv_screen() {
 	label = lv_label_create(tab4, NULL);
 	lv_label_set_text(label, "Speed of Launcher");
 
-
-	//	Create a drop down list
-	autonDDList = lv_ddlist_create(tab2, NULL);
-	lv_ddlist_set_options(autonDDList,
-		"Skills\n"
-		"Null\n"
-		"Three\n"
-		"Two\n"
-		"Shebang\n"
-	);
-	lv_obj_align(autonDDList, NULL, LV_ALIGN_CENTER, 0, 10);
-	lv_obj_set_style(autonDDList, &style_bg);
-	lv_obj_set_free_num(autonDDList, 2);				//	Set a unique ID
-	lv_ddlist_set_draw_arrow(autonDDList, true);		//	Turn On Arrow
-	lv_ddlist_set_action(autonDDList, ddlist_action);  	//	Set a function to call when anew option is chosen
-
-	lv_ddlist_set_selected(autonDDList, 0);
-	ddlist_action(autonDDList);
 
 	// Load Home Screen
 	lv_scr_load(screenHome);

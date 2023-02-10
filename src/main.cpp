@@ -26,7 +26,7 @@ void screenUpdate() {
 		screenUpdateCounter -= screenUpdateCounterMax;
 
 		std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
-		master.set_text(2, 0, str.c_str());
+		master.set_text(2, 0, (str + "  " + "ABrake: " + std::to_string(cghs::activeBreakEnabled) + "   ").c_str());
 
 		lv_label_set_text(labelTemp, (
 			(string)"Temperature in Celsius (Max is 55C): \n" +
@@ -59,6 +59,8 @@ void initialize() {
 	//ez::print_ez_template();
 
 	printf("\n Initializing... \n");
+
+	cghs::activeBreakEnabled = true;
 
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
 
@@ -103,6 +105,7 @@ void disabled() {
 void competition_initialize() {
 	// . . .
 }
+
 
 /**
  * Runs the user autonomous code. This function will be started in its own task
@@ -182,8 +185,6 @@ void opcontrol() {
 	bool rollerForwardToggle = false;
 	bool rollerReverseToggle = false;
 
-	bool launchingDisksEnabled = false;
-
 	bool endgameToggleEnabled = false;
 
 	while (true) {
@@ -195,7 +196,6 @@ void opcontrol() {
 		// active break Intake
 		if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
 			cghs::activeBreakEnabled = !cghs::activeBreakEnabled;
-			master.set_text(2, 12, "true");
 		}
 
 		// Toggle Intake
@@ -237,18 +237,22 @@ void opcontrol() {
 		}
 
 		// Launch Disks
+		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
+
+			// 	Launch Disks from Long Distance
+			cghs::active_brake(true, chassis);
+			cghs::launchDisks(true, cghs::SPEED_LAUNCHER_LONG, true);
+		}
 		if (master.get_digital(BUTTON_LAUNCHER)) {
-			launchingDisksEnabled = true;
+
+			// 	Launch Disks from Normal Range
+			cghs::active_brake(true, chassis);
 			cghs::launchDisks(true, cghs::SPEED_LAUNCHER);
 		}
-		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
-			//chassis.set_active_brake(0.1);
-			launchingDisksEnabled = true;
-			cghs::launchDisksLong(cghs::SPEED_LAUNCHER_LONG);
-		}
-		if (launchingDisksEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
-			chassis.set_active_brake(0);
-			launchingDisksEnabled = false;
+		if (cghs::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
+
+			//	Disable Launching
+			cghs::active_brake(false, chassis);
 			cghs::launchDisks(false, 0.0);
 		}
 

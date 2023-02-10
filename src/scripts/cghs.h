@@ -51,16 +51,18 @@ namespace cghs {
 	 *  Speed Constants
 	 */
 
-	 // Drive Constants
+	// Drive Constants
 
-	const bool test = false;
+
+	extern int autonIndex;
+	extern int alliance;	// inits to 0; aka red alliance
 
 	extern bool activeBreakEnabled;
 
 	const float SPEED_DRIVE_AUTO = 0.8 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 
-	const float SPEED_TURN_AUTO = 0.75 * 127.0;
+	const float SPEED_TURN_AUTO = 0.6 * 127.0;
 
 	// Intake Motor 
 	const float SPEED_INTAKE = 100;
@@ -73,16 +75,22 @@ namespace cghs {
 
 	// Roller Motor
 	const float SPEED_ROLLER = 100;
-	const float SPEED_ROLLER_AUTO = 10;
+	const float SPEED_ROLLER_AUTO = 20;
 	const float SPEED_ROLLER_LAUNCHER = 100;
 
 	// Launcher Motor
+	const bool LAUNCHER_LOGGING = false;
+
 	const float SPEED_LAUNCHER = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
-	const float LAUNCHER_MIN_SPEED = 0.9;
+	const float SPEED_LAUNCHER_SHORT = 60;
+	const float LAUNCHER_MIN_SPEED = 20.0;
 
 	extern float launcherTimerDelay;
-	const float launcherTimerDelayMax = 0.5;
+	const float launcherTimerDelayMax = 500;
+
+	extern u_int64_t launcherTime;
+	extern bool launcherEnabled;
 
 	/*
 	 *  Device Declarations
@@ -104,17 +112,27 @@ namespace cghs {
 	 // Util Functions
 	extern void spinMotor(pros::Motor motor, float percent);
 
-	extern void active_brake(bool enabled, Drive chassis);
+	// Toggles Active Break
+	extern void active_brake(bool enabled, Drive& chassis);
 
-	// User Control
+	// Records Launcher speed + time to file on sd card
+	extern void recordLauncherStatistics();
+
+	/*
+	*	 User Control
+	*/
+
+	// resets motors to voltage of 0
 	extern void resetMotors();
 
+	// toggles intake
 	extern void intakeToggle(bool enabled);
+
+	// reverses Intake
 	extern void intakeReverse(bool enabled);
 
-	extern void launchDisks(bool enabled, float speed);
-	extern void launchDisksLong(float speed);
-	extern void launchDisksShort(float speed);
+
+	extern void launchDisks(bool enabled, float speed, bool isLongDist = false);
 
 	extern void rollerForward(bool enabled, float speed);
 	extern void rollerReverse(bool enabled, float speed);
@@ -134,9 +152,7 @@ namespace cghs {
 		extern void checkAutonButtons();
 
 		// Autonomous
-		extern void launchDisks_Auto(float time, float speed);
-		extern void launchDisksLong_Auto(float time);
-		extern void launchDisksShort_Auto(float time, float speed);
+		extern void launchDisks_Auto(float time, float speed, bool isLongDist = false);
 
 		extern void skills_Auto(Drive& chassis);
 		extern void null_Auto(Drive& chassis);

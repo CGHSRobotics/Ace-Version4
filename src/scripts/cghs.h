@@ -61,6 +61,7 @@ namespace cghs {
 
 	const float SPEED_DRIVE_AUTO = 0.8 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
+	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.6 * 127.0;
 
@@ -76,7 +77,10 @@ namespace cghs {
 	// Roller Motor
 	const float SPEED_ROLLER = 100;
 	const float SPEED_ROLLER_AUTO = 20;
+	const float SPEED_ROLLER_AUTO_SKILLS = 60;
 	const float SPEED_ROLLER_LAUNCHER = 100;
+
+	const float ROLLER_TIME_AUTO = 300;
 
 	// Launcher Motor
 	const bool LAUNCHER_LOGGING = false;
@@ -145,7 +149,7 @@ namespace cghs {
 
 		extern int autonIndex;
 		const int numAutons = 5;
-		const std::string autonArray[10] = { "Skills", "Null", "Three", "Two", "Shebang" };
+		const std::string autonArray[10] = { "Skills", "Shebang", "Three", "Two", "Null" };
 
 
 		extern void updateAutonSelection();

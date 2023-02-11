@@ -23,12 +23,12 @@ namespace cghs::auton {
 	void skills_Auto(Drive& chassis) {
 
 		// Get Roller 1
-		chassis.set_drive_pid(-6, 0.3 * 127.0);
+		chassis.set_drive_pid(-6, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
-		rollerForward(true, SPEED_ROLLER_AUTO);
-		pros::delay(200);
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(8, 0.5 * 127.0);
+		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 
@@ -36,53 +36,54 @@ namespace cghs::auton {
 		chassis.wait_drive();
 
 		intakeToggle(true);
-		chassis.set_drive_pid(20, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(20, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
 		// Get Roller 2
-		chassis.set_drive_pid(-10, 0.3 * 127.0);
+		chassis.set_drive_pid(-10, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
 		intakeToggle(false);
-		rollerForward(true, SPEED_ROLLER_AUTO);
-		pros::delay(200);
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(11, 0.5 * 127.0);
+		chassis.set_drive_pid(11, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(44, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(44, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-8, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
 		// Shoot First 3
-		//chassis.set_active_brake(0.1);
-		launchDisks_Auto(4500, 85.0);
-		chassis.set_active_brake(0);
+		launchDisks_Auto(4500, 80.0);
 
 		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-13, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-14, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		intakeToggle(true);
 		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(20, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(20, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(44, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(30, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(36, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-50, SPEED_TURN_AUTO);
@@ -91,78 +92,78 @@ namespace cghs::auton {
 		// Shoot Second Three
 		pros::delay(1000);
 		intakeToggle(false);
-		//chassis.set_active_brake(0.1);
 		launchDisks_Auto(4000, 90.0);
-		chassis.set_active_brake(0.0);
 
-		chassis.set_turn_pid(44, SPEED_TURN_AUTO);
+		chassis.set_drive_pid(7, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(34, 100 * 127, true);
+		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
 		chassis.wait_drive();
-		intakeReverse(true);
-		chassis.set_drive_pid(-4, 100.0 * 127.0, true);
-		chassis.wait_drive();
-		pros::delay(100);
+
 		intakeToggle(true);
-		chassis.set_drive_pid(34, SPEED_DRIVE_AUTO_INTAKE, true);
+
+		chassis.set_drive_pid(47, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(-7, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(32, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_turn_pid(-105, SPEED_TURN_AUTO);
+		chassis.set_turn_pid(-100, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
 		// Shoot Third Three
+		pros::delay(2000);
 		intakeToggle(false);
-		chassis.set_active_brake(0.1);
 		launchDisks_Auto(4000, SPEED_LAUNCHER);
-		chassis.set_active_brake(0.0);
 
 		chassis.set_turn_pid(-90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-42, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(-40, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-180, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-12, 0.3 * 127.0);
+		// Third Roller
+		chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
-		rollerForward(true, SPEED_ROLLER_AUTO);
-		pros::delay(200);
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(8, 0.5 * 127.0);
+		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		intakeToggle(true);
 		chassis.set_turn_pid(-225, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
+		// Fourth Roller
 		intakeToggle(false);
-		chassis.set_drive_pid(-10, 0.3 * 127.0);
+		chassis.set_drive_pid(-6, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
-		rollerForward(true, SPEED_ROLLER_AUTO);
-		pros::delay(200);
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(24, 0.5 * 127.0, true);
+		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-135, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-8, 0.5 * 127.0);
+		chassis.set_drive_pid(-14, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		if (true)
@@ -250,11 +251,11 @@ namespace cghs::auton {
 		chassis.wait_drive();
 		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
-		chassis.set_drive_pid(-8, 0.2 * 127.0);
+		chassis.set_drive_pid(-8, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
 
 		rollerForward(true, SPEED_ROLLER_AUTO);
-		pros::delay(100);
+		pros::delay(ROLLER_TIME_AUTO);
 		rollerForward(false, 0);
 
 		chassis.set_drive_pid(2, SPEED_DRIVE_AUTO);
@@ -276,10 +277,7 @@ namespace cghs::auton {
 		chassis.set_turn_pid(135, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(6, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		chassis.set_turn_pid(133, SPEED_TURN_AUTO);
+		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		intakeToggle(false);
@@ -297,7 +295,65 @@ namespace cghs::auton {
 	 *
 	 */
 	void theWholeShebang_Auto(Drive& chassis) {
-		launchDisks_Auto(2, 80);
+
+		chassis.set_drive_pid(-24, SPEED_DRIVE_AUTO, true);
+		chassis.wait_drive();
+		chassis.set_turn_pid(90, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+		chassis.set_drive_pid(-7, 0.4 * 127.0);
+		chassis.wait_drive();
+
+		rollerForward(true, SPEED_ROLLER_AUTO);
+		pros::delay(100);
+		rollerForward(false, 0);
+
+		chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		launcherMotor.move_velocity(600);
+
+		intakeToggle(true);
+		chassis.set_drive_pid(74, SPEED_DRIVE_AUTO, true);
+		chassis.wait_drive();
+		chassis.set_drive_pid(10, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+		chassis.set_drive_pid(-8, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(135, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		intakeToggle(false);
+		launchDisks_Auto(8000, SPEED_LAUNCHER_LONG, true);
+		intakeToggle(true);
+
+		chassis.set_drive_pid(-8, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(45, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(70, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_turn_pid(180, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		chassis.set_drive_pid(-8, SPEED_DRIVE_AUTO_ROLLER);
+		chassis.wait_drive();
+
+		rollerForward(true, SPEED_ROLLER_AUTO);
+		pros::delay(ROLLER_TIME_AUTO);
+		rollerForward(false, 0);
+
+		chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
 	}
 
 	/**

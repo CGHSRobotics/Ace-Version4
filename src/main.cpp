@@ -60,8 +60,6 @@ void initialize() {
 
 	printf("\n Initializing... \n");
 
-	cghs::activeBreakEnabled = true;
-
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
 
 	chassis.toggle_modify_curve_with_controller(false);

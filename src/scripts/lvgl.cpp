@@ -216,18 +216,18 @@ static void init_lv_screen() {
 	lv_btnm_set_action(autonBtnMtrx, btnm_action);
 	lv_btnm_set_toggle(autonBtnMtrx, true, 0);
 	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 0);
-	lv_obj_set_style(autonBtnMtrx, &style_bg);
+	lv_obj_set_style(autonBtnMtrx, &style_tab);
 	lv_obj_set_free_num(autonBtnMtrx, 2);				//	Set a unique ID
 
 	//	Create a drop down list
-	allianceBtnMtrx = lv_btnm_create(tab2, NULL);
+	/*allianceBtnMtrx = lv_btnm_create(tab2, NULL);
 	static const char* btnm_map_alliance[] = { "Red", "Blue", "" };
 	lv_btnm_set_map(allianceBtnMtrx, btnm_map_alliance);
 	lv_btnm_set_action(allianceBtnMtrx, btnm_action_alliance);
 	lv_btnm_set_toggle(allianceBtnMtrx, true, 0);
 	lv_obj_set_style(allianceBtnMtrx, &style_bg);
 	lv_obj_set_free_num(allianceBtnMtrx, 3);				//	Set a unique ID
-
+	*/
 
 	// Tab 3
 

@@ -8,9 +8,11 @@ lv_obj_t* screenMenu;
 
 lv_style_t style_bg;
 lv_style_t style_tab;
+lv_style_t style_btnm;
 lv_style_t style_red;
 
 lv_obj_t* label;
+lv_obj_t* auton_label;
 
 lv_obj_t* img_var;
 lv_obj_t* buttonToMenu;
@@ -76,9 +78,11 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
-	cghs::auton::autonIndex = lv_btnm_get_toggled(btnm);
+	cghs::auton::autonIndex = lv_btnm_get_pressed(btnm);
 
 	cghs::auton::updateAutonSelection();
+
+	lv_label_set_text(auton_label, ((string)"Selected: " + cghs::auton::autonArray[cghs::auton::autonIndex]).c_str());
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
@@ -86,7 +90,7 @@ static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action_alliance(lv_obj_t* btnm, const char* txt)
 {
-	cghs::alliance = lv_btnm_get_toggled(btnm);
+	cghs::alliance = lv_btnm_get_pressed(btnm);
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
@@ -185,9 +189,9 @@ static void init_lv_screen() {
 	lv_tabview_set_style(tabview, LV_TABVIEW_STYLE_INDIC, &style_red);
 
 	tab1 = lv_tabview_add_tab(tabview, "Home");
-	tab2 = lv_tabview_add_tab(tabview, "Skills");
+	tab2 = lv_tabview_add_tab(tabview, "Auton");
 	tab3 = lv_tabview_add_tab(tabview, "Temp");
-	tab4 = lv_tabview_add_tab(tabview, "Speed");
+	//tab4 = lv_tabview_add_tab(tabview, "Speed");
 
 
 	// Tab 1
@@ -206,17 +210,25 @@ static void init_lv_screen() {
 
 	// Tab 2
 
-	label = lv_label_create(tab2, NULL);
-	lv_label_set_text(label, "Select Skills");
+	auton_label = lv_label_create(tab2, NULL);
+	lv_obj_align(auton_label, NULL, LV_ALIGN_CENTER, -25, 0);
+	lv_label_set_text(auton_label, "Select Skills");
 
 	//	Create a drop down list
+	lv_style_copy(&style_btnm, &style_bg);
+	style_btnm.body.padding.ver = 5;
+	style_btnm.body.padding.hor = 5;
+	style_btnm.body.padding.inner = 10;
+
 	autonBtnMtrx = lv_btnm_create(tab2, NULL);
 	static const char* btnm_map[] = { "Skills", "Shebang", "\n", "Three", "Two", "Null", "" };
 	lv_btnm_set_map(autonBtnMtrx, btnm_map);
 	lv_btnm_set_action(autonBtnMtrx, btnm_action);
-	lv_btnm_set_toggle(autonBtnMtrx, true, 0);
-	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 0);
-	lv_obj_set_style(autonBtnMtrx, &style_tab);
+	lv_obj_set_size(autonBtnMtrx, 240, 120);
+	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 40);
+	lv_obj_set_style(autonBtnMtrx, &style_btnm);
+	lv_btnm_set_style(autonBtnMtrx, LV_BTNM_STYLE_BTN_PR, &style_btnm);
+	lv_btnm_set_style(autonBtnMtrx, LV_BTNM_STYLE_BTN_REL, &style_btnm);
 	lv_obj_set_free_num(autonBtnMtrx, 2);				//	Set a unique ID
 
 	//	Create a drop down list
@@ -236,8 +248,8 @@ static void init_lv_screen() {
 
 	// Tab 4
 
-	label = lv_label_create(tab4, NULL);
-	lv_label_set_text(label, "Speed of Launcher");
+	//label = lv_label_create(tab4, NULL);
+	//lv_label_set_text(label, "Speed of Launcher");
 
 
 	// Load Home Screen

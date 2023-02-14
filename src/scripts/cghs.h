@@ -33,6 +33,11 @@
 // namespace cghs
 namespace cghs {
 
+	extern int autonIndex;
+	extern int alliance;	// inits to 0; aka red alliance
+
+	extern bool activeBreakEnabled;
+
 	/*
 	 *  Motor Ports
 	 */
@@ -46,19 +51,13 @@ namespace cghs {
 	const int INTAKE_PORT = 16;
 
 	const int IMU_PORT = 18;
+	const int GPS_PORT = 19;
 
 	/*
 	 *  Speed Constants
 	 */
 
 	// Drive Constants
-
-
-	extern int autonIndex;
-	extern int alliance;	// inits to 0; aka red alliance
-
-	extern bool activeBreakEnabled;
-
 	const float SPEED_DRIVE_AUTO = 0.8 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
@@ -76,16 +75,18 @@ namespace cghs {
 
 	// Roller Motor
 	const float SPEED_ROLLER = 100;
-	const float SPEED_ROLLER_AUTO = 20;
-	const float SPEED_ROLLER_AUTO_SKILLS = 60;
+	const float SPEED_ROLLER_AUTO = 10;
+	const float SPEED_ROLLER_AUTO_SKILLS = 55;
 	const float SPEED_ROLLER_LAUNCHER = 100;
 
-	const float ROLLER_TIME_AUTO = 300;
+	const float ROLLER_TIME_AUTO = 200;
+	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	// Launcher Motor
 	const bool LAUNCHER_LOGGING = false;
 
 	const float SPEED_LAUNCHER = 80;
+	const float SPEED_LAUNCHER_DRIVER = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_SHORT = 60;
 	const float LAUNCHER_MIN_SPEED = 20.0;
@@ -100,7 +101,10 @@ namespace cghs {
 	 *  Device Declarations
 	 */
 
-	 // Motors
+	// Chassis
+	extern Drive& chassis;
+
+	// Motors
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
 	const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, false);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
@@ -109,11 +113,17 @@ namespace cghs {
 	// Endgame
 	const pros::ADIDigitalOut endgamePneumatics('a', false);
 
+	// GPS
+	const float GPS_OffsetX = 0;
+	const float GPS_OffsetY = 0;
+
+	const pros::GPS gps(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
+
 	/*
-	 *  Function Declarations
+	 *  Util Function Declarations
 	 */
 
-	 // Util Functions
+	 // Spin Motor PID by percent
 	extern void spinMotor(pros::Motor motor, float percent);
 
 	// Toggles Active Break
@@ -123,8 +133,15 @@ namespace cghs {
 	extern void recordLauncherStatistics();
 
 	/*
-	*	 User Control
-	*/
+	 *	Drive Functions
+	 */
+
+	// Move
+
+
+	/*
+	 *	 User Control
+	 */
 
 	// resets motors to voltage of 0
 	extern void resetMotors();
@@ -158,11 +175,11 @@ namespace cghs {
 		// Autonomous
 		extern void launchDisks_Auto(float time, float speed, bool isLongDist = false);
 
-		extern void skills_Auto(Drive& chassis);
-		extern void null_Auto(Drive& chassis);
-		extern void threeSide_Auto(Drive& chassis);
-		extern void twoSide_Auto(Drive& chassis);
-		extern void theWholeShebang_Auto(Drive& chassis);
+		extern void skills_Auto();
+		extern void null_Auto();
+		extern void threeSide_Auto();
+		extern void twoSide_Auto();
+		extern void theWholeShebang_Auto();
 
 	}  // namespace auton
 

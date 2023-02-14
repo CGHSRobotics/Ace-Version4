@@ -20,13 +20,13 @@ namespace cghs::auton {
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
-	void skills_Auto(Drive& chassis) {
+	void skills_Auto() {
 
 		// Get Roller 1
-		chassis.set_drive_pid(-6, SPEED_DRIVE_AUTO_ROLLER);
+		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -47,7 +47,7 @@ namespace cghs::auton {
 		chassis.wait_drive();
 		intakeToggle(false);
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 		chassis.set_drive_pid(11, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -94,7 +94,7 @@ namespace cghs::auton {
 		intakeToggle(false);
 		launchDisks_Auto(4000, 90.0);
 
-		chassis.set_drive_pid(7, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(7.5, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(0, SPEED_TURN_AUTO);
@@ -125,7 +125,7 @@ namespace cghs::auton {
 		chassis.set_turn_pid(-90, SPEED_TURN_AUTO);
 		chassis.wait_drive();
 
-		chassis.set_drive_pid(-40, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(-42, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		chassis.set_turn_pid(-180, SPEED_TURN_AUTO);
@@ -135,7 +135,7 @@ namespace cghs::auton {
 		chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 		chassis.set_drive_pid(8, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -155,7 +155,7 @@ namespace cghs::auton {
 		chassis.set_drive_pid(-6, SPEED_DRIVE_AUTO_ROLLER);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -185,7 +185,7 @@ namespace cghs::auton {
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
-	void threeSide_Auto(Drive& chassis) {
+	void threeSide_Auto() {
 
 		// Get Roller
 		chassis.set_drive_pid(-4, 0.5 * 127.0, false);
@@ -242,7 +242,7 @@ namespace cghs::auton {
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
-	void twoSide_Auto(Drive& chassis) {
+	void twoSide_Auto() {
 
 		// Fire two low goals
 		//launchDisksShort_Auto(1500, 60);
@@ -294,7 +294,7 @@ namespace cghs::auton {
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
-	void theWholeShebang_Auto(Drive& chassis) {
+	void theWholeShebang_Auto() {
 
 		chassis.set_drive_pid(-24, SPEED_DRIVE_AUTO, true);
 		chassis.wait_drive();
@@ -365,7 +365,7 @@ namespace cghs::auton {
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
-	void null_Auto(Drive& chassis) {
+	void null_Auto() {
 		// Do Nothing
 	}
 }
@@ -408,6 +408,7 @@ namespace cghs::auton {
 		printf("\n Auton Changed To: %s", str.c_str());
 	}
 
+	// Adjust Auton based off of buttons
 	void checkAutonButtons() {
 
 		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))

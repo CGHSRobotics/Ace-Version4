@@ -2,6 +2,9 @@
 
 #include "scripts/lvgl.cpp"
 
+pros::Gps gps();
+
+
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
 	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
@@ -16,6 +19,7 @@ Drive chassis(
 	// External Gear Ratio (MUST BE DECIMAL)
 	0.6
 );
+Drive& cghs::chassis = &chassis;
 
 int screenUpdateCounter = 0;
 const int screenUpdateCounterMax = 50;
@@ -63,7 +67,7 @@ void initialize() {
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
 
 	chassis.toggle_modify_curve_with_controller(false);
-	chassis.set_curve_default(0, 0);
+	chassis.set_curve_default(10, 0);
 
 	// Initialize chassis and auton selector
 	chassis.initialize();
@@ -131,23 +135,23 @@ void autonomous() {
 
 	if (str == "Skills")
 	{
-		cghs::auton::skills_Auto(chassis);
+		cghs::auton::skills_Auto();
 	}
 	else if (str == "Null")
 	{
-		cghs::auton::null_Auto(chassis);
+		cghs::auton::null_Auto();
 	}
 	else if (str == "Three")
 	{
-		cghs::auton::threeSide_Auto(chassis);
+		cghs::auton::threeSide_Auto();
 	}
 	else if (str == "Two")
 	{
-		cghs::auton::twoSide_Auto(chassis);
+		cghs::auton::twoSide_Auto();
 	}
 	else if (str == "Shebang")
 	{
-		cghs::auton::theWholeShebang_Auto(chassis);
+		cghs::auton::theWholeShebang_Auto();
 	}
 	else
 	{
@@ -245,7 +249,7 @@ void opcontrol() {
 
 			// 	Launch Disks from Normal Range
 			cghs::active_brake(true, chassis);
-			cghs::launchDisks(true, cghs::SPEED_LAUNCHER);
+			cghs::launchDisks(true, cghs::SPEED_LAUNCHER_DRIVER);
 		}
 		if (cghs::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
 

@@ -148,7 +148,6 @@ namespace cghs {
 				launcherMotor.move_velocity(speed * 6);
 			}
 
-
 			spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 			spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 			spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
@@ -163,7 +162,6 @@ namespace cghs {
 			spinMotor(intakeMotor, 0);
 			spinMotor(conveyorMotor, 0);
 		}
-
 
 		recordLauncherStatistics();
 	}

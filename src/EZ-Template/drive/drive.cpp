@@ -14,7 +14,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using namespace ez;
 
-/*
+
 // Constructor for integrated encoders
 Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
 	int imu_port, double wheel_diameter, double ticks, double ratio)
@@ -44,40 +44,7 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 
 	set_defaults();
 }
-*/
 
-// Constructor for GPS
-Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
-	int imu_port, pros::GPS& gps, double wheel_diameter, double ticks, double ratio)
-	: imu(imu_port),
-	left_tracker(-1, -1, false),   // Default value
-	right_tracker(-1, -1, false),  // Default value
-	left_rotation(-1),
-	right_rotation(-1),
-	gps(gps),
-	ez_auto([this] { this->ez_auto_task(); }) {
-	is_tracker = DRIVE_INTEGRATED;
-
-	// Set ports to a global vector
-	for (auto i : left_motor_ports) {
-		pros::Motor temp(abs(i), util::is_reversed(i));
-		left_motors.push_back(temp);
-	}
-	for (auto i : right_motor_ports) {
-		pros::Motor temp(abs(i), util::is_reversed(i));
-		right_motors.push_back(temp);
-	}
-
-	// Set constants for tick_per_inch calculation
-	WHEEL_DIAMETER = wheel_diameter;
-	RATIO = ratio;
-	CARTRIDGE = ticks;
-	TICK_PER_INCH = get_tick_per_inch();
-
-	set_defaults();
-}
-
-/*
 // Constructor for tracking wheels plugged into the brain
 Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
 	int imu_port, double wheel_diameter, double ticks, double ratio,
@@ -87,7 +54,6 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 	right_tracker(abs(right_tracker_ports[0]), abs(right_tracker_ports[1]), util::is_reversed(right_tracker_ports[0])),
 	left_rotation(-1),
 	right_rotation(-1),
-
 	ez_auto([this] { this->ez_auto_task(); }) {
 	is_tracker = DRIVE_ADI_ENCODER;
 
@@ -172,7 +138,7 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 	TICK_PER_INCH = get_tick_per_inch();
 
 	set_defaults();
-}*/
+}
 
 void Drive::set_defaults() {
   // PID Constants

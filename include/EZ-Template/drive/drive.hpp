@@ -59,11 +59,6 @@ public:
 	pros::Imu imu;
 
 	/**
-	 * GPS sensor.
-	 */
-	pros::Gps& gps;
-
-	/**
 	 * Left tracking wheel.
 	 */
 	pros::ADIEncoder left_tracker;
@@ -135,27 +130,7 @@ public:
 	 * \param ratio
 	 *        External gear ratio, wheel gear / motor gear.
 	 */
-	//Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio);
-
-	/**
-	 * Creates a Drive Controller using internal encoders.
-	 *
-	 * \param left_motor_ports
-	 *        Input {1, -2...}.  Make ports negative if reversed!
-	 * \param right_motor_ports
-	 *        Input {-3, 4...}.  Make ports negative if reversed!
-	 * \param imu_port
-	 *        Port the IMU is plugged into.
-	 * \param gps_reference
-	 *        Port the GPS is plugged into.
-	 * \param wheel_diameter
-	 *        Diameter of your drive wheels.  Remember 4" is 4.125"!
-	 * \param ticks
-	 *        Motor cartridge RPM
-	 * \param ratio
-	 *        External gear ratio, wheel gear / motor gear.
-	 */
-	Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, pros::GPS& gps, double wheel_diameter, double ticks, double ratio);
+	Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio);
 
 	/**
 	 * Creates a Drive Controller using encoders plugged into the brain.
@@ -177,7 +152,7 @@ public:
 	 * \param right_tracker_ports
 	 *        Input {3, 4}.  Make ports negative if reversed!
 	 */
-	//Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio, std::vector<int> left_tracker_ports, std::vector<int> right_tracker_ports);
+	Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio, std::vector<int> left_tracker_ports, std::vector<int> right_tracker_ports);
 
 	/**
 	 * Creates a Drive Controller using encoders plugged into a 3 wire expander.
@@ -201,7 +176,7 @@ public:
 	 * \param expander_smart_port
 	 *        Port the expander is plugged into.
 	 */
-	//Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio, std::vector<int> left_tracker_ports, std::vector<int> right_tracker_ports, int expander_smart_port);
+	Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ticks, double ratio, std::vector<int> left_tracker_ports, std::vector<int> right_tracker_ports, int expander_smart_port);
 
 	/**
 	 * Creates a Drive Controller using rotation sensors.
@@ -221,7 +196,7 @@ public:
 	 * \param right_tracker_port
 	 *        Make ports negative if reversed!
 	 */
-	//Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ratio, int left_rotation_port, int right_rotation_port);
+	Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports, int imu_port, double wheel_diameter, double ratio, int left_rotation_port, int right_rotation_port);
 
 	/**
 	 * Sets drive defaults.

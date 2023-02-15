@@ -2,9 +2,6 @@
 
 #include "scripts/lvgl.cpp"
 
-pros::Gps gps();
-
-
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
 	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
@@ -12,6 +9,8 @@ Drive chassis(
 	{ cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT },
 	// IMU Port
 	cghs::IMU_PORT,
+	// GPS Reference
+	cghs::gps,
 	// Wheel Diameter (Remember, 4" wheels are actually 4.125!)
 	3.25,
 	// Cartridge RPM
@@ -19,7 +18,7 @@ Drive chassis(
 	// External Gear Ratio (MUST BE DECIMAL)
 	0.6
 );
-Drive& cghs::chassis = &chassis;
+Drive& cghs::chassis = chassis;
 
 int screenUpdateCounter = 0;
 const int screenUpdateCounterMax = 50;

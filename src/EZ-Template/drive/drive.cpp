@@ -14,6 +14,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using namespace ez;
 
+/*
 // Constructor for integrated encoders
 Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
 	int imu_port, double wheel_diameter, double ticks, double ratio)
@@ -43,6 +44,7 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 
 	set_defaults();
 }
+*/
 
 // Constructor for GPS
 Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
@@ -75,6 +77,7 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 	set_defaults();
 }
 
+/*
 // Constructor for tracking wheels plugged into the brain
 Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_ports,
 	int imu_port, double wheel_diameter, double ticks, double ratio,
@@ -169,7 +172,7 @@ Drive::Drive(std::vector<int> left_motor_ports, std::vector<int> right_motor_por
 	TICK_PER_INCH = get_tick_per_inch();
 
 	set_defaults();
-}
+}*/
 
 void Drive::set_defaults() {
   // PID Constants

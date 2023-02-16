@@ -2,22 +2,6 @@
 
 #include "scripts/lvgl.cpp"
 
-Drive chassis(
-	// Left Chassis Ports (negative port will reverse it!)
-	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
-	// Right Chassis Ports (negative port will reverse it!)
-	{ cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT },
-	// IMU Port
-	cghs::IMU_PORT,
-	// Wheel Diameter (Remember, 4" wheels are actually 4.125!)
-	3.25,
-	// Cartridge RPM
-	200,
-	// External Gear Ratio (MUST BE DECIMAL)
-	0.6
-);
-Drive& cghs::chassis = chassis;
-
 int screenUpdateCounter = 0;
 const int screenUpdateCounterMax = 50;
 
@@ -30,18 +14,21 @@ void screenUpdate() {
 		master.set_text(2, 0, (str + "  " + "ABrake: " + std::to_string(cghs::activeBreakEnabled) + "   ").c_str());
 
 		lv_label_set_text(labelTemp, (
-			(string)"Temperature in Celsius (Max is 55C): \n" +
-			"\nLeft Front: " + std::to_string(chassis.left_motors[0].get_temperature()) +
-			"\nLeft Back: " + std::to_string(chassis.left_motors[1].get_temperature()) +
-			"\nRight Front: " + std::to_string(chassis.right_motors[0].get_temperature()) +
-			"\nRight Back: " + std::to_string(chassis.right_motors[1].get_temperature()) +
-			"\n" +
-			"\nLauncher: " + std::to_string(cghs::launcherMotor.get_temperature()) +
-			"\nRoller: " + std::to_string(cghs::rollerMotor.get_temperature()) +
-			"\nConveyor: " + std::to_string(cghs::conveyorMotor.get_temperature()) +
-			"\nIntake: " + std::to_string(cghs::intakeMotor.get_temperature())
+			(string)"Temperature in Celsius (Max is 130F): \n" +
+			"\nL Front: " + std::to_string(cghs::cel_to_faren(chassis.left_motors[0].get_temperature())) +
+			"\nL Back: " + std::to_string(cghs::cel_to_faren(chassis.left_motors[1].get_temperature())) +
+			"\nR Front: " + std::to_string(cghs::cel_to_faren(chassis.right_motors[0].get_temperature())) +
+			"\nR Back: " + std::to_string(cghs::cel_to_faren(chassis.right_motors[1].get_temperature()))
 			).c_str()
+		);
 
+		lv_label_set_text(labelTemp2, (
+			(string)"\n" +
+			"\nLauncher: " + std::to_string(cghs::cel_to_faren(cghs::launcherMotor.get_temperature())) +
+			"\nRoller: " + std::to_string(cghs::cel_to_faren(cghs::rollerMotor.get_temperature())) +
+			"\nIntake: " + std::to_string(cghs::cel_to_faren(cghs::intakeMotor.get_temperature())) +
+			"\nDTS: " + std::to_string(cghs::cel_to_faren(cghs::conveyorMotor.get_temperature()))
+			).c_str()
 		);
 	}
 	screenUpdateCounter += ez::util::DELAY_TIME;
@@ -56,6 +43,9 @@ void screenUpdate() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+
+	cghs::operation_mode = "init";
+
 	// Print our branding over your terminal :D
 	//ez::print_ez_template();
 
@@ -74,6 +64,8 @@ void initialize() {
 	pros::lcd::shutdown();
 
 	init_lv_screen();
+
+	cghs::gps::init();
 }
 
 /**
@@ -82,6 +74,9 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
+	cghs::operation_mode = "disabled";
+
+
 	while (true) {
 		cghs::resetMotors();
 		cghs::auton::checkAutonButtons();
@@ -118,6 +113,8 @@ void competition_initialize() {
  * from where it left off.
  */
 void autonomous() {
+
+	cghs::operation_mode = "auto";
 
 	cghs::resetMotors();
 
@@ -173,6 +170,7 @@ void autonomous() {
 
 void opcontrol() {
 
+	cghs::operation_mode = "user";
 	cghs::resetMotors();
 
 	// This is preference to what you like to drive on.

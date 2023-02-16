@@ -28,6 +28,7 @@ lv_obj_t* autonBtnMtrx;
 lv_obj_t* allianceBtnMtrx;
 
 lv_obj_t* labelTemp;
+lv_obj_t* labelTemp2;
 
 // File Drivers
 static lv_fs_res_t pcfs_open(void* file_p, const char* fn, lv_fs_mode_t mode) {
@@ -244,7 +245,12 @@ static void init_lv_screen() {
 	// Tab 3
 
 	labelTemp = lv_label_create(tab3, NULL);
+	lv_obj_align(labelTemp, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
 	lv_label_set_text(labelTemp, "Temperatur goes here\n");
+
+	labelTemp2 = lv_label_create(tab3, NULL);
+	lv_obj_align(labelTemp2, NULL, LV_ALIGN_IN_TOP_LEFT, 200, 0);
+	lv_label_set_text(labelTemp2, "Temperatur goes here\n");
 
 	// Tab 4
 

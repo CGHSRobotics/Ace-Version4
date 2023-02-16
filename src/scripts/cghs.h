@@ -28,8 +28,6 @@
 #define CONVEYOR_GEAR_RATIO MOTOR_GEARSET_06
 #define INTAKE_GEAR_RATIO MOTOR_GEARSET_18
 
-
-
 // namespace cghs
 namespace cghs {
 
@@ -37,6 +35,8 @@ namespace cghs {
 	extern int alliance;	// inits to 0; aka red alliance
 
 	extern bool activeBreakEnabled;
+
+	extern string operation_mode;
 
 	/*
 	 *  Motor Ports
@@ -51,7 +51,8 @@ namespace cghs {
 	const int INTAKE_PORT = 16;
 
 	const int IMU_PORT = 18;
-	const int GPS_PORT = 19;
+	const int VISION_PORT = 3;
+	const int GPS_PORT = 2;
 
 	/*
 	 *  Speed Constants
@@ -101,9 +102,6 @@ namespace cghs {
 	 *  Device Declarations
 	 */
 
-	// Chassis
-	extern Drive& chassis;
-
 	// Motors
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
 	const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, false);
@@ -114,10 +112,11 @@ namespace cghs {
 	const pros::ADIDigitalOut endgamePneumatics('a', false);
 
 	// GPS
-	const float GPS_OffsetX = 0;
-	const float GPS_OffsetY = 0;
+	const float GPS_OffsetX = 100;
+	const float GPS_OffsetY = 136;
 
-	const pros::GPS gps(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
+	const pros::GPS gpsSensor(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
+
 
 	/*
 	 *  Util Function Declarations
@@ -132,13 +131,31 @@ namespace cghs {
 	// Records Launcher speed + time to file on sd card
 	extern void recordLauncherStatistics();
 
+	// Convert Celsius to Farenheit
+	extern float cel_to_faren(float celsius);
+
 	/*
-	 *	Drive Functions
+	 *	GPS namespace
 	 */
 
-	// Move
+	namespace gps {
 
+		extern pros::Task task_turn_gps;
 
+		extern void init();
+
+		extern float curr_turnSpeed;
+		extern float curr_turnAngle;
+
+		extern float curr_turnAngleDiff;
+
+		// Set the angle to turn to a certain absolute degree
+		extern void set_turn_gps(float angle, float speed);
+		extern void __task_set_turn_gps();
+
+		// Set Drive Pid with GPS
+		extern void set_waypoint_gps(float distance, float speed, bool slew, bool headCorrection);
+	}
 	/*
 	 *	 User Control
 	 */
@@ -152,13 +169,17 @@ namespace cghs {
 	// reverses Intake
 	extern void intakeReverse(bool enabled);
 
-
-	extern void launchDisks(bool enabled, float speed, bool isLongDist = false);
+	extern void launchDisks(bool enabled, float speed, bool isLongDist = false, bool standby = false);
 
 	extern void rollerForward(bool enabled, float speed);
 	extern void rollerReverse(bool enabled, float speed);
 
 	extern void endgameToggle(bool enabled);
+
+
+	/**
+	 *	Autonomous Namespace
+	 */
 
 	namespace auton {
 

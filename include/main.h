@@ -39,6 +39,7 @@
 /**
  * You should add more #includes here
  */
+
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 #include "EZ-Template/api.hpp"
@@ -69,11 +70,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void autonomous(void);
-void initialize(void);
-void disabled(void);
-void competition_initialize(void);
-void opcontrol(void);
+	void autonomous(void);
+	void initialize(void);
+	void disabled(void);
+	void competition_initialize(void);
+	void opcontrol(void);
 #ifdef __cplusplus
 }
 #endif

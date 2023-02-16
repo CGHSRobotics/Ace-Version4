@@ -366,7 +366,13 @@ namespace cghs::auton {
 	 *
 	 */
 	void null_Auto() {
-		// Do Nothing
+		gps::set_turn_gps(90, SPEED_TURN_AUTO);
+
+		while (true)
+		{
+			pros::delay(ez::util::DELAY_TIME);
+		}
+
 	}
 }
 

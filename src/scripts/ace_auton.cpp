@@ -1,5 +1,5 @@
 
-#include "cghs.h"
+#include "ace.h"
 
 /**
  *
@@ -9,7 +9,7 @@
  *
  */
 
-namespace cghs::auton {
+namespace ace::auton {
 
 	/**
 	 *
@@ -381,7 +381,7 @@ namespace cghs::auton {
  *	Miscellaneous Auton Functions
  *
  */
-namespace cghs::auton {
+namespace ace::auton {
 
 	// 	Launch Disks Autonomously
 	void launchDisks_Auto(float time, float speed, bool isLongDist) {
@@ -409,7 +409,7 @@ namespace cghs::auton {
 			autonIndex -= numAutons;
 		}
 
-		std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
+		std::string str = ace::auton::autonArray[ace::auton::autonIndex];
 
 		printf("\n Auton Changed To: %s", str.c_str());
 	}

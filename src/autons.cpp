@@ -1,4 +1,4 @@
-#include "scripts/cghs.h"
+#include "scripts/ace.h"
 #include "main.h"
 
 /////

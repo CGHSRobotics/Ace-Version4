@@ -1,13 +1,13 @@
 
-#include "cghs.h"
+#include "ace.h"
 
 Drive chassis(
 	// Left Chassis Ports (negative port will reverse it!)
-	{ -cghs::DRIVE_LEFT_FRONT_PORT, -cghs::DRIVE_LEFT_BACK_PORT },
+	{ -ace::DRIVE_LEFT_FRONT_PORT, -ace::DRIVE_LEFT_BACK_PORT },
 	// Right Chassis Ports (negative port will reverse it!)
-	{ cghs::DRIVE_RIGHT_FRONT_PORT, cghs::DRIVE_RIGHT_BACK_PORT },
+	{ ace::DRIVE_RIGHT_FRONT_PORT, ace::DRIVE_RIGHT_BACK_PORT },
 	// IMU Port
-	cghs::IMU_PORT,
+	ace::IMU_PORT,
 	// Wheel Diameter (Remember, 4" wheels are actually 4.125!)
 	3.25,
 	// Cartridge RPM
@@ -16,7 +16,7 @@ Drive chassis(
 	0.6
 );
 
-namespace cghs {
+namespace ace {
 
 	int alliance = 0;
 	string operation_mode = "no";
@@ -72,7 +72,7 @@ namespace cghs {
 			return;
 
 		// leave if dont want to write to sd card
-		if (!cghs::LAUNCHER_LOGGING)
+		if (!ace::LAUNCHER_LOGGING)
 			return;
 
 		launcherTime += ez::util::DELAY_TIME;
@@ -228,7 +228,7 @@ namespace cghs {
  *	Drive / Turn with GPS Namespace
  *
  */
-namespace cghs::gps {
+namespace ace::gps {
 
 	float curr_turnSpeed = 0;
 	float curr_turnAngle = 0;

@@ -1,8 +1,8 @@
 
 #include "main.h"
 
-#ifndef CGHS
-#define CGHS
+#ifndef ACE
+#define ACE
 
 
 #define BUTTON_INTAKE_TOGGLE DIGITAL_L1
@@ -29,7 +29,7 @@
 #define INTAKE_GEAR_RATIO MOTOR_GEARSET_18
 
 // namespace cghs
-namespace cghs {
+namespace ace {
 
 	extern int autonIndex;
 	extern int alliance;	// inits to 0; aka red alliance

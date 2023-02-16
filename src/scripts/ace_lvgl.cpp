@@ -1,5 +1,5 @@
 
-#include "cghs.h"
+#include "ace.h"
 
 typedef FILE* pc_file_t;
 
@@ -79,11 +79,11 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
-	cghs::auton::autonIndex = lv_btnm_get_pressed(btnm);
+	ace::auton::autonIndex = lv_btnm_get_pressed(btnm);
 
-	cghs::auton::updateAutonSelection();
+	ace::auton::updateAutonSelection();
 
-	lv_label_set_text(auton_label, ((string)"Selected: " + cghs::auton::autonArray[cghs::auton::autonIndex]).c_str());
+	lv_label_set_text(auton_label, ((string)"Selected: " + ace::auton::autonArray[ace::auton::autonIndex]).c_str());
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
@@ -91,7 +91,7 @@ static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action_alliance(lv_obj_t* btnm, const char* txt)
 {
-	cghs::alliance = lv_btnm_get_pressed(btnm);
+	ace::alliance = lv_btnm_get_pressed(btnm);
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }

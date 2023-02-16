@@ -1,6 +1,6 @@
-#include "scripts/cghs.h"
+#include "scripts/ace.h"
 
-#include "scripts/lvgl.cpp"
+#include "scripts/ace_lvgl.cpp"
 
 int screenUpdateCounter = 0;
 const int screenUpdateCounterMax = 50;
@@ -10,24 +10,24 @@ void screenUpdate() {
 	if (screenUpdateCounter >= screenUpdateCounterMax) {
 		screenUpdateCounter -= screenUpdateCounterMax;
 
-		std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
-		master.set_text(2, 0, (str + "  " + "ABrake: " + std::to_string(cghs::activeBreakEnabled) + "   ").c_str());
+		std::string str = ace::auton::autonArray[ace::auton::autonIndex];
+		master.set_text(2, 0, (str + "  " + "ABrake: " + std::to_string(ace::activeBreakEnabled) + "   ").c_str());
 
 		lv_label_set_text(labelTemp, (
 			(string)"Temperature in Celsius (Max is 130F): \n" +
-			"\nL Front: " + std::to_string(cghs::cel_to_faren(chassis.left_motors[0].get_temperature())) +
-			"\nL Back: " + std::to_string(cghs::cel_to_faren(chassis.left_motors[1].get_temperature())) +
-			"\nR Front: " + std::to_string(cghs::cel_to_faren(chassis.right_motors[0].get_temperature())) +
-			"\nR Back: " + std::to_string(cghs::cel_to_faren(chassis.right_motors[1].get_temperature()))
+			"\nL Front: " + std::to_string(ace::cel_to_faren(chassis.left_motors[0].get_temperature())) +
+			"\nL Back: " + std::to_string(ace::cel_to_faren(chassis.left_motors[1].get_temperature())) +
+			"\nR Front: " + std::to_string(ace::cel_to_faren(chassis.right_motors[0].get_temperature())) +
+			"\nR Back: " + std::to_string(ace::cel_to_faren(chassis.right_motors[1].get_temperature()))
 			).c_str()
 		);
 
 		lv_label_set_text(labelTemp2, (
 			(string)"\n" +
-			"\nLauncher: " + std::to_string(cghs::cel_to_faren(cghs::launcherMotor.get_temperature())) +
-			"\nRoller: " + std::to_string(cghs::cel_to_faren(cghs::rollerMotor.get_temperature())) +
-			"\nIntake: " + std::to_string(cghs::cel_to_faren(cghs::intakeMotor.get_temperature())) +
-			"\nDTS: " + std::to_string(cghs::cel_to_faren(cghs::conveyorMotor.get_temperature()))
+			"\nLauncher: " + std::to_string(ace::cel_to_faren(ace::launcherMotor.get_temperature())) +
+			"\nRoller: " + std::to_string(ace::cel_to_faren(ace::rollerMotor.get_temperature())) +
+			"\nIntake: " + std::to_string(ace::cel_to_faren(ace::intakeMotor.get_temperature())) +
+			"\nDTS: " + std::to_string(ace::cel_to_faren(ace::conveyorMotor.get_temperature()))
 			).c_str()
 		);
 	}
@@ -44,7 +44,7 @@ void screenUpdate() {
  */
 void initialize() {
 
-	cghs::operation_mode = "init";
+	ace::operation_mode = "init";
 
 	// Print our branding over your terminal :D
 	//ez::print_ez_template();
@@ -65,7 +65,7 @@ void initialize() {
 
 	init_lv_screen();
 
-	cghs::gps::init();
+	ace::gps::init();
 }
 
 /**
@@ -74,12 +74,12 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	cghs::operation_mode = "disabled";
+	ace::operation_mode = "disabled";
 
 
 	while (true) {
-		cghs::resetMotors();
-		cghs::auton::checkAutonButtons();
+		ace::resetMotors();
+		ace::auton::checkAutonButtons();
 
 		screenUpdate();
 
@@ -114,38 +114,38 @@ void competition_initialize() {
  */
 void autonomous() {
 
-	cghs::operation_mode = "auto";
+	ace::operation_mode = "auto";
 
-	cghs::resetMotors();
+	ace::resetMotors();
 
 	chassis.reset_pid_targets();                // Resets PID targets to 0
 	chassis.reset_gyro();                       // Reset gyro position to 0
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
-	std::string str = cghs::auton::autonArray[cghs::auton::autonIndex];
+	std::string str = ace::auton::autonArray[ace::auton::autonIndex];
 
 	printf("\n\nCalling Auton...	%s \n\n", str.c_str());
 
 	if (str == "Skills")
 	{
-		cghs::auton::skills_Auto();
+		ace::auton::skills_Auto();
 	}
 	else if (str == "Null")
 	{
-		cghs::auton::null_Auto();
+		ace::auton::null_Auto();
 	}
 	else if (str == "Three")
 	{
-		cghs::auton::threeSide_Auto();
+		ace::auton::threeSide_Auto();
 	}
 	else if (str == "Two")
 	{
-		cghs::auton::twoSide_Auto();
+		ace::auton::twoSide_Auto();
 	}
 	else if (str == "Shebang")
 	{
-		cghs::auton::theWholeShebang_Auto();
+		ace::auton::theWholeShebang_Auto();
 	}
 	else
 	{
@@ -170,8 +170,8 @@ void autonomous() {
 
 void opcontrol() {
 
-	cghs::operation_mode = "user";
-	cghs::resetMotors();
+	ace::operation_mode = "user";
+	ace::resetMotors();
 
 	// This is preference to what you like to drive on.
 	chassis.set_drive_brake(MOTOR_BRAKE_COAST);
@@ -185,82 +185,82 @@ void opcontrol() {
 	bool endgameToggleEnabled = false;
 
 	while (true) {
-		cghs::auton::checkAutonButtons();
+		ace::auton::checkAutonButtons();
 		screenUpdate();
 
 		chassis.tank();  // Tank control
 
 		// active break Intake
 		if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
-			cghs::activeBreakEnabled = !cghs::activeBreakEnabled;
+			ace::activeBreakEnabled = !ace::activeBreakEnabled;
 		}
 
 		// Toggle Intake
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
 			intakeToggleEnabled = !intakeToggleEnabled;
-			cghs::intakeToggle(intakeToggleEnabled);
+			ace::intakeToggle(intakeToggleEnabled);
 		}
 
 		// Emergency Reverse Intake
 		if (master.get_digital_new_press(BUTTON_INTAKE_REVERSE)) {
 			intakeToggleEnabled = false;
-			cghs::intakeToggle(false);
+			ace::intakeToggle(false);
 			intakeReverseEnabled = true;
-			cghs::intakeReverse(true);
+			ace::intakeReverse(true);
 		}
 		if (intakeReverseEnabled && !master.get_digital(BUTTON_INTAKE_REVERSE)) {
 			intakeReverseEnabled = false;
-			cghs::intakeReverse(false);
+			ace::intakeReverse(false);
 		}
 
 		// Roller Forward Intake
 		if (master.get_digital_new_press(BUTTON_ROLLER_FORWARD)) {
 			rollerForwardToggle = true;
-			cghs::rollerForward(true, cghs::SPEED_ROLLER);
+			ace::rollerForward(true, ace::SPEED_ROLLER);
 		}
 		if (rollerForwardToggle && !master.get_digital(BUTTON_ROLLER_FORWARD)) {
 			rollerForwardToggle = false;
-			cghs::rollerForward(false, 0);
+			ace::rollerForward(false, 0);
 		}
 
 		// Roller Reverse Intake
 		if (master.get_digital_new_press(BUTTON_ROLLER_REVERSE)) {
 			rollerReverseToggle = true;
-			cghs::rollerReverse(true, cghs::SPEED_ROLLER);
+			ace::rollerReverse(true, ace::SPEED_ROLLER);
 		}
 		if (rollerReverseToggle && !master.get_digital(BUTTON_ROLLER_REVERSE)) {
 			rollerReverseToggle = false;
-			cghs::rollerReverse(false, 0);
+			ace::rollerReverse(false, 0);
 		}
 
 		// Launch Disks
 		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			// 	Launch Disks from Long Distance
-			cghs::active_brake(true, chassis);
-			cghs::launchDisks(true, cghs::SPEED_LAUNCHER_LONG, true);
+			ace::active_brake(true, chassis);
+			ace::launchDisks(true, ace::SPEED_LAUNCHER_LONG, true);
 		}
 		if (master.get_digital(BUTTON_LAUNCHER)) {
 
 			// 	Launch Disks from Normal Range
-			cghs::active_brake(true, chassis);
-			cghs::launchDisks(true, cghs::SPEED_LAUNCHER_DRIVER);
+			ace::active_brake(true, chassis);
+			ace::launchDisks(true, ace::SPEED_LAUNCHER_DRIVER);
 		}
-		if (cghs::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
+		if (ace::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			//	Disable Launching
-			cghs::active_brake(false, chassis);
-			cghs::launchDisks(false, 0.0);
+			ace::active_brake(false, chassis);
+			ace::launchDisks(false, 0.0);
 		}
 
 		// Endgame Toggle
 		if (master.get_digital(BUTTON_ENDGAME)) {
 			endgameToggleEnabled = true;
-			cghs::endgameToggle(true);
+			ace::endgameToggle(true);
 		}
 		if (endgameToggleEnabled && !master.get_digital(BUTTON_ENDGAME)) {
 			endgameToggleEnabled = false;
-			cghs::endgameToggle(false);
+			ace::endgameToggle(false);
 		}
 
 		pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME

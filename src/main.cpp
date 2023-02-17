@@ -22,14 +22,16 @@ void screenUpdate() {
 			).c_str()
 		);
 
-		lv_label_set_text(labelTemp2, (
+		/*lv_label_set_text(labelTemp2, (
 			(string)"\n" +
 			"\nLauncher: " + std::to_string(ace::cel_to_faren(ace::launcherMotor.get_temperature())) +
 			"\nRoller: " + std::to_string(ace::cel_to_faren(ace::rollerMotor.get_temperature())) +
 			"\nIntake: " + std::to_string(ace::cel_to_faren(ace::intakeMotor.get_temperature())) +
 			"\nDTS: " + std::to_string(ace::cel_to_faren(ace::conveyorMotor.get_temperature()))
 			).c_str()
-		);
+		);*/
+
+		lv_label_set_text(labelTemp2, ((string)"GPS ERR: " + std::to_string(ace::gpsSensor.get_error())).c_str());
 	}
 	screenUpdateCounter += ez::util::DELAY_TIME;
 }
@@ -119,7 +121,7 @@ void autonomous() {
 	ace::resetMotors();
 
 	chassis.reset_pid_targets();                // Resets PID targets to 0
-	chassis.reset_gyro();                       // Reset gyro position to 0
+	//chassis.reset_gyro();                       // Reset gyro position to 0
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 

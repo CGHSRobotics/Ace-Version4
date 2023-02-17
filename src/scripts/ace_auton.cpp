@@ -366,7 +366,10 @@ namespace ace::auton {
 	 *
 	 */
 	void null_Auto() {
-		gps::set_turn_gps(90, SPEED_TURN_AUTO);
+		gps::set_turn(90, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		gps::set_waypoint(24, 24);
 
 		while (true)
 		{

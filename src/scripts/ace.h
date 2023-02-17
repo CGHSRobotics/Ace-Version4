@@ -84,7 +84,7 @@ namespace ace {
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	// Launcher Motor
-	const bool LAUNCHER_LOGGING = false;
+	const bool LAUNCHER_LOGGING = true;
 
 	const float SPEED_LAUNCHER = 80;
 	const float SPEED_LAUNCHER_DRIVER = 80;
@@ -122,7 +122,7 @@ namespace ace {
 	 *  Util Function Declarations
 	 */
 
-	 // Spin Motor PID by percent
+	// Spin Motor PID by percent
 	extern void spinMotor(pros::Motor motor, float percent);
 
 	// Toggles Active Break
@@ -131,8 +131,16 @@ namespace ace {
 	// Records Launcher speed + time to file on sd card
 	extern void recordLauncherStatistics();
 
+
+	/*
+	 *	Unit Conversion Functions
+	 */
+
 	// Convert Celsius to Farenheit
 	extern float cel_to_faren(float celsius);
+
+	// Convert inch to mm
+	extern float to_mm(float inch);
 
 	/*
 	 *	GPS namespace
@@ -142,20 +150,43 @@ namespace ace {
 
 		extern pros::Task task_turn_gps;
 
+		const float err_degree_max = 1;
+		const float err_pos_max = 5;
+		const float err_gps_max = 1;
+
 		extern void init();
 
-		extern float curr_turnSpeed;
 		extern float curr_turnAngle;
+		extern float curr_turnSpeed;
 
-		extern float curr_turnAngleDiff;
+		extern float imu_start_angle;
 
-		// Set the angle to turn to a certain absolute degree
-		extern void set_turn_gps(float angle, float speed);
-		extern void __task_set_turn_gps();
+		// fact check imu with gps if gps is in acceptable error rate
+		extern void __task_gps_factcheck_angle();
 
-		// Set Drive Pid with GPS
-		extern void set_waypoint_gps(float distance, float speed, bool slew, bool headCorrection);
+		extern float imu_heading();
+
+		/**
+		 * @brief
+		 * 		Turns robot to absolute degrees, tracks angle and speed data as well as compensates for gps
+		 * @param angle
+		 *		absolute angle to turn robot to
+		 * @param speed
+		 *		speed (0-127) at which robot should turn
+		 */
+		extern void set_turn(float angle, float speed);
+
+		/**
+		 *	Tell Robot to go to absolute position if not there already
+		 *	@param x
+		 * 		Absolute X Position in inches with 0 being center of field
+		 *	@param y
+		 * 		Absolute Y Position in inches with 0 being center of field
+		 */
+		extern void set_waypoint(float x, float y);
+
 	}
+
 	/*
 	 *	 User Control
 	 */

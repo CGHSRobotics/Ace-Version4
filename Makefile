@@ -31,9 +31,9 @@ VERSION:=2.1.1
 # EXCLUDE_SRC_FROM_LIB= $(SRCDIR)/unpublishedfile.c
 # this line excludes opcontrol.c and similar files
 EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/autons $(SRCDIR)/main,$(foreach cext,$(CEXTS),$(file).$(cext)) $(foreach cxxext,$(CXXEXTS),$(file).$(cxxext)))
-EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/cghs.h
-EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/cghs.cpp
-EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/cghs_auton.cpp
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace.h
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace.cpp
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace_auton.cpp
 # files that get distributed to every user (beyond your source archive) - add
 # whatever files you want here. This line is configured to add all header files
 # that are in the the include directory get exported

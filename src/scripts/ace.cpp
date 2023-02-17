@@ -18,8 +18,17 @@ Drive chassis(
 
 namespace ace {
 
+	/*
+	 *	Global Vars
+	 */
+
 	int alliance = 0;
 	string operation_mode = "no";
+
+
+	/*
+	 *	Util Functions
+	 */
 
 	// Spin Motor with Percent
 	void spinMotor(pros::Motor motor, float percent) {
@@ -46,12 +55,6 @@ namespace ace {
 		motor.move_velocity(percent);
 	}
 
-
-	// Convert Celsius to farenheit
-	float cel_to_faren(float celsius) {
-		return celsius * 1.8 + 32;
-	}
-
 	// Sets Active Break
 	bool activeBreakEnabled = false;
 	void active_brake(bool enabled, Drive& chassis) {
@@ -61,9 +64,7 @@ namespace ace {
 			chassis.set_active_brake(0);
 	}
 
-
 	u_int64_t launcherTime = 0;
-
 	// Record Launcher Speeds to sd card
 	void recordLauncherStatistics() {
 
@@ -81,11 +82,30 @@ namespace ace {
 
 			FILE* launcherFile;
 			launcherFile = fopen("/usd/launcher.txt", "a");
-			fprintf(launcherFile, ", \n{'msec': %i, 'rpm': %i}", launcherMotor.get_actual_velocity(), launcherTime);
+			fprintf(launcherFile, (", \n{'msec': " + std::to_string(launcherTime)).c_str());
+			fprintf(launcherFile, (", 'rpm': " + std::to_string(launcherMotor.get_actual_velocity() * 6.0) + "}").c_str());
 			fclose(launcherFile);
 		}
 
 	}
+
+	/*
+	 *	Unit Conversion
+	 */
+
+	// Convert Celsius to farenheit
+	float cel_to_faren(float celsius) {
+		return celsius * 1.8 + 32;
+	}
+
+	// Convert inch to mm
+	float to_mm(float inch) {
+		return inch * 25.4;
+	}
+
+	/*
+	 *	User Control Functions
+	 */
 
 	// Reset all Inputs
 	void resetMotors() {
@@ -132,6 +152,8 @@ namespace ace {
 
 		// If want to run launcher
 		if (enabled) {
+
+			recordLauncherStatistics();
 
 			launcherEnabled = true;
 
@@ -188,8 +210,6 @@ namespace ace {
 			else
 				launcherMotor.move_voltage(0);
 		}
-
-		recordLauncherStatistics();
 	}
 
 	// Roller Forward
@@ -232,19 +252,22 @@ namespace ace::gps {
 
 	float curr_turnSpeed = 0;
 	float curr_turnAngle = 0;
-	float curr_turnAngleDiff = 0;
+
+	float imu_start_angle = 0;
 
 	// init tasks
 	void init() {
-		pros::Task task_turn_gps(__task_set_turn_gps, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Turning GPS");
+		pros::Task task_turn_gps(__task_gps_factcheck_angle, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Turning GPS");
+
+		imu_start_angle = gpsSensor.get_heading();
+	}
+
+	float imu_heading() {
+		return chassis.imu.get_heading() + imu_start_angle;
 	}
 
 	// Set Turn with GPS
-	void set_turn_gps(float angle, float speed) {
-		curr_turnAngle = angle;
-		curr_turnSpeed = speed;
-	}
-	void __task_set_turn_gps() {
+	void __task_gps_factcheck_angle() {
 
 		while (true)
 		{
@@ -255,14 +278,65 @@ namespace ace::gps {
 			if (operation_mode != "auto")
 				continue;
 
-			float gps_angle = gpsSensor.get_heading();
-
-			if (std::abs(gps_angle - curr_turnAngle) < 1)
+			if (gpsSensor.get_error() > err_gps_max)
 				continue;
 
-			curr_turnAngleDiff = gps_angle - chassis.get_gyro();
+			float diff = gpsSensor.get_heading() - chassis.imu.get_heading();
 
-			chassis.set_turn_pid(curr_turnAngle + curr_turnAngleDiff, curr_turnSpeed);
+			// only fix if error is (+-) 1 degree
+			if (std::abs(diff) < err_degree_max)
+				continue;
+
+			chassis.imu.set_rotation(gpsSensor.get_heading());
 		}
 	}
+
+	// Set Turn
+	void set_turn(float angle, float speed) {
+		curr_turnAngle = angle;
+		curr_turnSpeed = speed;
+
+		chassis.set_turn_pid(angle, speed);
+	}
+
+	//	Set Waypoint pos to go to
+	void set_waypoint(float x, float y) {
+
+		// 	GPS has too much error, either no tape or no view
+		if (gpsSensor.get_error() > err_gps_max)
+			return;
+
+		// 	get all current data from GPS
+		pros::c::gps_status_s_t status = gpsSensor.get_status();
+
+		status.x *= 1000.0;
+		status.y *= 1000.0;
+
+		float distX = to_mm(x) - status.x;
+		float distY = to_mm(y) - status.y;
+
+		//	if already at position, return
+		if (std::abs(distX) <= err_pos_max || std::abs(distY) <= err_pos_max)
+			return;
+
+		// find angle, magnitude of vector
+		float mag = sqrtf(distX * distX + distY * distY);
+		float theta = atan2f(distY, distX);
+
+		// Turn to angle
+		chassis.set_turn_pid(theta, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		// Drive to position
+		chassis.set_drive_pid(mag, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		// Turn back to where is supposed to be
+		chassis.set_turn_pid(curr_turnAngle, SPEED_TURN_AUTO);
+		chassis.wait_drive();
+
+		// Recursively call this function again, will either fix further error, or break from that if successful
+		set_waypoint(x, y);
+	}
+
 }

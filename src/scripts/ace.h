@@ -24,7 +24,7 @@
 
 #define DRIVE_GEAR_RATIO MOTOR_GEARSET_18
 #define LAUNCHER_GEAR_RATIO MOTOR_GEARSET_06
-#define ROLLER_GEAR_RATIO MOTOR_GEARSET_18
+#define ROLLER_GEAR_RATIO MOTOR_GEARSET_06
 #define CONVEYOR_GEAR_RATIO MOTOR_GEARSET_06
 #define INTAKE_GEAR_RATIO MOTOR_GEARSET_18
 
@@ -46,12 +46,12 @@ namespace ace {
 	const int DRIVE_RIGHT_FRONT_PORT = 1;
 	const int DRIVE_RIGHT_BACK_PORT = 20;
 	const int LAUNCHER_PORT = 17;
-	const int ROLLER_PORT = 10;
+	const int ROLLER_PORT = 3;
 	const int CONVEYOR_PORT = 15;
 	const int INTAKE_PORT = 16;
 
 	const int IMU_PORT = 18;
-	const int VISION_PORT = 3;
+	const int VISION_PORT = 10;
 	const int GPS_PORT = 2;
 
 	/*
@@ -116,7 +116,6 @@ namespace ace {
 	const float GPS_OffsetY = 136;
 
 	const pros::GPS gpsSensor(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
-
 
 	/*
 	 *  Util Function Declarations
@@ -217,8 +216,8 @@ namespace ace {
 		// Autonomous Selector
 
 		extern int autonIndex;
-		const int numAutons = 5;
-		const std::string autonArray[10] = { "Skills", "Shebang", "Three", "Two", "Null" };
+		const int numAutons = 7;
+		const std::string autonArray[10] = { "Skills", "Shebang", "Null", "Blue Three", "Blue Two", "Red Three", "Red Two" };
 
 
 		extern void updateAutonSelection();

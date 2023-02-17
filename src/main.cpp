@@ -2,40 +2,39 @@
 
 #include "scripts/ace_lvgl.cpp"
 
-int screenUpdateCounter = 0;
-const int screenUpdateCounterMax = 50;
 
 void screenUpdate() {
 
-	if (screenUpdateCounter >= screenUpdateCounterMax) {
-		screenUpdateCounter -= screenUpdateCounterMax;
+	while (true) {
 
-		std::string str = ace::auton::autonArray[ace::auton::autonIndex];
-		master.set_text(2, 0, (str + "  " + "ABrake: " + std::to_string(ace::activeBreakEnabled) + "   ").c_str());
+		// 	Controller Text
+		std::string str_selectedAuton = ace::auton::autonArray[ace::auton::autonIndex];
+		master.set_text(2, 0, (str_selectedAuton + "          ").c_str());
 
+		//	Tab 2 - Auton
+		lv_label_set_text(auton_label, ((string)"Selected: " + str_selectedAuton).c_str());
+
+		//	Tab 3 - Temp
 		lv_label_set_text(labelTemp, (
-			(string)"Temperature in Celsius (Max is 130F): \n" +
+			(string)"Temp (Max is 130F): \n" +
 			"\nL Front: " + std::to_string(ace::cel_to_faren(chassis.left_motors[0].get_temperature())) +
 			"\nL Back: " + std::to_string(ace::cel_to_faren(chassis.left_motors[1].get_temperature())) +
 			"\nR Front: " + std::to_string(ace::cel_to_faren(chassis.right_motors[0].get_temperature())) +
 			"\nR Back: " + std::to_string(ace::cel_to_faren(chassis.right_motors[1].get_temperature()))
 			).c_str()
 		);
-
-		/*lv_label_set_text(labelTemp2, (
-			(string)"\n" +
+		lv_label_set_text(labelTemp2, (
+			(string)"  \n" +
 			"\nLauncher: " + std::to_string(ace::cel_to_faren(ace::launcherMotor.get_temperature())) +
 			"\nRoller: " + std::to_string(ace::cel_to_faren(ace::rollerMotor.get_temperature())) +
 			"\nIntake: " + std::to_string(ace::cel_to_faren(ace::intakeMotor.get_temperature())) +
 			"\nDTS: " + std::to_string(ace::cel_to_faren(ace::conveyorMotor.get_temperature()))
 			).c_str()
-		);*/
+		);
 
-		lv_label_set_text(labelTemp2, ((string)"GPS ERR: " + std::to_string(ace::gpsSensor.get_error())).c_str());
+		pros::delay(50);
 	}
-	screenUpdateCounter += ez::util::DELAY_TIME;
 }
-
 
 
 /**
@@ -60,13 +59,18 @@ void initialize() {
 
 	// Initialize chassis and auton selector
 	chassis.initialize();
-	//ez::as::initialize();
 
-	// Screen
+	// Shut down pros gfx library
 	pros::lcd::shutdown();
 
+	// Start LVGL Code
 	init_lv_screen();
 
+	// Start screen update task, runs every 50 ms
+	pros::Task __task_screenUpdate(screenUpdate);
+	__task_screenUpdate.set_priority(TASK_PRIORITY_DEFAULT - 1);
+
+	// init gps logic
 	ace::gps::init();
 }
 
@@ -137,15 +141,23 @@ void autonomous() {
 	{
 		ace::auton::null_Auto();
 	}
-	else if (str == "Three")
+	else if (str == "Blue Three")
 	{
 		ace::auton::threeSide_Auto();
 	}
-	else if (str == "Two")
+	else if (str == "Blue Two")
 	{
 		ace::auton::twoSide_Auto();
 	}
 	else if (str == "Shebang")
+	{
+		ace::auton::theWholeShebang_Auto();
+	}
+	else if (str == "Red Two")
+	{
+		ace::auton::twoSide_Auto();
+	}
+	else if (str == "Red Three")
 	{
 		ace::auton::theWholeShebang_Auto();
 	}
@@ -188,14 +200,13 @@ void opcontrol() {
 
 	while (true) {
 		ace::auton::checkAutonButtons();
-		screenUpdate();
 
 		chassis.tank();  // Tank control
 
 		// active break Intake
-		if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
+		/*if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
 			ace::activeBreakEnabled = !ace::activeBreakEnabled;
-		}
+		}*/
 
 		// Toggle Intake
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {

@@ -86,11 +86,7 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
 	ace::auton::autonIndex = lv_btnm_get_pressed(btnm);
-
 	ace::auton::updateAutonSelection();
-
-	lv_label_set_text(auton_label, ((string)"Selected: " + ace::auton::autonArray[ace::auton::autonIndex]).c_str());
-
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -98,7 +94,6 @@ static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 static lv_res_t toMenuButtonAction(lv_obj_t* button)
 {
 	lv_scr_load(screenMenu);
-
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -106,7 +101,6 @@ static lv_res_t toMenuButtonAction(lv_obj_t* button)
 static lv_res_t toHomeButtonAction(lv_obj_t* button)
 {
 	lv_scr_load(screenHome);
-
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -142,7 +136,9 @@ static void init_lv_screen() {
 	style_bg.line.opa = 0;
 	style_bg.body.border.color = LV_COLOR_RED;
 	style_bg.body.border.width = 1;
-	style_bg.body.padding.ver = 12;
+	style_bg.body.padding.ver = 5;
+	style_bg.body.padding.hor = 10;
+	style_bg.body.padding.inner = 10;
 
 	// Init Screens
 	screenHome = lv_obj_create(NULL, NULL);
@@ -190,13 +186,12 @@ static void init_lv_screen() {
 	tab1 = lv_tabview_add_tab(tabview, "Home");
 	tab2 = lv_tabview_add_tab(tabview, "Auton");
 	tab3 = lv_tabview_add_tab(tabview, "Temp");
-	//tab4 = lv_tabview_add_tab(tabview, "Speed");
+	tab4 = lv_tabview_add_tab(tabview, "Launcher");
 
 
 	// Tab 1
 
-	label = lv_label_create(tab1, NULL);
-	lv_label_set_text(label, "Press this button to go back to the Home Screen");
+	
 	// Button back to Home
 	buttonToHome = lv_btn_create(tab1, NULL);
 	lv_obj_set_style(buttonToHome, &style_bg);
@@ -210,50 +205,46 @@ static void init_lv_screen() {
 	// Tab 2
 
 	auton_label = lv_label_create(tab2, NULL);
-	lv_obj_align(auton_label, NULL, LV_ALIGN_CENTER, -25, 0);
-	lv_label_set_text(auton_label, "Select Skills");
+	lv_obj_align(auton_label, NULL, LV_ALIGN_CENTER, -25, -15);
+	lv_label_set_text(auton_label, "Select Auton");
 
 	//	Create a drop down list
 	lv_style_copy(&style_btnm, &style_bg);
 	style_btnm.body.padding.ver = 5;
 	style_btnm.body.padding.hor = 5;
-	style_btnm.body.padding.inner = 10;
+	style_btnm.body.padding.inner = 5;
 
 	autonBtnMtrx = lv_btnm_create(tab2, NULL);
-	static const char* btnm_map[] = { "Skills", "Shebang", "\n", "Three", "Two", "Null", "" };
+	static const char* btnm_map[] = { "Skills", "Shebang", "Null", "\n", "Blue Three", "Blue Two", "\n", "Red Three", "Red Two", "" };
 	lv_btnm_set_map(autonBtnMtrx, btnm_map);
 	lv_btnm_set_action(autonBtnMtrx, btnm_action);
-	lv_obj_set_size(autonBtnMtrx, 240, 120);
-	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 40);
+	lv_obj_set_size(autonBtnMtrx, 300, 120);
+	lv_obj_align(autonBtnMtrx, NULL, LV_ALIGN_CENTER, 0, 30);
 	lv_obj_set_style(autonBtnMtrx, &style_btnm);
 	lv_btnm_set_style(autonBtnMtrx, LV_BTNM_STYLE_BTN_PR, &style_btnm);
 	lv_btnm_set_style(autonBtnMtrx, LV_BTNM_STYLE_BTN_REL, &style_btnm);
 	lv_obj_set_free_num(autonBtnMtrx, 2);				//	Set a unique ID
 
-	//	Create a drop down list
-	/*allianceBtnMtrx = lv_btnm_create(tab2, NULL);
-	static const char* btnm_map_alliance[] = { "Red", "Blue", "" };
-	lv_btnm_set_map(allianceBtnMtrx, btnm_map_alliance);
-	lv_btnm_set_action(allianceBtnMtrx, btnm_action_alliance);
-	lv_btnm_set_toggle(allianceBtnMtrx, true, 0);
-	lv_obj_set_style(allianceBtnMtrx, &style_bg);
-	lv_obj_set_free_num(allianceBtnMtrx, 3);				//	Set a unique ID
-	*/
-
 	// Tab 3
 
-	labelTemp = lv_label_create(tab3, NULL);
-	lv_obj_align(labelTemp, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
-	lv_label_set_text(labelTemp, "Temperatur goes here\n");
 
-	labelTemp2 = lv_label_create(tab3, NULL);
-	lv_obj_align(labelTemp2, NULL, LV_ALIGN_IN_TOP_LEFT, 200, 0);
-	lv_label_set_text(labelTemp2, "Temperatur goes here\n");
+	lv_obj_t* cont = lv_cont_create(tab3, NULL);
+	lv_cont_set_layout(cont, LV_LAYOUT_ROW_T);
+	lv_cont_set_fit(cont, true, true);              /*Fit the size to the content*/
+	lv_obj_set_style(cont, &style_bg);
+	lv_obj_align(cont, NULL, LV_ALIGN_IN_TOP_MID, -100, 0);
+
+	labelTemp = lv_label_create(cont, NULL);
+	lv_obj_align(labelTemp, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+	lv_label_set_text(labelTemp, "Temperatur\n");
+
+	labelTemp2 = lv_label_create(cont, NULL);
+	lv_obj_align(labelTemp2, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
+	lv_label_set_text(labelTemp2, "Temperatu\n");
 
 	// Tab 4
 
-	//label = lv_label_create(tab4, NULL);
-	//lv_label_set_text(label, "Speed of Launcher");
+
 
 
 	// Load Home Screen

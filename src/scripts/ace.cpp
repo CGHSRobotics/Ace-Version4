@@ -321,7 +321,7 @@ namespace ace::gps {
 
 		// find angle, magnitude of vector
 		float mag = sqrtf(distX * distX + distY * distY);
-		float theta = atan2f(distY, distX);
+		float theta = acosf(-distX / mag);
 
 		// Turn to angle
 		chassis.set_turn_pid(theta, SPEED_TURN_AUTO);

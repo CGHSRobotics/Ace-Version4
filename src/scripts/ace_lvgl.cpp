@@ -3,21 +3,27 @@
 
 typedef FILE* pc_file_t;
 
-lv_obj_t* screenHome;
-lv_obj_t* screenMenu;
-
 lv_style_t style_bg;
 lv_style_t style_tab;
 lv_style_t style_btnm;
 lv_style_t style_red;
 
-lv_obj_t* label;
-lv_obj_t* auton_label;
+/*
+ *	Home image screen
+ */
+
+lv_obj_t* screenHome;
 
 lv_obj_t* img_var;
 lv_obj_t* buttonToMenu;
 
+lv_obj_t* screenMenu;
+
+lv_obj_t* label;
+lv_obj_t* auton_label;
+
 lv_obj_t* tabview;
+
 lv_obj_t* tab1;
 lv_obj_t* tab2;
 lv_obj_t* tab3;
@@ -84,14 +90,6 @@ static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 	ace::auton::updateAutonSelection();
 
 	lv_label_set_text(auton_label, ((string)"Selected: " + ace::auton::autonArray[ace::auton::autonIndex]).c_str());
-
-	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
-}
-
-// Function called when option on ddlist is selected
-static lv_res_t btnm_action_alliance(lv_obj_t* btnm, const char* txt)
-{
-	ace::alliance = lv_btnm_get_pressed(btnm);
 
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }

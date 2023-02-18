@@ -46,7 +46,7 @@ namespace ace {
 	const int DRIVE_RIGHT_FRONT_PORT = 1;
 	const int DRIVE_RIGHT_BACK_PORT = 20;
 	const int LAUNCHER_PORT = 17;
-	const int ROLLER_PORT = 3;
+	const int ROLLER_PORT = 4;
 	const int CONVEYOR_PORT = 15;
 	const int INTAKE_PORT = 16;
 
@@ -104,7 +104,7 @@ namespace ace {
 
 	// Motors
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
-	const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, false);
+	const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, true);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
 	const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
 

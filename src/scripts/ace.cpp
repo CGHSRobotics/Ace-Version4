@@ -101,6 +101,11 @@ namespace ace {
 		return mm / 25.4;
 	}
 
+	// Convert rad to degree
+	float to_deg(float rad) {
+		return rad * (180.0 / 3.141592653589793238463);
+	}
+
 	/*
 	 *	User Control Functions
 	 */
@@ -274,11 +279,16 @@ namespace ace::gps {
 	}
 
 	// Set Turn
-	void set_turn(float angle, float speed) {
+	void set_turn(float angle, float speed, bool waitUntilFinished) {
 		curr_turnAngle = angle;
 		curr_turnSpeed = speed;
 
 		chassis.set_turn_pid(angle, speed);
+
+		if (waitUntilFinished)
+		{
+			chassis.wait_drive();
+		}
 	}
 
 	//	Set Waypoint pos to go to
@@ -299,7 +309,7 @@ namespace ace::gps {
 
 		// find angle, magnitude of vector
 		float mag = sqrtf(distX * distX + distY * distY);	// in inch
-		float theta = atan2f(distY, -distX);
+		float theta = to_deg(atan2f(distY, -distX));
 
 		//	if already at position, return
 		if (std::abs(distX) <= err_pos_max || std::abs(distY) <= err_pos_max)

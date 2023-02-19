@@ -144,6 +144,12 @@ namespace ace {
     // Convert inch to mm
     extern float to_inch(float mm);
 
+    // Convert Radians to Degrees
+    extern float to_deg(float rad);
+
+    // Convert Degrees to Radians
+    extern float to_rad(float deg);
+
     /*
      *	GPS namespace
      */
@@ -173,8 +179,10 @@ namespace ace {
          *		absolute angle to turn robot to
          * @param speed
          *		speed (0-127) at which robot should turn
+         * @param waitUntilFinished
+         *		Boolean, if true runs chassis.waitDrive();
          */
-        extern void set_turn(float angle, float speed);
+        extern void set_turn(float angle, float speed, bool waitUntilFinished = true);
 
         /**
          *	Tell Robot to go to absolute position if not there already

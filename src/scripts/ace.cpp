@@ -13,8 +13,7 @@ Drive chassis(
 	// Cartridge RPM
 	200,
 	// External Gear Ratio (MUST BE DECIMAL)
-	0.6
-);
+	0.6);
 
 namespace ace {
 
@@ -25,16 +24,13 @@ namespace ace {
 	int alliance = 0;
 	string operation_mode = "no";
 
-
 	/*
 	 *	Util Functions
 	 */
 
-	// Spin Motor with Percent
+	 // Spin Motor with Percent
 	void spinMotor(pros::Motor motor, float percent) {
-
-		switch (motor.get_gearing())
-		{
+		switch (motor.get_gearing()) {
 		case MOTOR_GEARSET_06:
 			percent *= 6;
 			break;
@@ -67,7 +63,6 @@ namespace ace {
 	u_int64_t launcherTime = 0;
 	// Record Launcher Speeds to sd card
 	void recordLauncherStatistics() {
-
 		// Leave if no sd card
 		if (!ez::util::IS_SD_CARD)
 			return;
@@ -79,21 +74,19 @@ namespace ace {
 		launcherTime += ez::util::DELAY_TIME;
 
 		if (launcherEnabled) {
-
 			FILE* launcherFile;
 			launcherFile = fopen("/usd/launcher.txt", "a");
 			fprintf(launcherFile, (", \n{'msec': " + std::to_string(launcherTime)).c_str());
 			fprintf(launcherFile, (", 'rpm': " + std::to_string(launcherMotor.get_actual_velocity() * 6.0) + "}").c_str());
 			fclose(launcherFile);
 		}
-
 	}
 
 	/*
 	 *	Unit Conversion
 	 */
 
-	// Convert Celsius to farenheit
+	 // Convert Celsius to farenheit
 	float cel_to_faren(float celsius) {
 		return celsius * 1.8 + 32;
 	}
@@ -103,11 +96,16 @@ namespace ace {
 		return inch * 25.4;
 	}
 
+	// Convert inch to mm
+	float to_inch(float mm) {
+		return mm / 25.4;
+	}
+
 	/*
 	 *	User Control Functions
 	 */
 
-	// Reset all Inputs
+	 // Reset all Inputs
 	void resetMotors() {
 		launcherMotor.move_velocity(0);
 		rollerMotor.move_velocity(0);
@@ -141,7 +139,6 @@ namespace ace {
 		}
 	}
 
-
 	// Current launcher timer
 	float launcherTimerDelay = 0;
 	// launcherEnabledBool
@@ -149,17 +146,14 @@ namespace ace {
 
 	// Launch Disks, called once per frame
 	void launchDisks(bool enabled, float speed, bool isLongDist, bool standby) {
-
 		// If want to run launcher
 		if (enabled) {
-
 			recordLauncherStatistics();
 
 			launcherEnabled = true;
 
 			// if less than cutoff
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
-
 				// Set velocity to max
 				launcherMotor.move_velocity(600);
 				spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
@@ -170,9 +164,7 @@ namespace ace {
 			}
 
 			// if long distance
-			if (isLongDist)
-			{
-
+			if (isLongDist) {
 				// Speed up Launcher and Roller but nothing else
 				launcherMotor.move_velocity(speed * 6);
 				spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
@@ -187,8 +179,7 @@ namespace ace {
 
 			// if is regular distance
 			if (!isLongDist) {
-
-				// Set pid to set velocity 
+				// Set pid to set velocity
 				spinMotor(launcherMotor, SPEED_LAUNCHER_LONG);
 			}
 
@@ -198,7 +189,6 @@ namespace ace {
 
 		}
 		else {
-
 			launcherEnabled = false;
 
 			spinMotor(rollerMotor, 0);
@@ -241,7 +231,7 @@ namespace ace {
 			endgamePneumatics.set_value(0);
 		}
 	}
-}
+}  // namespace ace
 
 /**
  *
@@ -262,32 +252,24 @@ namespace ace::gps {
 		imu_start_angle = gpsSensor.get_heading();
 	}
 
-	float imu_heading() {
-		return chassis.imu.get_heading() + imu_start_angle;
-	}
-
 	// Set Turn with GPS
 	void __task_gps_factcheck_angle() {
-
-		while (true)
-		{
+		while (true) {
 			// Delay 10 ms
-			pros::delay(ez::util::DELAY_TIME);
+			pros::delay(100);
 
 			// dont do anything if not in autonomous
-			if (operation_mode != "auto")
-				continue;
+			if (operation_mode == "auto") {
 
-			if (gpsSensor.get_error() > err_gps_max)
-				continue;
+				if (gpsSensor.get_error() < err_gps_max) {
+					float diff = gpsSensor.get_heading() - chassis.imu.get_heading();
 
-			float diff = gpsSensor.get_heading() - chassis.imu.get_heading();
-
-			// only fix if error is (+-) 1 degree
-			if (std::abs(diff) < err_degree_max)
-				continue;
-
-			chassis.imu.set_rotation(gpsSensor.get_heading());
+					// only fix if error is (+-) 1 degree
+					if (std::abs(diff) > err_degree_max) {
+						chassis.imu.set_heading(gpsSensor.get_heading());
+					}
+				}
+			}
 		}
 	}
 
@@ -301,7 +283,6 @@ namespace ace::gps {
 
 	//	Set Waypoint pos to go to
 	void set_waypoint(float x, float y) {
-
 		// 	GPS has too much error, either no tape or no view
 		if (gpsSensor.get_error() > err_gps_max)
 			return;
@@ -309,22 +290,23 @@ namespace ace::gps {
 		// 	get all current data from GPS
 		pros::c::gps_status_s_t status = gpsSensor.get_status();
 
-		status.x *= 1000.0;
-		status.y *= 1000.0;
+		// Convert meters to inch
+		float gps_x = to_inch(status.x * 1000.0);
+		float gps_y = to_inch(status.y * 1000.0);
 
-		float distX = to_mm(x) - status.x;
-		float distY = to_mm(y) - status.y;
+		float distX = x - gps_x;	// in inch
+		float distY = y - gps_y;
+
+		// find angle, magnitude of vector
+		float mag = sqrtf(distX * distX + distY * distY);	// in inch
+		float theta = atan2f(distY, -distX);
 
 		//	if already at position, return
 		if (std::abs(distX) <= err_pos_max || std::abs(distY) <= err_pos_max)
 			return;
 
-		// find angle, magnitude of vector
-		float mag = sqrtf(distX * distX + distY * distY);
-		float theta = acosf(-distX / mag);
-
 		// Turn to angle
-		chassis.set_turn_pid(theta, SPEED_TURN_AUTO);
+		chassis.set_turn_pid(theta, curr_turnSpeed);
 		chassis.wait_drive();
 
 		// Drive to position
@@ -332,11 +314,11 @@ namespace ace::gps {
 		chassis.wait_drive();
 
 		// Turn back to where is supposed to be
-		chassis.set_turn_pid(curr_turnAngle, SPEED_TURN_AUTO);
+		chassis.set_turn_pid(curr_turnAngle, curr_turnSpeed);
 		chassis.wait_drive();
 
 		// Recursively call this function again, will either fix further error, or break from that if successful
 		set_waypoint(x, y);
 	}
 
-}
+}  // namespace ace::gps

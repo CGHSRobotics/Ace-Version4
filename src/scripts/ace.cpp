@@ -63,23 +63,37 @@ namespace ace {
 	u_int64_t launcherTime = 0;
 	// Record Launcher Speeds to sd card
 	void recordLauncherStatistics() {
+
 		// Leave if no sd card
-		if (!ez::util::IS_SD_CARD)
-			return;
-
-		// leave if dont want to write to sd card
-		if (!ace::LAUNCHER_LOGGING)
-			return;
-
-		launcherTime += ez::util::DELAY_TIME;
-
-		if (launcherEnabled) {
-			FILE* launcherFile;
-			launcherFile = fopen("/usd/launcher.txt", "a");
-			fprintf(launcherFile, (", \n{'msec': " + std::to_string(launcherTime)).c_str());
-			fprintf(launcherFile, (", 'rpm': " + std::to_string(launcherMotor.get_actual_velocity() * 6.0) + "}").c_str());
-			fclose(launcherFile);
+		if (ez::util::IS_SD_CARD) {
+			// leave if dont want to write to sd card
+			if (ace::LAUNCHER_LOGGING) {
+				launcherTime += ez::util::DELAY_TIME;
+				if (launcherEnabled) {
+					l_data_point new_point;
+					new_point.msec = launcherTime;
+					new_point.rpm = launcherMotor.get_actual_velocity() * 6;
+					new_point.set_rpm = launcherMotor.get_target_velocity() * 6;
+					l_data_array.push_back(new_point);
+				}
+			}
 		}
+	}
+
+	void saveLauncherData() {
+		FILE* launcherFile;
+		launcherFile = fopen("/usd/launcher.txt", "w+");
+		fclose(launcherFile);
+		launcherFile = fopen("/usd/launcher.txt", "a");
+
+		for (size_t i = 0; i < l_data_array.size(); i++)
+		{
+			fprintf(launcherFile, (", \n{'msec': " + std::to_string(l_data_array[i].msec)).c_str());
+			fprintf(launcherFile, (", 'rpm': " + std::to_string(l_data_array[i].rpm)).c_str());
+			fprintf(launcherFile, (", 'set_rpm': " + std::to_string(l_data_array[i].set_rpm) + "}").c_str());
+		}
+
+		fclose(launcherFile);
 	}
 
 	/*

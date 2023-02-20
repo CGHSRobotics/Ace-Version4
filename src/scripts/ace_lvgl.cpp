@@ -36,51 +36,19 @@ lv_obj_t* allianceBtnMtrx;
 lv_obj_t* labelTemp;
 lv_obj_t* labelTemp2;
 
+lv_obj_t* label_logSize;
+lv_obj_t* label_isSdCard;
+
+lv_obj_t* btn_deleteLog;
+lv_obj_t* btn_saveLog;
+lv_obj_t* btn_uploadLog;
+
 // File Drivers
-static lv_fs_res_t pcfs_open(void* file_p, const char* fn, lv_fs_mode_t mode) {
-	errno = 0;
-	const char* flags = "";
-	if (mode == LV_FS_MODE_WR)
-		flags = "wb";
-	else if (mode == LV_FS_MODE_RD)
-		flags = "rb";
-	else if (mode == (LV_FS_MODE_WR | LV_FS_MODE_RD))
-		flags = "a+";
-
-	char buf[256];
-	sprintf(buf, "/%s", fn);
-	pc_file_t f = fopen(buf, flags);
-
-	if (f == NULL)
-		return LV_FS_RES_UNKNOWN;
-	else {
-		fseek(f, 0, SEEK_SET);
-		pc_file_t* fp = (pc_file_t*)file_p;
-		*fp = f;
-	}
-
-	return LV_FS_RES_OK;
-}
-static lv_fs_res_t pcfs_close(void* file_p) {
-	pc_file_t* fp = (pc_file_t*)file_p;
-	fclose(*fp);
-	return LV_FS_RES_OK;
-}
-static lv_fs_res_t pcfs_read(void* file_p, void* buf, uint32_t btr, uint32_t* br) {
-	pc_file_t* fp = (pc_file_t*)file_p;
-	*br = fread(buf, 1, btr, *fp);
-	return LV_FS_RES_OK;
-}
-static lv_fs_res_t pcfs_seek(void* file_p, uint32_t pos) {
-	pc_file_t* fp = (pc_file_t*)file_p;
-	fseek(*fp, pos, SEEK_SET);
-	return LV_FS_RES_OK;
-}
-static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
-	pc_file_t* fp = (pc_file_t*)file_p;
-	*pos_p = ftell(*fp);
-	return LV_FS_RES_OK;
-}
+static lv_fs_res_t pcfs_open(void* file_p, const char* fn, lv_fs_mode_t mode);
+static lv_fs_res_t pcfs_close(void* file_p);
+static lv_fs_res_t pcfs_read(void* file_p, void* buf, uint32_t btr, uint32_t* br);
+static lv_fs_res_t pcfs_seek(void* file_p, uint32_t pos);
+static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p);
 
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
@@ -101,6 +69,41 @@ static lv_res_t toMenuButtonAction(lv_obj_t* button)
 static lv_res_t toHomeButtonAction(lv_obj_t* button)
 {
 	lv_scr_load(screenHome);
+	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+}
+
+// Function called Save File
+static lv_res_t btn_action_saveLog(lv_obj_t* button)
+{
+	ace::saveLauncherData();
+	FILE* launcherFile;
+	launcherFile = fopen("/usd/launcher.txt", "r");
+	fseek(launcherFile, 0, SEEK_END);
+	unsigned long len = (unsigned long)ftell(launcherFile);
+	lv_label_set_text(label_logSize, ((string)"Log Size: " + std::to_string(len)).c_str());
+	fclose(launcherFile);
+	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+}
+// Function called when Upload File
+static lv_res_t btn_action_uploadLog(lv_obj_t* button)
+{
+	FILE* launcherFile;
+	int bufferLength = 255;
+	char buffer[bufferLength]; /* not ISO 90 compatible */
+
+	launcherFile = fopen("/usd/launcher.txt", "r");
+
+	while (fgets(buffer, bufferLength, launcherFile)) {
+		printf("%s\n", buffer);
+	}
+
+	fclose(launcherFile);
+	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
+}
+// Function called when delete File
+static lv_res_t btn_action_delLog(lv_obj_t* button)
+{
+	remove("/usd/launcher.txt");
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -191,7 +194,7 @@ static void init_lv_screen() {
 
 	// Tab 1
 
-	
+
 	// Button back to Home
 	buttonToHome = lv_btn_create(tab1, NULL);
 	lv_obj_set_style(buttonToHome, &style_bg);
@@ -225,8 +228,8 @@ static void init_lv_screen() {
 	lv_btnm_set_style(autonBtnMtrx, LV_BTNM_STYLE_BTN_REL, &style_btnm);
 	lv_obj_set_free_num(autonBtnMtrx, 2);				//	Set a unique ID
 
-	// Tab 3
 
+	// Tab 3
 
 	lv_obj_t* cont = lv_cont_create(tab3, NULL);
 	lv_cont_set_layout(cont, LV_LAYOUT_ROW_T);
@@ -244,9 +247,107 @@ static void init_lv_screen() {
 
 	// Tab 4
 
+	lv_obj_t* cont_t4 = lv_cont_create(tab4, NULL);
+	lv_cont_set_layout(cont_t4, LV_LAYOUT_ROW_T);
+	lv_cont_set_fit(cont_t4, true, true);              /*Fit the size to the content*/
+	lv_obj_set_style(cont_t4, &style_btnm);
+	lv_obj_align(cont_t4, NULL, LV_ALIGN_CENTER, -160, 0);
 
+	lv_obj_t* cont_t4_1 = lv_cont_create(cont_t4, NULL);
+	lv_cont_set_layout(cont_t4_1, LV_LAYOUT_COL_L);
+	lv_obj_set_style(cont_t4_1, &style_btnm);
+	lv_obj_set_size(cont_t4_1, 215, 130);
+	lv_obj_align(cont_t4_1, NULL, LV_ALIGN_CENTER, 0, 0);
 
+	label_logSize = lv_label_create(cont_t4_1, NULL);
+	lv_label_set_text(label_logSize, "Log Size: NA");
+
+	label_isSdCard = lv_label_create(cont_t4_1, NULL);
+	lv_label_set_text(label_isSdCard, ((string)"SD Card: " + std::to_string(ez::util::IS_SD_CARD)).c_str());
+
+	lv_obj_t* cont_t4_2 = lv_cont_create(cont_t4, NULL);
+	lv_cont_set_layout(cont_t4_2, LV_LAYOUT_COL_M);
+	lv_obj_set_style(cont_t4_2, &style_btnm);
+	lv_obj_set_size(cont_t4_2, 215, 130);
+	lv_obj_align(cont_t4_2, NULL, LV_ALIGN_CENTER, 0, 0);
+
+	btn_saveLog = lv_btn_create(cont_t4_2, NULL);
+	lv_obj_set_style(btn_saveLog, &style_bg);
+	lv_btn_set_style(btn_saveLog, LV_BTN_STYLE_REL, &style_bg);
+	lv_cont_set_fit(btn_saveLog, true, true); // Enable resizing horizontally and vertically
+	lv_obj_align(btn_saveLog, NULL, LV_ALIGN_CENTER, 0, 40);
+	lv_btn_set_action(btn_saveLog, LV_BTN_ACTION_CLICK, btn_action_saveLog);
+	label = lv_label_create(btn_saveLog, NULL);
+	lv_label_set_text(label, "Save Log...");
+
+	btn_uploadLog = lv_btn_create(cont_t4_2, NULL);
+	lv_obj_set_style(btn_uploadLog, &style_bg);
+	lv_btn_set_style(btn_uploadLog, LV_BTN_STYLE_REL, &style_bg);
+	lv_cont_set_fit(btn_uploadLog, true, true); // Enable resizing horizontally and vertically
+	lv_obj_align(btn_uploadLog, NULL, LV_ALIGN_CENTER, 0, 40);
+	lv_btn_set_action(btn_uploadLog, LV_BTN_ACTION_CLICK, btn_action_uploadLog);
+	label = lv_label_create(btn_uploadLog, NULL);
+	lv_label_set_text(label, "Upload Log...");
+
+	btn_deleteLog = lv_btn_create(cont_t4_2, NULL);
+	lv_obj_set_style(btn_deleteLog, &style_bg);
+	lv_btn_set_style(btn_deleteLog, LV_BTN_STYLE_REL, &style_bg);
+	lv_cont_set_fit(btn_deleteLog, true, true); // Enable resizing horizontally and vertically
+	lv_obj_align(btn_deleteLog, NULL, LV_ALIGN_CENTER, 0, 40);
+	lv_btn_set_action(btn_deleteLog, LV_BTN_ACTION_CLICK, btn_action_delLog);
+	label = lv_label_create(btn_deleteLog, NULL);
+	lv_label_set_text(label, "Delete Log");
 
 	// Load Home Screen
 	lv_scr_load(screenHome);
+}
+
+
+
+/*
+ *	File Driver Definitions
+ */
+static lv_fs_res_t pcfs_open(void* file_p, const char* fn, lv_fs_mode_t mode) {
+	errno = 0;
+	const char* flags = "";
+	if (mode == LV_FS_MODE_WR)
+		flags = "wb";
+	else if (mode == LV_FS_MODE_RD)
+		flags = "rb";
+	else if (mode == (LV_FS_MODE_WR | LV_FS_MODE_RD))
+		flags = "a+";
+
+	char buf[256];
+	sprintf(buf, "/%s", fn);
+	pc_file_t f = fopen(buf, flags);
+
+	if (f == NULL)
+		return LV_FS_RES_UNKNOWN;
+	else {
+		fseek(f, 0, SEEK_SET);
+		pc_file_t* fp = (pc_file_t*)file_p;
+		*fp = f;
+	}
+
+	return LV_FS_RES_OK;
+}
+static lv_fs_res_t pcfs_close(void* file_p) {
+	pc_file_t* fp = (pc_file_t*)file_p;
+	fclose(*fp);
+	return LV_FS_RES_OK;
+}
+static lv_fs_res_t pcfs_read(void* file_p, void* buf, uint32_t btr, uint32_t* br) {
+	pc_file_t* fp = (pc_file_t*)file_p;
+	*br = fread(buf, 1, btr, *fp);
+	return LV_FS_RES_OK;
+}
+static lv_fs_res_t pcfs_seek(void* file_p, uint32_t pos) {
+	pc_file_t* fp = (pc_file_t*)file_p;
+	fseek(*fp, pos, SEEK_SET);
+	return LV_FS_RES_OK;
+}
+static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p) {
+	pc_file_t* fp = (pc_file_t*)file_p;
+	*pos_p = ftell(*fp);
+	return LV_FS_RES_OK;
 }

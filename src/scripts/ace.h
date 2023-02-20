@@ -198,7 +198,7 @@ namespace ace {
 		extern pros::Task task_turn_gps;
 
 		const float err_degree_max = 1;
-		const float err_pos_max = 1;
+		const float err_pos_max = 2;
 		const float err_gps_max = 0.5;
 
 		extern void init();

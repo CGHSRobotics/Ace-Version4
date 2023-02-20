@@ -2,6 +2,7 @@
 
 #include "scripts/ace_lvgl.cpp"
 
+// pros terminal > output.txt
 
 void screenUpdate() {
 
@@ -124,8 +125,7 @@ void autonomous() {
 
 	ace::resetMotors();
 
-	chassis.reset_pid_targets();                // Resets PID targets to 0
-	//chassis.reset_gyro();                       // Reset gyro position to 0
+	chassis.reset_pid_targets();                // Resets PID targets to 0                      // Reset gyro position to 0
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 

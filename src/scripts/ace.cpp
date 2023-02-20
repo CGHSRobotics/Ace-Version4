@@ -75,6 +75,9 @@ namespace ace {
 					new_point.rpm = launcherMotor.get_actual_velocity() * 6;
 					new_point.set_rpm = launcherMotor.get_target_velocity() * 6;
 					l_data_array.push_back(new_point);
+
+
+					//float 2fr_ago = l_data_array[l_data_array.size() - 2].rpm ;
 				}
 			}
 		}
@@ -82,15 +85,12 @@ namespace ace {
 
 	void saveLauncherData() {
 		FILE* launcherFile;
-		launcherFile = fopen("/usd/launcher.txt", "w+");
-		fclose(launcherFile);
 		launcherFile = fopen("/usd/launcher.txt", "a");
 
 		for (size_t i = 0; i < l_data_array.size(); i++)
 		{
 			fprintf(launcherFile, (", \n{'msec': " + std::to_string(l_data_array[i].msec)).c_str());
 			fprintf(launcherFile, (", 'rpm': " + std::to_string(l_data_array[i].rpm)).c_str());
-			fprintf(launcherFile, (", 'set_rpm': " + std::to_string(l_data_array[i].set_rpm) + "}").c_str());
 		}
 
 		fclose(launcherFile);
@@ -117,7 +117,12 @@ namespace ace {
 
 	// Convert rad to degree
 	float to_deg(float rad) {
-		return rad * (180.0 / 3.141592653589793238463);
+		float deg = rad * (180.0 / 3.141592653589793238463);
+
+		if (deg < 0)
+			deg += 360.0;
+
+		return deg;
 	}
 
 	/*
@@ -259,36 +264,28 @@ namespace ace {
  */
 namespace ace::gps {
 
-	float curr_turnSpeed = 0;
+	float curr_turnSpeed = SPEED_TURN_AUTO;
 	float curr_turnAngle = 0;
-
-	float imu_start_angle = 0;
 
 	// init tasks
 	void init() {
-		pros::Task task_turn_gps(__task_gps_factcheck_angle, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "Turning GPS");
-
-		imu_start_angle = gpsSensor.get_heading();
+		pros::Task task_turn_gps(__task_gps_factcheck_angle, TASK_PRIORITY_DEFAULT - 1, TASK_STACK_DEPTH_DEFAULT, "Turning GPS");
 	}
 
 	// Set Turn with GPS
 	void __task_gps_factcheck_angle() {
 		while (true) {
-			// Delay 10 ms
-			pros::delay(100);
 
 			// dont do anything if not in autonomous
-			if (operation_mode == "auto") {
+			if (true) {
 
 				if (gpsSensor.get_error() < err_gps_max) {
-					float diff = gpsSensor.get_heading() - chassis.imu.get_heading();
-
-					// only fix if error is (+-) 1 degree
-					if (std::abs(diff) > err_degree_max) {
-						chassis.imu.set_heading(gpsSensor.get_heading());
-					}
+					chassis.reset_gyro(gpsSensor.get_heading());
 				}
 			}
+
+			// Delay 10 ms
+			pros::delay(50);
 		}
 	}
 
@@ -315,8 +312,8 @@ namespace ace::gps {
 		pros::c::gps_status_s_t status = gpsSensor.get_status();
 
 		// Convert meters to inch
-		float gps_x = to_inch(status.x * 1000.0);
-		float gps_y = to_inch(status.y * 1000.0);
+		float gps_x = to_inch(-status.y * 1000.0);
+		float gps_y = to_inch(status.x * 1000.0);
 
 		float distX = x - gps_x;	// in inch
 		float distY = y - gps_y;
@@ -326,8 +323,18 @@ namespace ace::gps {
 		float theta = to_deg(atan2f(distY, -distX));
 
 		//	if already at position, return
-		if (std::abs(distX) <= err_pos_max || std::abs(distY) <= err_pos_max)
+		if (std::abs(mag) <= err_pos_max)
 			return;
+
+		printf(("\nCurr X mm " + std::to_string(status.x)).c_str());
+		printf(("\nCurr Y mm " + std::to_string(status.y)).c_str());
+		printf(("\nCurr X " + std::to_string(gps_x)).c_str());
+		printf(("\nCurr Y " + std::to_string(gps_y)).c_str());
+		printf(("\nTurning to " + std::to_string(theta)).c_str());
+		printf(("\nMove X " + std::to_string(distX)).c_str());
+		printf(("\nMove Y " + std::to_string(distY)).c_str());
+		printf("\n\n");
+
 
 		// Turn to angle
 		chassis.set_turn_pid(theta, curr_turnSpeed);
@@ -335,10 +342,6 @@ namespace ace::gps {
 
 		// Drive to position
 		chassis.set_drive_pid(mag, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		// Turn back to where is supposed to be
-		chassis.set_turn_pid(curr_turnAngle, curr_turnSpeed);
 		chassis.wait_drive();
 
 		// Recursively call this function again, will either fix further error, or break from that if successful

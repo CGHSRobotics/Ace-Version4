@@ -112,8 +112,8 @@ namespace ace {
 	const pros::ADIDigitalOut endgamePneumatics('a', false);
 
 	// GPS
-	const float GPS_OffsetX = 100;
-	const float GPS_OffsetY = 136;
+	const float GPS_OffsetX = -100 / 1000.0;
+	const float GPS_OffsetY = 136.0 / 1000.0;
 
 	const pros::GPS gpsSensor(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
 
@@ -198,8 +198,8 @@ namespace ace {
 		extern pros::Task task_turn_gps;
 
 		const float err_degree_max = 1;
-		const float err_pos_max = 5;
-		const float err_gps_max = 1;
+		const float err_pos_max = 1;
+		const float err_gps_max = 0.5;
 
 		extern void init();
 

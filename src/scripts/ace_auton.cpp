@@ -15,11 +15,54 @@ namespace ace::auton {
 	 *
 	 *	@brief Skills Autonomous Routine
 	 *
-		@details Gets ...
+	 *	@details Gets ...
 	 *
 	 *	@param chassis  Reference to Chassis object
 	 *
 	 */
+	void skills_Auto() {
+
+		printf(("\n GPS  " + std::to_string(gpsSensor.get_heading())).c_str());
+		printf(("\n IMU  " + std::to_string(chassis.get_gyro())).c_str());
+
+		gps::set_turn(45, SPEED_TURN_AUTO);
+
+		launchDisks(false, 50, false, true);
+
+		// Get Roller 1
+		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO_ROLLER);
+		chassis.wait_drive();
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+		intakeToggle(true);
+		chassis.set_drive_pid(16, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		gps::set_turn(180, SPEED_TURN_AUTO);
+
+		// Get Roller 1
+		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO_ROLLER);
+		chassis.wait_drive();
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+		intakeToggle(false);
+		chassis.set_drive_pid(12, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		gps::set_turn(90, SPEED_TURN_AUTO);
+
+		chassis.set_drive_pid(48, SPEED_DRIVE_AUTO, true);
+		chassis.wait_drive();
+
+
+		gps::set_turn(85, SPEED_TURN_AUTO);
+		launchDisks_Auto(6000, 80, false);
+
+
+	}
+	/*
 	void skills_Auto() {
 
 		// Get Roller 1
@@ -174,6 +217,7 @@ namespace ace::auton {
 		}
 
 	}
+	*/
 
 	/**
 	 *	@brief Three Side Autonomous Routine
@@ -366,10 +410,8 @@ namespace ace::auton {
 	 *
 	 */
 	void null_Auto() {
-		gps::set_turn(90, SPEED_TURN_AUTO);
-		chassis.wait_drive();
 
-		gps::set_waypoint(24, 24);
+		gps::set_waypoint(-24, -24);
 
 		while (true)
 		{
@@ -378,6 +420,7 @@ namespace ace::auton {
 
 	}
 }
+
 
 /**
  *
@@ -396,7 +439,7 @@ namespace ace::auton {
 			pros::delay(ez::util::DELAY_TIME);
 		}
 
-		launchDisks(false, 0);
+		launchDisks(false, 0, false, true);
 	}
 
 	int autonIndex = 0;

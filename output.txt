@@ -1,0 +1,9 @@
+ garbage 1
+
+ /start data
+
+	{'msec': 100, 'rpm': 400}
+
+/end data
+
+garbage 2

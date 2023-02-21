@@ -97,13 +97,24 @@ namespace ace {
 
 	void saveLauncherData() {
 		FILE* launcherFile;
-		launcherFile = fopen("/usd/launcher.txt", "a");
+		launcherFile = fopen("/usd/launcher.txt", "w+");
 
+		fprintf(launcherFile, "\n/start data");
 		for (size_t i = 0; i < l_data_array.size(); i++)
 		{
-			fprintf(launcherFile, (", \n{'msec': " + std::to_string(l_data_array[i].msec)).c_str());
+			fprintf(launcherFile, "\n{");
+			fprintf(launcherFile, ("'msec': " + std::to_string(l_data_array[i].msec)).c_str());
 			fprintf(launcherFile, (", 'rpm': " + std::to_string(l_data_array[i].rpm)).c_str());
+			fprintf(launcherFile, (", 'set_rpm': " + std::to_string(l_data_array[i].set_rpm)).c_str());
+			fprintf(launcherFile, "}");
+
+			if (i != l_data_array.size() - 1)
+				fprintf(launcherFile, ",");
+
+			pros::delay(1);
 		}
+
+		fprintf(launcherFile, "\n/end data");
 
 		fclose(launcherFile);
 	}

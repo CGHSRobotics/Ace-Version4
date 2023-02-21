@@ -59,11 +59,11 @@ namespace ace {
 	 */
 
 	 // Drive Constants
-	const float SPEED_DRIVE_AUTO = 0.8 * 127.0;
+	const float SPEED_DRIVE_AUTO = 0.87 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
 
-	const float SPEED_TURN_AUTO = 0.6 * 127.0;
+	const float SPEED_TURN_AUTO = 0.7 * 127.0;
 
 	// Intake Motor 
 	const float SPEED_INTAKE = 100;
@@ -198,7 +198,7 @@ namespace ace {
 		extern pros::Task task_turn_gps;
 
 		const float err_degree_max = 1;
-		const float err_pos_max = 2;
+		const float err_pos_max = 4;
 		const float err_gps_max = 0.5;
 
 		extern void init();

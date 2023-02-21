@@ -12,7 +12,7 @@
         </style>
     </head>
     <body>
-        <input type="file" name="Give me NUMBERS!!" id="fileSelector" accept=".txt" />
+        <input type="file" name="Give me NUMBERS!!" id="fileSelector" accept=".json" />
     </body>
 
     <script>
@@ -47,7 +47,7 @@
 
             test = jsonObject.array;
 
-	   	 resizeCanvas(test[test.length-1]["msec"]/graphScaleX + graphPosX + 20, height);
+	   	 	resizeCanvas(test[test.length-1]["msec"]/graphScaleX + graphPosX + 20, height);
             graphSizeX = test[test.length-1]["msec"]/graphScaleX;
 
             background(225);
@@ -135,14 +135,13 @@
         function readTxt(file) {
             const reader = new FileReader();
             reader.addEventListener("load", (event) => {
-		formattedString = '{ \n"array": [ \n {"msec": 0, "rpm": 0}' + reader.result + '\n] }';
-                //console.log(formattedString);
+				formattedString = reader.result;
+				console.log(formattedString)
                 jsonObject = JSON.parse(formattedString);
-                //console.log(jsonObject);
                 drawGraph();
             });
             reader.readAsText(file);
         }
     </script>
-    <script src="p5.js"></script>
+    <script src="l_data_logs/p5.js"></script>
 </html>

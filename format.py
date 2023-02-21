@@ -1,4 +1,6 @@
 
+import os
+
 
 def main():
 
@@ -41,7 +43,7 @@ def main():
         return
 
     # finish generating new path
-    new_path = "l_data_logs/" + new_path + ".json"
+    new_path = "l_data_logs/" + new_path + ".txt"
     # open new file based on path
     new_file = open(new_path, 'w+')
 
@@ -54,6 +56,10 @@ def main():
 
     # replace all single quotes with double quotes
     stringToWrite = stringToWrite.replace("'", '"')
+
+    # format to json
+    stringToWrite = '{ \n"array": [ \n {"msec": 0, "rpm": 0},' + \
+        stringToWrite + '\n] }'
 
     # write to file
     new_file.write(stringToWrite)
@@ -72,6 +78,11 @@ def main():
         file = open(path, "w+")
         file.write("del")
         file.close()
+
+    boolDelete = input("\n Do you wish to open chart.html? (1 or 0)  ")
+    # if true, overwrite output.txt
+    if boolDelete == "1":
+        os.system("cmd 'start chart.html'")
 
 
 main()

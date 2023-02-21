@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Launcher Stats</title>
+        <style>
+            canvas {
+                margin: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <input type="file" name="Give me NUMBERS!!" id="fileSelector" accept=".txt" />
+    </body>
+
+    <script>
+        var jsonObject;
+        var testNum = 0;
+        var test;
+
+	var formattedString;
+
+        var graphPosX;
+        var graphPosY;
+        var graphSizeX;
+        var graphSizeY;
+
+        var graphScaleX = 1000 / 250;
+        var graphScaleY = 10;
+
+        var maxX;
+
+        function setup() {
+            createCanvas(windowWidth * 0.95, windowHeight * 0.9);
+            background(225);
+
+            graphPosX = 200;
+            graphPosY = 100;
+            graphSizeY = 360;
+
+            graphScaleY = 10;
+        }
+
+        function drawGraph() {
+
+            test = jsonObject.array;
+
+	   	 resizeCanvas(test[test.length-1]["msec"]/graphScaleX + graphPosX + 20, height);
+            graphSizeX = test[test.length-1]["msec"]/graphScaleX;
+
+            background(225);
+            strokeWeight(2);
+
+            maxX = test[test.length - 1]["msec"];
+
+            // Background of Graph
+            fill(255);
+            stroke(255);
+            rect(graphPosX, graphPosY, graphSizeX, graphSizeY);
+
+            // Lines Between Points
+            for (let i = 1; i < test.length; i++) {
+                const element = test[i];
+                const prev_element = test[i - 1];
+
+                stroke(color(255, 0, 0));
+                drawLine(element, prev_element);
+            }
+
+            // Points
+            for (let i = 1; i < test.length; i++) {
+                const element = test[i];
+
+                stroke(color(155, 60, 0));
+                strokeWeight(4);
+                drawLine(element, element);
+                strokeWeight(2);
+            }
+
+            // Grid Lines
+            fill(0);
+            stroke(0);
+            // X Axis Line
+            line(graphPosX, graphPosY + graphSizeY, graphPosX + graphSizeX, graphPosY + graphSizeY);
+            // Y Axis Line
+            line(graphPosX, graphPosY + graphSizeY, graphPosX, graphPosY);
+
+            // Text
+            fill(0);
+            stroke(0);
+            strokeWeight(0);
+            // text("Test: " + test, 10, 60);
+            // text("Test Type: " + test.type, 10, 80);
+
+            textAlign(CENTER, TOP);
+            for (let i = 0; i <= maxX; i++) {
+                if (i % 250 == 0) {
+                    strokeWeight(0);
+                    text(i, posX(i), graphPosY + graphSizeY + 5);
+                    strokeWeight(1);
+                    line(posX(i), graphPosY + graphSizeY + 2, posX(i), graphPosY + graphSizeY - 2);
+                }
+            }
+            textAlign(RIGHT, CENTER);
+            for (let i = 0; i <= 3600; i++) {
+                if (i % 400 == 0) {
+                    strokeWeight(0);
+                    text(i, graphPosX - 5, posY(i));
+                    strokeWeight(1);
+                    line(graphPosX + 2, posY(i), graphPosX - 2, posY(i));
+                }
+            }
+        }
+
+        function drawLine(element, element2) {
+            line(posX(element["msec"]), posY(element["rpm"]), posX(element2["msec"]), posY(element2["rpm"]));
+        }
+
+        function posX(num) {
+            return num / graphScaleX + graphPosX;
+        }
+
+        function posY(num) {
+            return graphPosY + graphSizeY - num / graphScaleY;
+        }
+
+        fileSelector.addEventListener("change", (event) => {
+            const fileList = event.target.files;
+            //console.log(fileList);
+            readTxt(fileList[0]);
+        });
+
+        function readTxt(file) {
+            const reader = new FileReader();
+            reader.addEventListener("load", (event) => {
+		formattedString = '{ \n"array": [ \n {"msec": 0, "rpm": 0}' + reader.result + '\n] }';
+                //console.log(formattedString);
+                jsonObject = JSON.parse(formattedString);
+                //console.log(jsonObject);
+                drawGraph();
+            });
+            reader.readAsText(file);
+        }
+    </script>
+    <script src="p5.js"></script>
+</html>

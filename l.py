@@ -4,7 +4,7 @@ import os
 
 def main():
 
-    path = "output.txt"
+    path = input("\n Please enter the file path to be formatted.   ") + ".txt"
 
     # open file
     file = open(path, 'r')

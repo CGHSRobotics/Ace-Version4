@@ -27,7 +27,7 @@ void screenUpdate() {
 		lv_label_set_text(labelTemp2, (
 			(string)"  \n" +
 			"\nLauncher: " + std::to_string(ace::cel_to_faren(ace::launcherMotor.get_temperature())) +
-			"\nRoller: " + std::to_string(ace::cel_to_faren(ace::rollerMotor.get_temperature())) +
+			"\nRoller: " + std::to_string(ace::cel_to_faren(10/*ace::rollerMotor.get_temperature()*/)) +
 			"\nIntake: " + std::to_string(ace::cel_to_faren(ace::intakeMotor.get_temperature())) +
 			"\nDTS: " + std::to_string(ace::cel_to_faren(ace::conveyorMotor.get_temperature()))
 			).c_str()

@@ -36,6 +36,8 @@ namespace ace {
 
 	extern bool activeBreakEnabled;
 
+	const char launcherFile_path[18] = "/usd/launcher.txt";
+
 	extern string operation_mode;
 
 	/*
@@ -104,7 +106,6 @@ namespace ace {
 
 	 // Motors
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
-	const pros::Motor rollerMotor(ROLLER_PORT, ROLLER_GEAR_RATIO, true);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
 	const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
 
@@ -147,6 +148,9 @@ namespace ace {
 
 	// Saves launcher data to file
 	extern void saveLauncherData();
+
+	// Saves launcher data to file
+	extern void uploadLauncherData();
 
 
 	/*
@@ -197,9 +201,9 @@ namespace ace {
 
 		extern pros::Task task_turn_gps;
 
-		const float err_degree_max = 1;
+		const float err_degree_max = 2;
 		const float err_pos_max = 4;
-		const float err_gps_max = 0.5;
+		const float err_gps_max = 0.25;
 
 		extern void init();
 

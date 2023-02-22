@@ -87,17 +87,7 @@ static lv_res_t btn_action_saveLog(lv_obj_t* button)
 // Function called when Upload File
 static lv_res_t btn_action_uploadLog(lv_obj_t* button)
 {
-	FILE* launcherFile;
-	int bufferLength = 255;
-	char buffer[bufferLength]; /* not ISO 90 compatible */
-
-	launcherFile = fopen("/usd/launcher.txt", "r");
-
-	while (fgets(buffer, bufferLength, launcherFile)) {
-		printf("%s", buffer);
-	}
-
-	fclose(launcherFile);
+	ace::uploadLauncherData();
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 // Function called when delete File

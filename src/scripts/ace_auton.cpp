@@ -30,7 +30,7 @@ namespace ace::auton {
 		launchDisks(false, 50, false, true);
 
 		// Get Roller 1
-		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO_ROLLER);
+		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
@@ -41,25 +41,43 @@ namespace ace::auton {
 
 		gps::set_turn(180, SPEED_TURN_AUTO);
 
-		// Get Roller 1
-		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO_ROLLER);
+		// Get Roller 2
+		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
-		intakeToggle(false);
 		chassis.set_drive_pid(12, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		gps::set_turn(90, SPEED_TURN_AUTO);
 
-		chassis.set_drive_pid(48, SPEED_DRIVE_AUTO, true);
+		chassis.set_drive_pid(52, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
-
 		gps::set_turn(85, SPEED_TURN_AUTO);
-		launchDisks_Auto(6000, 80, false);
+		intakeToggle(false);
 
+		launchDisks_Auto(8000, SPEED_LAUNCHER, false);
+
+		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
+
+		gps::set_turn(180, SPEED_TURN_AUTO);
+		intakeToggle(true);
+
+		gps::set_waypoint(-36, -12);
+
+		gps::set_turn(135, SPEED_TURN_AUTO, false);
+
+		gps::set_waypoint(-12, 12);
+
+		gps::set_turn(45, SPEED_TURN_AUTO, true);
+
+		intakeToggle(false);
+		launchDisks_Auto(80, SPEED_LAUNCHER);
+
+		launcherMotor.move_voltage(0);
 
 	}
 	/*

@@ -96,8 +96,11 @@ namespace ace {
 	}
 
 	void saveLauncherData() {
+
+		remove(launcherFile_path);
+
 		FILE* launcherFile;
-		launcherFile = fopen("/usd/launcher.txt", "w+");
+		launcherFile = fopen(launcherFile_path, "a");
 
 		fprintf(launcherFile, "\n/start data");
 		for (size_t i = 0; i < l_data_array.size(); i++)
@@ -111,13 +114,45 @@ namespace ace {
 			if (i != l_data_array.size() - 1)
 				fprintf(launcherFile, ",");
 
-			pros::delay(1);
 		}
 
 		fprintf(launcherFile, "\n/end data");
 
 		fclose(launcherFile);
 	}
+
+	void uploadLauncherData() {
+		FILE* launcherFile;
+		launcherFile = fopen("/usd/launcher.txt", "r");
+
+		int buff_size = 64;
+		char buff[buff_size];
+
+		float line_counter = 0;
+		float lines_per_msec = 5;
+
+		while (true)
+		{
+			line_counter += 1.0 / lines_per_msec;
+
+			if (line_counter >= 1)
+			{
+				pros::delay(1);
+				line_counter -= 1.0;
+				continue;
+			}
+
+			if (!fgets(buff, buff_size, launcherFile))
+			{
+				break;
+			}
+
+			printf(buff);
+		}
+
+		fclose(launcherFile);
+	}
+
 
 	/*
 	 *	Unit Conversion
@@ -142,7 +177,7 @@ namespace ace {
 	float to_deg(float rad) {
 		float deg = rad * (180.0 / 3.141592653589793238463);
 
-		if (deg < 0)
+		if (deg < 0 && false)
 			deg += 360.0;
 
 		return deg;
@@ -154,10 +189,10 @@ namespace ace {
 
 	 // Reset all Inputs
 	void resetMotors() {
-		launcherMotor.move_velocity(0);
-		rollerMotor.move_velocity(0);
-		conveyorMotor.move_velocity(0);
-		intakeMotor.move_velocity(0);
+		launcherMotor.move_voltage(0);
+		//rollerMotor.move_voltage(0);
+		conveyorMotor.move_voltage(0);
+		intakeMotor.move_voltage(0);
 
 		endgamePneumatics.set_value(false);
 	}
@@ -203,7 +238,7 @@ namespace ace {
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
 				// Set velocity to max
 				launcherMotor.move_velocity(600);
-				spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+				//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 				spinMotor(intakeMotor, 0);
 				spinMotor(conveyorMotor, 0);
 				launcherTimerDelay = 0;
@@ -214,7 +249,7 @@ namespace ace {
 			if (isLongDist) {
 				// Speed up Launcher and Roller but nothing else
 				launcherMotor.move_velocity(speed * 6);
-				spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+				//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 
 				if (!(launcherTimerDelay > launcherTimerDelayMax)) {
 					launcherTimerDelay += 10.0;
@@ -230,7 +265,7 @@ namespace ace {
 				spinMotor(launcherMotor, SPEED_LAUNCHER_LONG);
 			}
 
-			spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+			//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 			spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 			spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
 
@@ -238,7 +273,7 @@ namespace ace {
 		else {
 			launcherEnabled = false;
 
-			spinMotor(rollerMotor, 0);
+			//spinMotor(rollerMotor, 0);
 			spinMotor(intakeMotor, 0);
 			spinMotor(conveyorMotor, 0);
 
@@ -252,20 +287,20 @@ namespace ace {
 	// Roller Forward
 	void rollerForward(bool enabled, float speed) {
 		if (enabled) {
-			spinMotor(rollerMotor, SPEED_ROLLER);
+			//spinMotor(rollerMotor, SPEED_ROLLER);
 		}
 		else {
-			spinMotor(rollerMotor, 0);
+			//spinMotor(rollerMotor, 0);
 		}
 	}
 
 	// Roller Reverse
 	void rollerReverse(bool enabled, float speed) {
 		if (enabled) {
-			spinMotor(rollerMotor, -SPEED_ROLLER);
+			//spinMotor(rollerMotor, -SPEED_ROLLER);
 		}
 		else {
-			spinMotor(rollerMotor, 0);
+			//spinMotor(rollerMotor, 0);
 		}
 	}
 
@@ -303,7 +338,7 @@ namespace ace::gps {
 			if (true) {
 
 				if (gpsSensor.get_error() < err_gps_max) {
-					chassis.reset_gyro(gpsSensor.get_heading());
+					chassis.imu.set_heading(gpsSensor.get_heading());
 				}
 			}
 
@@ -328,6 +363,34 @@ namespace ace::gps {
 	//	Set Waypoint pos to go to
 	void set_waypoint(float x, float y) {
 
+		// 	GPS has too much error, either no tape or no view
+		if (gpsSensor.get_error() > err_gps_max)
+			return;
+
+		// 	get all current data from GPS
+		pros::c::gps_status_s_t status = gpsSensor.get_status();
+
+		// Convert meters to inch
+		float gps_x = to_inch(-status.y * 1000.0);
+		float gps_y = to_inch(status.x * 1000.0);
+		// Find Distance to target
+		float distX = x - gps_x;	// in inch
+		float distY = y - gps_y;
+		// find angle, magnitude of vector
+		float mag = sqrtf(distX * distX + distY * distY);	// in inch
+		float theta = to_deg(atan2f(distY, -distX));
+
+		//	if already at position, return
+		if (std::abs(mag) <= err_pos_max)
+			return;
+
+		// Turn to angle
+		chassis.set_turn_pid(theta, curr_turnSpeed);
+		chassis.wait_drive();
+
+		// Drive to position
+		chassis.set_drive_pid(mag, SPEED_DRIVE_AUTO);
+
 		while (true) {
 
 			// 	GPS has too much error, either no tape or no view
@@ -338,23 +401,28 @@ namespace ace::gps {
 			pros::c::gps_status_s_t status = gpsSensor.get_status();
 
 			// Convert meters to inch
-			float gps_x = to_inch(-status.y * 1000.0);
-			float gps_y = to_inch(status.x * 1000.0);
+			float new_gps_x = to_inch(-status.y * 1000.0);
+			float new_gps_y = to_inch(status.x * 1000.0);
 			// Find Distance to target
-			float distX = x - gps_x;	// in inch
-			float distY = y - gps_y;
+			float new_distX = x - new_gps_x;	// in inch
+			float new_distY = y - new_gps_y;
 			// find angle, magnitude of vector
-			float mag = sqrtf(distX * distX + distY * distY);	// in inch
-			float theta = to_deg(atan2f(distY, -distX));
+			float new_mag = sqrtf(new_distX * new_distX + new_distY * new_distY);	// in inch
+			float new_theta = to_deg(atan2f(new_distY, -new_distX));
 
 			//	if already at position, return
 			if (std::abs(mag) <= err_pos_max)
 				break;
 
-			// Turn to angle
-			chassis.set_turn_pid(theta, curr_turnSpeed);
+			if (std::abs(theta) - std::abs(new_theta) > 18) {
+				// Turn to angle
+				chassis.set_turn_pid(theta + 18 * (new_theta / std::abs(new_theta)), curr_turnSpeed);
+			}
+			else {
+				// Turn to angle
+				chassis.set_turn_pid(new_theta, curr_turnSpeed);
+			}
 
-			// Drive to position
 			chassis.set_drive_pid(mag, SPEED_DRIVE_AUTO);
 
 			pros::delay(50);

@@ -123,7 +123,7 @@ namespace ace {
 
 	void uploadLauncherData() {
 		FILE* launcherFile;
-		launcherFile = fopen("/usd/launcher.txt", "r");
+		launcherFile = fopen(launcherFile_path, "r");
 
 		int buff_size = 64;
 		char buff[buff_size];

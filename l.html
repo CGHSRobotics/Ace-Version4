@@ -12,15 +12,17 @@
         </style>
     </head>
     <body>
-        <input type="file" name="Give me NUMBERS!!" id="fileSelector" accept=".json" />
+        <input type="file" name="Give me NUMBERS!!" id="fileSelector" accept=".txt" />
     </body>
 
     <script>
         var jsonObject;
-        var testNum = 0;
         var test;
 
-	var formattedString;
+        var pointsEnabled = false;
+        var set_rpmEnabled = true;
+
+        var formattedString;
 
         var graphPosX;
         var graphPosY;
@@ -36,7 +38,7 @@
             createCanvas(windowWidth * 0.95, windowHeight * 0.9);
             background(225);
 
-            graphPosX = 200;
+            graphPosX = 100;
             graphPosY = 100;
             graphSizeY = 360;
 
@@ -44,11 +46,10 @@
         }
 
         function drawGraph() {
-
             test = jsonObject.array;
 
-	   	 	resizeCanvas(test[test.length-1]["msec"]/graphScaleX + graphPosX + 20, height);
-            graphSizeX = test[test.length-1]["msec"]/graphScaleX;
+            resizeCanvas(test[test.length - 1]["msec"] / graphScaleX + graphPosX + 20, height);
+            graphSizeX = test[test.length - 1]["msec"] / graphScaleX;
 
             background(225);
             strokeWeight(2);
@@ -60,24 +61,88 @@
             stroke(255);
             rect(graphPosX, graphPosY, graphSizeX, graphSizeY);
 
-            // Lines Between Points
+            // ====================
+            // 	Inside Graph Lines
+            // =====================
+
+            // X axis
+            textAlign(CENTER, TOP);
+            for (let i = 0; i <= maxX; i++) {
+                if (i % 250 == 0) {
+                    strokeWeight(0);
+                    text(i, posX(i), graphPosY + graphSizeY + 5);
+                    strokeWeight(1);
+                    stroke(225);
+                    line(posX(i), graphPosY, posX(i), graphPosY + graphSizeY + 2);
+                    stroke(0);
+                }
+            }
+            // Y Axis
+            textAlign(RIGHT, CENTER);
+            for (let i = 0; i <= 3600; i++) {
+                if (i % 400 == 0) {
+                    strokeWeight(0);
+                    text(i, graphPosX - 5, posY(i));
+                    strokeWeight(1);
+                    stroke(225);
+                    line(graphPosX + graphSizeX, posY(i), graphPosX - 2, posY(i));
+                    stroke(0);
+                }
+            }
+
+            // ====================
+            // 	Lines for RPM / Time
+            // =====================
+
+            // Lines Between Points RPM / Time
             for (let i = 1; i < test.length; i++) {
                 const element = test[i];
                 const prev_element = test[i - 1];
 
                 stroke(color(255, 0, 0));
-                drawLine(element, prev_element);
+                drawLine(element["msec"], element["rpm"], prev_element["msec"], prev_element["rpm"]);
             }
 
             // Points
+            if (pointsEnabled) {
+                for (let i = 1; i < test.length; i++) {
+                    const element = test[i];
+
+                    stroke(color(155, 60, 0));
+                    strokeWeight(4);
+                    drawLine(element["msec"], element["rpm"], element["msec"], element["rpm"]);
+                    strokeWeight(2);
+                }
+            }
+
+            // ====================
+            // 	Lines for Set RPM / Time
+            // =====================
+
+            // Lines Between Points RPM / Time
             for (let i = 1; i < test.length; i++) {
                 const element = test[i];
+                const prev_element = test[i - 1];
 
-                stroke(color(155, 60, 0));
-                strokeWeight(4);
-                drawLine(element, element);
-                strokeWeight(2);
+                stroke(color(0, 255, 0));
+                drawLine(element["msec"], element["set_rpm"], prev_element["msec"], prev_element["set_rpm"]);
             }
+
+            // Points
+            if (pointsEnabled) {
+                for (let i = 1; i < test.length; i++) {
+                    const element = test[i];
+
+                    stroke(color(60, 155, 0));
+                    strokeWeight(4);
+                    drawLine(element["msec"], element["set_rpm"], element["msec"], element["set_rpm"]);
+                    strokeWeight(2);
+                }
+            }
+
+            // =============================
+            // 	Other Graph Lines and Text
+            // =============================
 
             // Grid Lines
             fill(0);
@@ -94,6 +159,7 @@
             // text("Test: " + test, 10, 60);
             // text("Test Type: " + test.type, 10, 80);
 
+            // X axis
             textAlign(CENTER, TOP);
             for (let i = 0; i <= maxX; i++) {
                 if (i % 250 == 0) {
@@ -103,6 +169,7 @@
                     line(posX(i), graphPosY + graphSizeY + 2, posX(i), graphPosY + graphSizeY - 2);
                 }
             }
+            // Y Axis
             textAlign(RIGHT, CENTER);
             for (let i = 0; i <= 3600; i++) {
                 if (i % 400 == 0) {
@@ -114,8 +181,8 @@
             }
         }
 
-        function drawLine(element, element2) {
-            line(posX(element["msec"]), posY(element["rpm"]), posX(element2["msec"]), posY(element2["rpm"]));
+        function drawLine(elementX, elementY, element2X, element2Y) {
+            line(posX(elementX), posY(elementY), posX(element2X), posY(element2Y));
         }
 
         function posX(num) {
@@ -135,8 +202,8 @@
         function readTxt(file) {
             const reader = new FileReader();
             reader.addEventListener("load", (event) => {
-				formattedString = reader.result;
-				console.log(formattedString)
+                formattedString = reader.result;
+                console.log(formattedString);
                 jsonObject = JSON.parse(formattedString);
                 drawGraph();
             });

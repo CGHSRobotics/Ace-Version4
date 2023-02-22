@@ -75,38 +75,34 @@ static lv_res_t toHomeButtonAction(lv_obj_t* button)
 // Function called Save File
 static lv_res_t btn_action_saveLog(lv_obj_t* button)
 {
-	ace::saveLauncherData();
-	FILE* launcherFile;
-	launcherFile = fopen("/usd/launcher.txt", "r");
-	fseek(launcherFile, 0, SEEK_END);
-	unsigned long len = (unsigned long)ftell(launcherFile);
-	lv_label_set_text(label_logSize, ((string)"Log Size: " + std::to_string(len)).c_str());
-	fclose(launcherFile);
+	if (ez::util::IS_SD_CARD)
+	{
+		ace::saveLauncherData();
+		FILE* launcherFile;
+		launcherFile = fopen(ace::launcherFile_path, "r");
+		fseek(launcherFile, 0, SEEK_END);
+		unsigned long len = (unsigned long)ftell(launcherFile);
+		lv_label_set_text(label_logSize, ((string)"Log Size: " + std::to_string(len)).c_str());
+		fclose(launcherFile);
+	}
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 // Function called when Upload File
 static lv_res_t btn_action_uploadLog(lv_obj_t* button)
 {
-	ace::uploadLauncherData();
+	if (ez::util::IS_SD_CARD)
+	{
+		ace::uploadLauncherData();
+	}
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 // Function called when delete File
 static lv_res_t btn_action_delLog(lv_obj_t* button)
 {
-	FILE* launcherFile;
-	launcherFile = fopen("/usd/launcher.txt", "w+");
-	fprintf(launcherFile, "");
-
-	int bufferLength = 255;
-	char buffer[bufferLength]; /* not ISO 90 compatible */
-
-	launcherFile = fopen("/usd/launcher.txt", "r");
-
-	while (fgets(buffer, bufferLength, launcherFile)) {
-		printf("%s\n", buffer);
+	if (ez::util::IS_SD_CARD)
+	{
+		remove(ace::launcherFile_path);
 	}
-
-	fclose(launcherFile);
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -155,9 +151,12 @@ static void init_lv_screen() {
 	/*
 	 *	Home Screen
 	 */
-	img_var = lv_img_create(screenHome, NULL);
-	lv_img_set_src(img_var, "S:/usd/ace.bin");
-	lv_obj_set_pos(img_var, 0, 0);  					// set the position to center
+	if (ez::util::IS_SD_CARD)
+	{
+		img_var = lv_img_create(screenHome, NULL);
+		lv_img_set_src(img_var, "S:/usd/ace.bin");
+		lv_obj_set_pos(img_var, 0, 0);  					// set the position to center
+	}
 
 	buttonToMenu = lv_btn_create(screenHome, NULL);
 	lv_obj_set_style(buttonToMenu, &style_bg);

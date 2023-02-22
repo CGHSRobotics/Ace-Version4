@@ -61,6 +61,8 @@ void initialize() {
 	// Initialize chassis and auton selector
 	chassis.initialize();
 
+	ace::launcherMotor.set_brake_mode(MOTOR_BRAKE_COAST);
+
 	// Shut down pros gfx library
 	pros::lcd::shutdown();
 

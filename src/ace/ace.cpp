@@ -288,9 +288,11 @@ namespace ace {
 	void rollerForward(bool enabled, float speed) {
 		if (enabled) {
 			//spinMotor(rollerMotor, SPEED_ROLLER);
+			spinMotor(conveyorMotor, SPEED_ROLLER);
 		}
 		else {
 			//spinMotor(rollerMotor, 0);
+			spinMotor(conveyorMotor, SPEED_ROLLER);
 		}
 	}
 

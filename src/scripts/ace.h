@@ -31,6 +31,11 @@
 // namespace cghs
 namespace ace {
 
+
+	/* ========================================================================== */
+	/*                                Global Stuff                                */
+	/* ========================================================================== */
+
 	extern int autonIndex;
 	extern int alliance;	// inits to 0; aka red alliance
 
@@ -40,9 +45,14 @@ namespace ace {
 
 	extern string operation_mode;
 
-	/*
-	 *  Motor Ports
-	 */
+	extern int autonIndex;
+	const int numAutons = 7;
+	const std::string autonArray[10] = { "Skills", "Shebang", "Null", "Blue Three", "Blue Two", "Red Three", "Red Two" };
+
+	/* ========================================================================== */
+	/*                             Port Configurations                            */
+	/* ========================================================================== */
+
 	const int DRIVE_LEFT_FRONT_PORT = 11;
 	const int DRIVE_LEFT_BACK_PORT = 12;
 	const int DRIVE_RIGHT_FRONT_PORT = 1;
@@ -56,27 +66,28 @@ namespace ace {
 	const int VISION_PORT = 10;
 	const int GPS_PORT = 2;
 
-	/*
-	 *  Speed Constants
-	 */
 
-	 // Drive Constants
+	/* ========================================================================== */
+	/*                               Speed Constants                              */
+	/* ========================================================================== */
+
+	/* --------------------------- Drive Constants --------------------------- */
 	const float SPEED_DRIVE_AUTO = 0.87 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
 	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.7 * 127.0;
 
-	// Intake Motor 
+	/* ------------------------------ Intake Motor ------------------------------ */
 	const float SPEED_INTAKE = 100;
 	const float SPEED_INTAKE_LAUNCHER = 100;
 
-	// Conveyor Motor
+	/* ----------------------------- Conveyor Motor ----------------------------- */
 	const float SPEED_CONVEYOR_INTAKE = 100;
 	const float SPEED_CONVEYOR_LAUNCHER = 100;
 	const float SPEED_CONVEYOR_LAUNCHER_LONG = 35;
 
-	// Roller Motor
+	/* ------------------------------ Roller Motor ------------------------------ */
 	const float SPEED_ROLLER = 100;
 	const float SPEED_ROLLER_AUTO = 10;
 	const float SPEED_ROLLER_AUTO_SKILLS = 55;
@@ -85,27 +96,19 @@ namespace ace {
 	const float ROLLER_TIME_AUTO = 200;
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
-	// Launcher Motor
+	/* ----------------------------- Launcher Motor ----------------------------- */
 	const float SPEED_LAUNCHER = 80;
 	const float SPEED_LAUNCHER_DRIVER = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_SHORT = 60;
 	const float LAUNCHER_MIN_SPEED = 20.0;
 
-	extern int autonIndex;
-	const int numAutons = 7;
-	const std::string autonArray[10] = { "Skills", "Shebang", "Null", "Blue Three", "Blue Two", "Red Three", "Red Two" };
 
+	/* ========================================================================== */
+	/*                             Device Declarations                            */
+	/* ========================================================================== */
 
-	extern void updateAutonSelection();
-	extern void checkAutonButtons();
-
-
-	/*
-	 *  Device Declarations
-	 */
-
-	 // Motors
+	// Motors
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
 	const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
@@ -119,28 +122,76 @@ namespace ace {
 
 	const pros::GPS gpsSensor(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
 
-	/* ---------------------------- Utility Functions --------------------------- */
 
-	 // Spin Motor PID by percent
+	/* ========================================================================== */
+	/*                              Utility Functions                             */
+	/* ========================================================================== */
+
+	/**
+	 * 	@brief
+	 * 		Spins Motor PID by percent
+	 *
+	 * 	@param motor	motor to be spun
+	 * 	@param percent	from -100 to 100 (negative is backwards)
+	 */
 	extern void spinMotor(pros::Motor motor, float percent);
 
-	// Toggles Active Break
-	extern void active_brake(bool enabled, Drive& chassis);
+	/**
+	 *    @brief Toggles active break
+	 *
+	 *     @param enabled whether enabled or not
+	 */
+	extern void active_brake(bool enabled);
 
-
-	// resets motors to voltage of 0
+	/**
+	 *    @brief Resets all motors to 0 voltage. Also disables pneumatics
+	 */
 	extern void resetMotors();
 
 
-	/* -------------------------- Conversion Functions -------------------------- */
+	/* ========================================================================== */
+	/*                        Autonomous Selector Functions                       */
+	/* ========================================================================== */
 
-	// Convert Celsius to Farenheit
+	/**
+	 *     @brief Update Auton Selection
+	 */
+	extern void updateAutonSelection();
+
+	/**
+	 *     @brief Check Buttons for change in Auton
+	 */
+	extern void checkAutonButtons();
+
+
+	/* ========================================================================== */
+	/*                            Conversion Functions                            */
+	/* ========================================================================== */
+
+	/**
+	 *     @brief Convert Celsius to Farenheit
+	 *
+	 *     @param celsius celsius to be converted to farenheit
+	 *     @return float
+	 */
 	extern float cel_to_faren(float celsius);
 
-	// Convert inch to mm
+	/**
+	 *     @brief Convert inch to mm
+	 *
+	 *
+	 * 	   @param inch inch to be converted
+	 * 	   @return float
+	 */
 	extern float to_mm(float inch);
 
-	// Convert inch to mm
+	/**
+	 *     @brief Convert mm to inch
+	 *
+	 *
+	 * 	   @param mm
+	 *     @return
+	 */
 	extern float to_inch(float mm);
 
 	// Convert Radians to Degrees
@@ -150,7 +201,9 @@ namespace ace {
 	extern float to_rad(float deg);
 
 
-	/* ------------------------------ User Control ------------------------------ */
+	/* ========================================================================== */
+	/*                                User Control                                */
+	/* ========================================================================== */
 
 	// toggles intake
 	extern void intakeToggle(bool enabled);
@@ -179,17 +232,23 @@ namespace ace::auton {
 	extern void theWholeShebang_Auto();
 }
 
+
 /* ========================================================================== */
 /*                             Launcher Namespace                             */
 /* ========================================================================== */
 namespace ace::launch {
 
+
+	/* ========================================================================== */
+	/*                            Variable Declarations                           */
+	/* ========================================================================== */
+
 	extern float launcherTimerDelay;
 	const float launcherTimerDelayMax = 500;
 
 	extern u_int64_t launcherTime;
-	extern bool launcherEnabled;
 
+	extern bool launcherEnabled;
 	const bool LAUNCHER_LOGGING = true;
 
 	// Launcher Data Struct
@@ -199,6 +258,11 @@ namespace ace::launch {
 		float rpm;
 		float set_rpm;
 	};
+
+
+	/* ========================================================================== */
+	/*                            Function Declarations                           */
+	/* ========================================================================== */
 
 	// array of launcher data points
 	std::vector<l_data_point> l_data_array;
@@ -220,10 +284,16 @@ namespace ace::launch {
 
 }
 
+
 /* ========================================================================== */
 /*                                GPS Namespace                               */
 /* ========================================================================== */
 namespace ace::gps {
+
+
+	/* ========================================================================== */
+	/*                            Variable Declarations                           */
+	/* ========================================================================== */
 
 	extern pros::Task task_turn_gps;
 
@@ -238,12 +308,17 @@ namespace ace::gps {
 
 	extern float imu_start_angle;
 
-	// fact check imu with gps if gps is in acceptable error rate
+	/* ========================================================================== */
+	/*                            Function Definitions                            */
+	/* ========================================================================== */
+
+	/**
+	 *	Task that runs every 50 ms and fact checks imu angle
+	 */
 	extern void __task_gps_factcheck_angle();
 
 	/**
-	 * @brief
-	 * 		Turns robot to absolute degrees, tracks angle and speed data as well as compensates for gps
+	 * 	Turns robot to absolute degrees, tracks angle and speed data as well as compensates for gps
 	 * @param angle
 	 *		absolute angle to turn robot to
 	 * @param speed

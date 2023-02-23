@@ -244,7 +244,26 @@ namespace ace {
 				launcherTimerDelay = 0;
 				return;
 			}
+			//Check here
+			/*
+			int diskCode = 0
+			int launchCount = 0
+			bool disksFired = false
+			void diskCheck(){
+				visionObject rtn = visionSensor.get_by_code(0, diskCode);
+				if visionObject = (0, diskCode) {
+					launchCount = launchCount + 1;
+				}
+				if launchCount % 3 = (1) {
+					disksFired = true
 
+				} else {
+					disksFired = false
+
+				}
+
+			}
+			*/
 			// if long distance
 			if (isLongDist) {
 				// Speed up Launcher and Roller but nothing else

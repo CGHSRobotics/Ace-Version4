@@ -4,12 +4,16 @@
 
 // pros terminal > output.txt
 
+
+/* ========================================================================== */
+/*                                Screen Update                               */
+/* ========================================================================== */
 void screenUpdate() {
 
 	while (true) {
 
 		// 	Controller Text
-		std::string str_selectedAuton = ace::auton::autonArray[ace::auton::autonIndex];
+		std::string str_selectedAuton = ace::autonArray[ace::autonIndex];
 		master.set_text(2, 0, (str_selectedAuton + "          ").c_str());
 
 		//	Tab 2 - Auton
@@ -38,12 +42,9 @@ void screenUpdate() {
 }
 
 
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+/* ========================================================================== */
+/*                                 Initialize                                 */
+/* ========================================================================== */
 void initialize() {
 
 	ace::operation_mode = "init";
@@ -77,18 +78,17 @@ void initialize() {
 	ace::gps::init();
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
+
+/* ========================================================================== */
+/*                                  Disabled                                  */
+/* ========================================================================== */
 void disabled() {
 	ace::operation_mode = "disabled";
 
 
 	while (true) {
 		ace::resetMotors();
-		ace::auton::checkAutonButtons();
+		ace::checkAutonButtons();
 
 		screenUpdate();
 
@@ -96,31 +96,17 @@ void disabled() {
 	}
 }
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
+/* ========================================================================== */
+/*                        Competition Init (Don't Use)                        */
+/* ========================================================================== */
 void competition_initialize() {
 	// . . .
 }
 
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
+/* ========================================================================== */
+/*                             Autonomous Function                            */
+/* ========================================================================== */
 void autonomous() {
 
 	ace::operation_mode = "auto";
@@ -131,7 +117,7 @@ void autonomous() {
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
-	std::string str = ace::auton::autonArray[ace::auton::autonIndex];
+	std::string str = ace::autonArray[ace::autonIndex];
 
 	printf("\n\nCalling Auton...	%s \n\n", str.c_str());
 
@@ -170,20 +156,10 @@ void autonomous() {
 
 }
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
 
+/* ========================================================================== */
+/*                                User Control                                */
+/* ========================================================================== */
 void opcontrol() {
 
 	ace::operation_mode = "user";
@@ -201,7 +177,7 @@ void opcontrol() {
 	bool endgameToggleEnabled = false;
 
 	while (true) {
-		ace::auton::checkAutonButtons();
+		ace::checkAutonButtons();
 
 		chassis.tank();  // Tank control
 
@@ -253,19 +229,19 @@ void opcontrol() {
 
 			// 	Launch Disks from Long Distance
 			ace::active_brake(true, chassis);
-			ace::launchDisks(true, ace::SPEED_LAUNCHER_LONG, true);
+			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_LONG, true);
 		}
 		if (master.get_digital(BUTTON_LAUNCHER)) {
 
 			// 	Launch Disks from Normal Range
 			ace::active_brake(true, chassis);
-			ace::launchDisks(true, ace::SPEED_LAUNCHER_DRIVER);
+			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_DRIVER);
 		}
-		if (ace::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
+		if (ace::launch::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			//	Disable Launching
 			ace::active_brake(false, chassis);
-			ace::launchDisks(false, 0.0);
+			ace::launch::launchDisks(false, 0.0);
 		}
 
 		// Endgame Toggle

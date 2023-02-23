@@ -34,6 +34,10 @@ EXCLUDE_SRC_FROM_LIB+=$(foreach file, $(SRCDIR)/autons $(SRCDIR)/main,$(foreach 
 EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace.h
 EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace.cpp
 EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace_auton.cpp
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace_routines.cpp
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace_launcher.cpp
+EXCLUDE_SRC_FROM_LIB+=$(SRCDIR)/scripts/ace_gps.cpp
+
 # files that get distributed to every user (beyond your source archive) - add
 # whatever files you want here. This line is configured to add all header files
 # that are in the the include directory get exported

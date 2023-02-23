@@ -53,8 +53,8 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p);
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
-	ace::auton::autonIndex = lv_btnm_get_pressed(btnm);
-	ace::auton::updateAutonSelection();
+	ace::autonIndex = lv_btnm_get_pressed(btnm);
+	ace::updateAutonSelection();
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -77,7 +77,7 @@ static lv_res_t btn_action_saveLog(lv_obj_t* button)
 {
 	if (ez::util::IS_SD_CARD)
 	{
-		ace::saveLauncherData();
+		ace::launch::saveLauncherData();
 		FILE* launcherFile;
 		launcherFile = fopen(ace::launcherFile_path, "r");
 		fseek(launcherFile, 0, SEEK_END);
@@ -92,7 +92,7 @@ static lv_res_t btn_action_uploadLog(lv_obj_t* button)
 {
 	if (ez::util::IS_SD_CARD)
 	{
-		ace::uploadLauncherData();
+		ace::launch::uploadLauncherData();
 	}
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }

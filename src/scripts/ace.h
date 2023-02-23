@@ -58,7 +58,7 @@ namespace ace {
 	const int DRIVE_RIGHT_FRONT_PORT = 1;
 	const int DRIVE_RIGHT_BACK_PORT = 20;
 	const int LAUNCHER_PORT = 17;
-	const int ROLLER_PORT = 4;
+	const int VAR_LAUNCHER_PORT = 4;
 	const int CONVEYOR_PORT = 15;
 	const int INTAKE_PORT = 16;
 
@@ -108,15 +108,20 @@ namespace ace {
 	/*                             Device Declarations                            */
 	/* ========================================================================== */
 
-	// Motors
+
+	/* --------------------------------- Motors --------------------------------- */
+
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
+	const pros::Motor varLauncherMotor(VAR_LAUNCHER_PORT, INTAKE_GEAR_RATIO, false);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
 	const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
 
-	// Endgame
+	/* --------------------------------- Endgame -------------------------------- */
+
 	const pros::ADIDigitalOut endgamePneumatics('a', false);
 
-	// GPS
+	/* ----------------------------------- GPS ---------------------------------- */
+
 	const float GPS_OffsetX = -100 / 1000.0;
 	const float GPS_OffsetY = 136.0 / 1000.0;
 

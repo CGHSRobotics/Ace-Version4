@@ -24,9 +24,9 @@
 
 #define DRIVE_GEAR_RATIO MOTOR_GEARSET_18
 #define LAUNCHER_GEAR_RATIO MOTOR_GEARSET_06
-#define ROLLER_GEAR_RATIO MOTOR_GEARSET_06
+#define VAR_LAUNCHER_GEAR_RATIO MOTOR_GEARSET_36
 #define CONVEYOR_GEAR_RATIO MOTOR_GEARSET_06
-#define INTAKE_GEAR_RATIO MOTOR_GEARSET_18
+#define INTAKE_GEAR_RATIO MOTOR_GEARSET_06
 
 // namespace cghs
 namespace ace {
@@ -112,7 +112,7 @@ namespace ace {
 	/* --------------------------------- Motors --------------------------------- */
 
 	const pros::Motor launcherMotor(LAUNCHER_PORT, LAUNCHER_GEAR_RATIO, true);
-	const pros::Motor varLauncherMotor(VAR_LAUNCHER_PORT, INTAKE_GEAR_RATIO, false);
+	const pros::Motor varLauncherMotor(VAR_LAUNCHER_PORT, VAR_LAUNCHER_GEAR_RATIO, false);
 	const pros::Motor conveyorMotor(CONVEYOR_PORT, CONVEYOR_GEAR_RATIO, false);
 	const pros::Motor intakeMotor(INTAKE_PORT, INTAKE_GEAR_RATIO, false);
 
@@ -126,6 +126,14 @@ namespace ace {
 	const float GPS_OffsetY = 136.0 / 1000.0;
 
 	const pros::GPS gpsSensor(GPS_PORT, GPS_OffsetX, GPS_OffsetY);
+
+	/* ------------------------------ Vision Sensor ----------------------------- */
+
+	const pros::Vision visionSensor(VISION_PORT);
+
+	/* ------------------------------ Potentiometer ----------------------------- */
+
+	const pros::ADIPotentiometer potentiometer_varL('b');
 
 
 	/* ========================================================================== */

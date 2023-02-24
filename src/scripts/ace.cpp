@@ -62,7 +62,29 @@ namespace ace {
 	 *	Util Functions
 	 */
 
-	 // Spin Motor with Percent
+	 //Check here
+
+	int diskCode = 0;
+	int launchCount = 0;
+	bool disksFired = false;
+	int areaCutoff = 5;
+
+	void diskCheck() {
+
+		pros::vision_object_s_t detectedDisk = visionSensor.get_by_sig(0, diskCode);
+		if (detectedDisk.height * detectedDisk.width >= areaCutoff) {
+			launchCount = launchCount + 1;
+		}
+		if (launchCount % 3 == 1) {
+			disksFired = true;
+		}
+		else {
+			disksFired = false;
+		}
+	}
+
+
+	// Spin Motor with Percent
 	void spinMotor(pros::Motor motor, float percent) {
 		switch (motor.get_gearing()) {
 		case MOTOR_GEARSET_06:
@@ -87,7 +109,7 @@ namespace ace {
 
 	// Sets Active Break
 	bool activeBreakEnabled = false;
-	void active_brake(bool enabled, Drive& chassis) {
+	void active_brake(bool enabled) {
 		if (enabled && activeBreakEnabled)
 			chassis.set_active_brake(0.1);
 		else

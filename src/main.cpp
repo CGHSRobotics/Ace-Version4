@@ -49,9 +49,6 @@ void initialize() {
 
 	ace::operation_mode = "init";
 
-	// Print our branding over your terminal :D
-	//ez::print_ez_template();
-
 	printf("\n Initializing... \n");
 
 	pros::delay(500);  // Stop the user from doing anything while legacy ports configure.
@@ -63,6 +60,10 @@ void initialize() {
 	chassis.initialize();
 
 	ace::launcherMotor.set_brake_mode(MOTOR_BRAKE_COAST);
+
+	ace::varLauncherMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
+	//ace::varLauncherMotor.set_zero_position(ace::varLauncherMotor.get_position() - ace::potentiometer_varL.get_value());
+	ace::varLauncherMotor.move_absolute(0, -100);
 
 	// Shut down pros gfx library
 	pros::lcd::shutdown();
@@ -85,12 +86,9 @@ void initialize() {
 void disabled() {
 	ace::operation_mode = "disabled";
 
-
 	while (true) {
 		ace::resetMotors();
 		ace::checkAutonButtons();
-
-		screenUpdate();
 
 		pros::delay(ez::util::DELAY_TIME);
 	}
@@ -99,9 +97,7 @@ void disabled() {
 /* ========================================================================== */
 /*                        Competition Init (Don't Use)                        */
 /* ========================================================================== */
-void competition_initialize() {
-	// . . .
-}
+void competition_initialize() {}
 
 
 /* ========================================================================== */
@@ -177,6 +173,7 @@ void opcontrol() {
 	bool endgameToggleEnabled = false;
 
 	while (true) {
+
 		ace::checkAutonButtons();
 
 		chassis.tank();  // Tank control
@@ -228,19 +225,19 @@ void opcontrol() {
 		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			// 	Launch Disks from Long Distance
-			ace::active_brake(true, chassis);
+			ace::active_brake(true);
 			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_LONG, true);
 		}
 		if (master.get_digital(BUTTON_LAUNCHER)) {
 
 			// 	Launch Disks from Normal Range
-			ace::active_brake(true, chassis);
+			ace::active_brake(true);
 			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_DRIVER);
 		}
 		if (ace::launch::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			//	Disable Launching
-			ace::active_brake(false, chassis);
+			ace::active_brake(false);
 			ace::launch::launchDisks(false, 0.0);
 		}
 

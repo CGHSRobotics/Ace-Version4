@@ -34,35 +34,18 @@ namespace ace::launch {
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
 				// Set velocity to max
 				launcherMotor.move_velocity(600);
-				//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
 				spinMotor(intakeMotor, 0);
 				spinMotor(conveyorMotor, 0);
 				launcherTimerDelay = 0;
 				return;
 			}
-			//Check here
-			/*
-			int diskCode = 0
-			int launchCount = 0
-			bool disksFired = false
-			void diskCheck(){
-				visionObject rtn = visionSensor.get_by_code(0, diskCode);
-				if visionObject = (0, diskCode) {
-					launchCount = launchCount + 1;
-				}
-				if launchCount % 3 = (1) {
-					disksFired = true
 
-				} else {
-					disksFired = false
-				}
-			}
-			*/
 			// if long distance
 			if (isLongDist) {
 				// Speed up Launcher and Roller but nothing else
 				launcherMotor.move_velocity(speed * 6);
-				//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
+
+				varLauncherMotor.move_absolute(150, 100);
 
 				if (!(launcherTimerDelay > launcherTimerDelayMax)) {
 					launcherTimerDelay += 10.0;
@@ -74,19 +57,19 @@ namespace ace::launch {
 
 			// if is regular distance
 			if (!isLongDist) {
+
+				varLauncherMotor.move_absolute(0, -100);
 				// Set pid to set velocity
 				spinMotor(launcherMotor, SPEED_LAUNCHER_LONG);
 			}
 
-			//spinMotor(rollerMotor, -SPEED_ROLLER_LAUNCHER);
-			spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
+			spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
 			spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
 
 		}
 		else {
 			launcherEnabled = false;
 
-			//spinMotor(rollerMotor, 0);
 			spinMotor(intakeMotor, 0);
 			spinMotor(conveyorMotor, 0);
 

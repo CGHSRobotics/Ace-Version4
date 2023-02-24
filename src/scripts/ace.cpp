@@ -17,16 +17,17 @@ Drive chassis(
 
 namespace ace {
 
-	/*
-	 *	Global Vars
-	 */
+
+	/* ========================================================================== */
+	/*                                 Global Vars                                */
+	/* ========================================================================== */
 
 	int alliance = 0;
 	string operation_mode = "no";
 
 	int autonIndex = 0;
 
-	// Updates auton selection and prints to screen
+	/* -------------- Updates Auton Selection And Prints To Screen -------------- */
 	void updateAutonSelection() {
 		if (autonIndex < 0)
 		{
@@ -42,7 +43,7 @@ namespace ace {
 		printf("\n Auton Changed To: %s", str.c_str());
 	}
 
-	// Adjust Auton based off of buttons
+	/* -------------------- Adjust Auton Based Off Of Buttons ------------------- */
 	void checkAutonButtons() {
 
 		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))
@@ -58,17 +59,17 @@ namespace ace {
 	}
 
 
-	/*
-	 *	Util Functions
-	 */
+	/* ========================================================================== */
+	/*                              Utility Functions                             */
+	/* ========================================================================== */
 
-	 //Check here
 
 	int diskCode = 0;
 	int launchCount = 0;
 	bool disksFired = false;
 	int areaCutoff = 5;
 
+	/* ------------------- Checks For Disk Using Vision Sensor ------------------ */
 	void diskCheck() {
 
 		pros::vision_object_s_t detectedDisk = visionSensor.get_by_sig(0, diskCode);
@@ -84,7 +85,7 @@ namespace ace {
 	}
 
 
-	// Spin Motor with Percent
+	/* ------------------------- Spin Motor With Percent ------------------------ */
 	void spinMotor(pros::Motor motor, float percent) {
 		switch (motor.get_gearing()) {
 		case MOTOR_GEARSET_06:
@@ -107,7 +108,7 @@ namespace ace {
 		motor.move_velocity(percent);
 	}
 
-	// Sets Active Break
+	/* ---------------------------- Sets Active Break --------------------------- */
 	bool activeBreakEnabled = false;
 	void active_brake(bool enabled) {
 		if (enabled && activeBreakEnabled)
@@ -116,26 +117,27 @@ namespace ace {
 			chassis.set_active_brake(0);
 	}
 
-	/*
-	 *	Unit Conversion
-	 */
 
-	 // Convert Celsius to farenheit
+	/* ========================================================================== */
+	/*                               Unit Conversion                              */
+	/* ========================================================================== */
+
+	/* ---------------------- Convert Celsius To Farenheit ---------------------- */
 	float cel_to_faren(float celsius) {
 		return celsius * 1.8 + 32;
 	}
 
-	// Convert inch to mm
+	/* --------------------------- Convert Inch To Mm --------------------------- */
 	float to_mm(float inch) {
 		return inch * 25.4;
 	}
 
-	// Convert inch to mm
+	/* --------------------------- Convert Inch To Mm --------------------------- */
 	float to_inch(float mm) {
 		return mm / 25.4;
 	}
 
-	// Convert rad to degree
+	/* -------------------------- Convert Rad To Degree ------------------------- */
 	float to_deg(float rad) {
 		float deg = rad * (180.0 / 3.141592653589793238463);
 
@@ -145,11 +147,12 @@ namespace ace {
 		return deg;
 	}
 
-	/*
-	 *	User Control Functions
-	 */
 
-	 // Reset all Inputs
+	/* ========================================================================== */
+	/*                           User Control Functions                           */
+	/* ========================================================================== */
+
+	/* ---------------------------- Reset All Inputs ---------------------------- */
 	void resetMotors() {
 		launcherMotor.move_voltage(0);
 		//rollerMotor.move_voltage(0);
@@ -159,7 +162,7 @@ namespace ace {
 		endgamePneumatics.set_value(false);
 	}
 
-	// Intake Toggle
+	/* ------------------------------ Intake Toggle ----------------------------- */
 	void intakeToggle(bool enabled) {
 		if (enabled) {
 			spinMotor(intakeMotor, SPEED_INTAKE);
@@ -171,7 +174,7 @@ namespace ace {
 		}
 	}
 
-	// Intake Reverse
+	/* ----------------------------- Intake Reverse ----------------------------- */
 	void intakeReverse(bool enabled) {
 		if (enabled) {
 			spinMotor(intakeMotor, -SPEED_INTAKE);
@@ -183,7 +186,7 @@ namespace ace {
 		}
 	}
 
-	// Roller Forward
+	/* ----------------------------- Roller Forward ----------------------------- */
 	void rollerForward(bool enabled, float speed) {
 		if (enabled) {
 			//spinMotor(rollerMotor, SPEED_ROLLER);
@@ -195,7 +198,7 @@ namespace ace {
 		}
 	}
 
-	// Roller Reverse
+	/* ----------------------------- Roller Reverse ----------------------------- */
 	void rollerReverse(bool enabled, float speed) {
 		if (enabled) {
 			//spinMotor(rollerMotor, -SPEED_ROLLER);
@@ -205,7 +208,7 @@ namespace ace {
 		}
 	}
 
-	// Endgame Toggle
+	/* ----------------------------- Endgame Toggle ----------------------------- */
 	void endgameToggle(bool enabled) {
 		if (enabled) {
 			endgamePneumatics.set_value(1);

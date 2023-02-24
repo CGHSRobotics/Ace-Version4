@@ -26,7 +26,7 @@
 #define LAUNCHER_GEAR_RATIO MOTOR_GEARSET_06
 #define VAR_LAUNCHER_GEAR_RATIO MOTOR_GEARSET_36
 #define CONVEYOR_GEAR_RATIO MOTOR_GEARSET_06
-#define INTAKE_GEAR_RATIO MOTOR_GEARSET_06
+#define INTAKE_GEAR_RATIO MOTOR_GEARSET_18
 
 // namespace cghs
 namespace ace {
@@ -97,11 +97,12 @@ namespace ace {
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	/* ----------------------------- Launcher Motor ----------------------------- */
-	const float SPEED_LAUNCHER = 80;
-	const float SPEED_LAUNCHER_DRIVER = 80;
-	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_SHORT = 60;
+	const float SPEED_LAUNCHER_LONG = 100;
+	const float SPEED_LAUNCHER_STANDBY = 50;
 	const float LAUNCHER_MIN_SPEED = 20.0;
+
+	extern float LAUNCHER_STANDBY_ENABLED;
 
 
 	/* ========================================================================== */
@@ -282,10 +283,13 @@ namespace ace::launch {
 	std::vector<l_data_point> l_data_array;
 
 	// launch disks function
-	extern void launchDisks(bool enabled, float speed, bool isLongDist = false, bool standby = false);
+	extern void launchDisks(float speed, bool isLongDist = false);
 
 	// launch disks auton
 	extern void launchDisks_Auto(float time, float speed, bool isLongDist = false);
+
+	// Set standby to true or false
+	extern void set_standby(bool enabled);
 
 	// Records Launcher speed + time to file on sd card
 	extern void recordLauncherStatistics();
@@ -352,12 +356,5 @@ namespace ace::gps {
 	extern void set_waypoint(float x, float y);
 }
 
-
-/* ========================================================================== */
-/*                               LVGL Namespace                               */
-/* ========================================================================== */
-namespace ace::lvgl {
-
-}
 
 #endif

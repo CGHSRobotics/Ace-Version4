@@ -13,7 +13,7 @@ namespace ace {
 
 		gps::set_turn(45, SPEED_TURN_AUTO);
 
-		launch::launchDisks(false, 50, false, true);
+		launch::set_standby(true);
 
 		// Get Roller 1
 		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO);
@@ -44,7 +44,7 @@ namespace ace {
 		gps::set_turn(85, SPEED_TURN_AUTO);
 		intakeToggle(false);
 
-		launch::launchDisks_Auto(8000, SPEED_LAUNCHER, false);
+		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
 
 		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
@@ -61,7 +61,7 @@ namespace ace {
 		gps::set_turn(45, SPEED_TURN_AUTO, true);
 
 		intakeToggle(false);
-		launch::launchDisks_Auto(80, SPEED_LAUNCHER);
+		launch::launchDisks_Auto(80, SPEED_LAUNCHER_SHORT);
 
 		launcherMotor.move_voltage(0);
 

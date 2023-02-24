@@ -16,56 +16,66 @@ namespace ace::launch {
 	float launcherTimerDelay = 0;
 	// launcherEnabledBool
 	bool launcherEnabled = false;
+	// bool whether standby enabled or not
+	float LAUNCHER_STANDBY_ENABLED = false;
 
 
 	/* ========================================================================== */
 	/*                            Launch Disks Function                           */
 	/* ========================================================================== */
-	void launchDisks(bool enabled, float speed, bool isLongDist, bool standby) {
+	void launchDisks(float speed, bool isLongDist) {
 
 		// If want to run launcher
-		if (enabled) {
+		if (speed > 0.0) {
 
+			/* ------------------------------ General Stuff ----------------------------- */
 
 			launch::recordLauncherStatistics();
 			launcherEnabled = true;
 
-			// if less than cutoff
+			/* --------------------------- If Less Than Cutoff -------------------------- */
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
 				// Set velocity to max
-				launcherMotor.move_velocity(600);
-				spinMotor(intakeMotor, 0);
+				spinMotor(launcherMotor, 100);
+				spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 				spinMotor(conveyorMotor, 0);
 				launcherTimerDelay = 0;
-				return;
 			}
 
-			// if long distance
+			/* ---------------------------- Long Distance ---------------------------- */
 			if (isLongDist) {
-				// Speed up Launcher and Roller but nothing else
+
+				// Set pid to set velocity
 				launcherMotor.move_velocity(speed * 6);
 
+				// Move Var Launcher to low angle
 				varLauncherMotor.move_absolute(150, 100);
 
-				if (!(launcherTimerDelay > launcherTimerDelayMax)) {
+				if (launcherTimerDelay < launcherTimerDelayMax) {
 					launcherTimerDelay += 10.0;
-					return;
 				}
+				else {
+					launcherTimerDelay -= launcherTimerDelayMax;
 
-				launcherTimerDelay -= launcherTimerDelayMax;
+					// Spin intake and conveyor to launch disks
+					spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
+					spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
+				}
 			}
 
-			// if is regular distance
+			/* ------------------------- Short Distance ------------------------- */
 			if (!isLongDist) {
 
-				varLauncherMotor.move_absolute(0, -100);
 				// Set pid to set velocity
 				spinMotor(launcherMotor, SPEED_LAUNCHER_LONG);
+
+				// Move Var Launcher to high angle
+				varLauncherMotor.move_absolute(0, -100);
+
+				// Spin intake and conveyor to launch disks
+				spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
+				spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
 			}
-
-			spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
-			spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
-
 		}
 		else {
 			launcherEnabled = false;
@@ -73,8 +83,9 @@ namespace ace::launch {
 			spinMotor(intakeMotor, 0);
 			spinMotor(conveyorMotor, 0);
 
-			if (standby)
-				spinMotor(launcherMotor, SPEED_LAUNCHER);
+			// if standby, set to 50% else set to passive 0 volts
+			if (LAUNCHER_STANDBY_ENABLED)
+				spinMotor(launcherMotor, SPEED_LAUNCHER_STANDBY);
 			else
 				launcherMotor.move_voltage(0);
 		}
@@ -87,15 +98,22 @@ namespace ace::launch {
 	void launchDisks_Auto(float time, float speed, bool isLongDist) {
 		float currTime = 0;
 		while (currTime < time) {
-			launch::launchDisks(true, speed, isLongDist);
+			launch::launchDisks(speed, isLongDist);
 
 			currTime += ez::util::DELAY_TIME;
 			pros::delay(ez::util::DELAY_TIME);
 		}
 
-		launch::launchDisks(false, 0, false, true);
+		launch::launchDisks(0, false);
 	}
 
+
+	/* ========================================================================== */
+	/*                                 Set Standby                                */
+	/* ========================================================================== */
+	void set_standby(bool enabled) {
+		LAUNCHER_STANDBY_ENABLED = enabled;
+	}
 
 	/* ========================================================================== */
 	/*                         Record Launcher Statistics                         */

@@ -1,3 +1,4 @@
+
 #include "scripts/ace.h"
 
 #include "scripts/ace_lvgl.cpp"
@@ -31,7 +32,7 @@ void screenUpdate() {
 		lv_label_set_text(labelTemp2, (
 			(string)"  \n" +
 			"\nLauncher: " + std::to_string(ace::cel_to_faren(ace::launcherMotor.get_temperature())) +
-			"\nRoller: " + std::to_string(ace::cel_to_faren(10/*ace::rollerMotor.get_temperature()*/)) +
+			"\nVar_Launch: " + std::to_string(ace::cel_to_faren(ace::varLauncherMotor.get_temperature())) +
 			"\nIntake: " + std::to_string(ace::cel_to_faren(ace::intakeMotor.get_temperature())) +
 			"\nDTS: " + std::to_string(ace::cel_to_faren(ace::conveyorMotor.get_temperature()))
 			).c_str()
@@ -183,13 +184,13 @@ void opcontrol() {
 			ace::activeBreakEnabled = !ace::activeBreakEnabled;
 		}*/
 
-		// Toggle Intake
+		/* ------------------------------ Toggle Intake ----------------------------- */
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
 			intakeToggleEnabled = !intakeToggleEnabled;
 			ace::intakeToggle(intakeToggleEnabled);
 		}
 
-		// Emergency Reverse Intake
+		/* ------------------------ Emergency Reverse Intake ------------------------ */
 		if (master.get_digital_new_press(BUTTON_INTAKE_REVERSE)) {
 			intakeToggleEnabled = false;
 			ace::intakeToggle(false);
@@ -201,7 +202,7 @@ void opcontrol() {
 			ace::intakeReverse(false);
 		}
 
-		// Roller Forward Intake
+		/* -------------------------- Roller Forward Intake ------------------------- */
 		if (master.get_digital_new_press(BUTTON_ROLLER_FORWARD)) {
 			rollerForwardToggle = true;
 			ace::rollerForward(true, ace::SPEED_ROLLER);
@@ -211,7 +212,7 @@ void opcontrol() {
 			ace::rollerForward(false, 0);
 		}
 
-		// Roller Reverse Intake
+		/* -------------------------- Roller Reverse Intake ------------------------- */
 		if (master.get_digital_new_press(BUTTON_ROLLER_REVERSE)) {
 			rollerReverseToggle = true;
 			ace::rollerReverse(true, ace::SPEED_ROLLER);
@@ -221,27 +222,27 @@ void opcontrol() {
 			ace::rollerReverse(false, 0);
 		}
 
-		// Launch Disks
+		/* ------------------------------ Launch Disks ------------------------------ */
 		if (master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			// 	Launch Disks from Long Distance
 			ace::active_brake(true);
-			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_LONG, true);
+			ace::launch::launchDisks(ace::SPEED_LAUNCHER_LONG, true);
 		}
 		if (master.get_digital(BUTTON_LAUNCHER)) {
 
 			// 	Launch Disks from Normal Range
 			ace::active_brake(true);
-			ace::launch::launchDisks(true, ace::SPEED_LAUNCHER_DRIVER);
+			ace::launch::launchDisks(ace::SPEED_LAUNCHER_SHORT);
 		}
 		if (ace::launch::launcherEnabled && !master.get_digital(BUTTON_LAUNCHER) && !master.get_digital(BUTTON_LAUNCHER_LONG)) {
 
 			//	Disable Launching
 			ace::active_brake(false);
-			ace::launch::launchDisks(false, 0.0);
+			ace::launch::launchDisks(0.0);
 		}
 
-		// Endgame Toggle
+		/* ----------------------------- Endgame Toggle ----------------------------- */
 		if (master.get_digital(BUTTON_ENDGAME)) {
 			endgameToggleEnabled = true;
 			ace::endgameToggle(true);
@@ -251,6 +252,6 @@ void opcontrol() {
 			ace::endgameToggle(false);
 		}
 
-		pros::delay(ez::util::DELAY_TIME);  // This is used for timer calculations!  Keep this ez::util::DELAY_TIME
+		pros::delay(ez::util::DELAY_TIME);
 	}
 }

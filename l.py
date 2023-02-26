@@ -58,7 +58,7 @@ def main():
     stringToWrite = stringToWrite.replace("'", '"')
 
     # format to json
-    stringToWrite = '{ \n"array": [ \n {"msec": 0, "rpm": 0},' + \
+    stringToWrite = '{ \n"array": [ \n ' + \
         stringToWrite + '\n] }'
 
     # write to file

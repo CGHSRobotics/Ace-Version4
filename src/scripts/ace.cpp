@@ -63,24 +63,22 @@ namespace ace {
 	/*                              Utility Functions                             */
 	/* ========================================================================== */
 
-
-	int diskCode = 0;
 	int launchCount = 0;
-	bool disksFired = false;
-	int areaCutoff = 5;
-
+	int areaCutoff = 100;
+	bool diskSeen = false;
 	/* ------------------- Checks For Disk Using Vision Sensor ------------------ */
 	void diskCheck() {
 
 		pros::vision_object_s_t detectedDisk = visionSensor.get_by_sig(0, diskCode);
+
 		if (detectedDisk.height * detectedDisk.width >= areaCutoff) {
 			launchCount = launchCount + 1;
+			diskSeen = true;
 		}
-		if (launchCount % 3 == 1) {
-			disksFired = true;
-		}
-		else {
-			disksFired = false;
+		else if (diskSeen) {
+			diskSeen = false;
+			launchCount = launchCount + 1;
+			master.rumble(".");
 		}
 	}
 
@@ -188,24 +186,19 @@ namespace ace {
 
 	/* ----------------------------- Roller Forward ----------------------------- */
 	void rollerForward(bool enabled, float speed) {
-		if (enabled) {
-			//spinMotor(rollerMotor, SPEED_ROLLER);
-			spinMotor(conveyorMotor, SPEED_ROLLER);
-		}
-		else {
-			//spinMotor(rollerMotor, 0);
-			spinMotor(conveyorMotor, SPEED_ROLLER);
-		}
+		if (enabled)
+			spinMotor(intakeMotor, SPEED_ROLLER);
+		else
+			spinMotor(intakeMotor, 0);
+
 	}
 
 	/* ----------------------------- Roller Reverse ----------------------------- */
 	void rollerReverse(bool enabled, float speed) {
-		if (enabled) {
-			//spinMotor(rollerMotor, -SPEED_ROLLER);
-		}
-		else {
-			//spinMotor(rollerMotor, 0);
-		}
+		if (enabled)
+			spinMotor(intakeMotor, -SPEED_ROLLER);
+		else
+			spinMotor(intakeMotor, 0);
 	}
 
 	/* ----------------------------- Endgame Toggle ----------------------------- */

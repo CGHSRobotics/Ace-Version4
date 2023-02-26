@@ -31,7 +31,14 @@ namespace ace::launch {
 			/* ------------------------------ General Stuff ----------------------------- */
 
 			launch::recordLauncherStatistics();
+			diskCheck();
 			launcherEnabled = true;
+
+			if (isLongDist)
+				varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
+			else
+				varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_UP, 100);
+
 
 			/* --------------------------- If Less Than Cutoff -------------------------- */
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
@@ -40,6 +47,8 @@ namespace ace::launch {
 				spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 				spinMotor(conveyorMotor, 0);
 				launcherTimerDelay = 0;
+
+				return;
 			}
 
 			/* ---------------------------- Long Distance ---------------------------- */
@@ -48,9 +57,6 @@ namespace ace::launch {
 				// Set pid to set velocity
 				launcherMotor.move_velocity(speed * 6);
 
-				// Move Var Launcher to low angle
-				varLauncherMotor.move_absolute(150, 100);
-
 				if (launcherTimerDelay < launcherTimerDelayMax) {
 					launcherTimerDelay += 10.0;
 				}
@@ -58,7 +64,7 @@ namespace ace::launch {
 					launcherTimerDelay -= launcherTimerDelayMax;
 
 					// Spin intake and conveyor to launch disks
-					spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
+					spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 					spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
 				}
 			}
@@ -67,13 +73,10 @@ namespace ace::launch {
 			if (!isLongDist) {
 
 				// Set pid to set velocity
-				spinMotor(launcherMotor, SPEED_LAUNCHER_LONG);
-
-				// Move Var Launcher to high angle
-				varLauncherMotor.move_absolute(0, -100);
+				spinMotor(launcherMotor, SPEED_LAUNCHER_SHORT);
 
 				// Spin intake and conveyor to launch disks
-				spinMotor(intakeMotor, -SPEED_INTAKE_LAUNCHER);
+				spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
 				spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
 			}
 		}
@@ -96,6 +99,7 @@ namespace ace::launch {
 	/*                          Launch Disks Autonomously                         */
 	/* ========================================================================== */
 	void launchDisks_Auto(float time, float speed, bool isLongDist) {
+		launchCount = 0;
 		float currTime = 0;
 		while (currTime < time) {
 			launch::launchDisks(speed, isLongDist);
@@ -142,7 +146,7 @@ namespace ace::launch {
 							// if rpm dropped by about 10% in two frames while rpm is greater than 40
 							if (curr_point.rpm < point_2fr_ago.rpm * 0.95 && point_2fr_ago.rpm > 40.0 * 6.0) {
 								printf("LAUNCH DETECTED");
-								master.rumble(".");
+								//master.rumble(".");
 							}
 						}
 					}
@@ -193,18 +197,10 @@ namespace ace::launch {
 		char buff[buff_size];
 
 		float line_counter = 0;
-		float lines_per_msec = 5;
+		float lines_per_msec = 1;
 
 		while (true)
 		{
-			line_counter += 1.0 / lines_per_msec;
-
-			if (line_counter >= 1)
-			{
-				pros::delay(1);
-				line_counter -= 1.0;
-				continue;
-			}
 
 			if (!fgets(buff, buff_size, launcherFile))
 			{
@@ -212,6 +208,8 @@ namespace ace::launch {
 			}
 
 			printf(buff);
+
+			pros::delay(10);
 		}
 
 		fclose(launcherFile);

@@ -63,8 +63,10 @@ void initialize() {
 	ace::launcherMotor.set_brake_mode(MOTOR_BRAKE_COAST);
 
 	ace::varLauncherMotor.set_brake_mode(MOTOR_BRAKE_HOLD);
-	//ace::varLauncherMotor.set_zero_position(ace::varLauncherMotor.get_position() - ace::potentiometer_varL.get_value());
-	ace::varLauncherMotor.move_absolute(0, -100);
+	ace::varLauncherMotor.set_encoder_units(MOTOR_ENCODER_DEGREES);
+	printf(std::to_string(ace::potentiometer_varL.get_value()).c_str());
+	ace::varLauncherMotor.set_zero_position((ace::potentiometer_varL.get_value() / 4095.0) * 225.0);
+	ace::varLauncherMotor.move_absolute(ace::VAR_LAUNCH_ANGLE_DOWN, -100);
 
 	// Shut down pros gfx library
 	pros::lcd::shutdown();

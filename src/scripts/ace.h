@@ -84,8 +84,8 @@ namespace ace {
 
 	/* ----------------------------- Conveyor Motor ----------------------------- */
 	const float SPEED_CONVEYOR_INTAKE = 100;
-	const float SPEED_CONVEYOR_LAUNCHER = 100;
-	const float SPEED_CONVEYOR_LAUNCHER_LONG = 35;
+	const float SPEED_CONVEYOR_LAUNCHER = 50;
+	const float SPEED_CONVEYOR_LAUNCHER_LONG = 50;
 
 	/* ------------------------------ Roller Motor ------------------------------ */
 	const float SPEED_ROLLER = 100;
@@ -97,12 +97,17 @@ namespace ace {
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	/* ----------------------------- Launcher Motor ----------------------------- */
-	const float SPEED_LAUNCHER_SHORT = 60;
+	const float SPEED_LAUNCHER_SHORT = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_STANDBY = 50;
 	const float LAUNCHER_MIN_SPEED = 20.0;
 
 	extern float LAUNCHER_STANDBY_ENABLED;
+
+	/* ---------------------------- Variable Launcher --------------------------- */
+	const float VAR_LAUNCH_ANGLE_DOWN = 0.20 * 225.0;
+	const float VAR_LAUNCH_ANGLE_UP = 0.80 * 225.0;
+
 
 
 	/* ========================================================================== */
@@ -162,6 +167,13 @@ namespace ace {
 	 *    @brief Resets all motors to 0 voltage. Also disables pneumatics
 	 */
 	extern void resetMotors();
+
+	const int diskCode = 0;
+	extern int launchCount;
+	extern int areaCutoff;
+	extern bool diskSeen;
+
+	extern void diskCheck();
 
 
 	/* ========================================================================== */

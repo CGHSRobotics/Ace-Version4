@@ -16,9 +16,6 @@ namespace ace::launch {
 	float launcherTimerDelay = 0;
 	// launcherEnabledBool
 	bool launcherEnabled = false;
-	// bool whether standby enabled or not
-	float LAUNCHER_STANDBY_ENABLED = false;
-
 
 	/* ========================================================================== */
 	/*                            Launch Disks Function                           */

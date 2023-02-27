@@ -15,11 +15,11 @@
 #define BUTTON_ROLLER_REVERSE DIGITAL_B
 
 #define BUTTON_ENDGAME DIGITAL_UP
-
+#define BUTTTON_STANDBY DIGITAL_LEFT
 #define BUTTON_A_BRAKE_TOGGLE DIGITAL_DOWN
 
 #define BUTTON_AUTON_INCREASE DIGITAL_RIGHT
-#define BUTTON_AUTON_DECREASE DIGITAL_LEFT
+#define BUTTON_AUTON_DECREASE DIGITAL_X
 
 
 #define DRIVE_GEAR_RATIO MOTOR_GEARSET_18
@@ -102,7 +102,7 @@ namespace ace {
 	const float SPEED_LAUNCHER_STANDBY = 50;
 	const float LAUNCHER_MIN_SPEED = 20.0;
 
-	extern float LAUNCHER_STANDBY_ENABLED;
+	extern bool LAUNCHER_STANDBY_ENABLED;
 
 	/* ---------------------------- Variable Launcher --------------------------- */
 	const float VAR_LAUNCH_ANGLE_DOWN = 0.20 * 225.0;

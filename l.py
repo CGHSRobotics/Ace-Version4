@@ -51,7 +51,24 @@ def main():
     stringToWrite = ""
     i = start_line + 1
     while i < end_line:
-        stringToWrite += line_arr[i]
+
+        var_array = line_arr[i].split(" ")
+
+        if len(var_array) < 4:
+            i += 1
+            continue
+
+        print(var_array)
+        stringToWrite += "\n { "
+        stringToWrite += '"msec": ' + var_array[0] + ", "
+        stringToWrite += '"rpm": ' + var_array[1] + ", "
+        stringToWrite += '"set_volt": ' + var_array[2] + ", "
+        stringToWrite += '"diskDetected": ' + var_array[3]
+        stringToWrite += "}"
+
+        if i < end_line - 1:
+            stringToWrite += ","
+
         i += 1
 
     # replace all single quotes with double quotes

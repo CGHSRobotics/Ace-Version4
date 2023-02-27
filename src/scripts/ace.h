@@ -21,7 +21,6 @@
 #define BUTTON_AUTON_INCREASE DIGITAL_RIGHT
 #define BUTTON_AUTON_DECREASE DIGITAL_LEFT
 
-
 #define DRIVE_GEAR_RATIO MOTOR_GEARSET_18
 #define LAUNCHER_GEAR_RATIO MOTOR_GEARSET_06
 #define VAR_LAUNCHER_GEAR_RATIO MOTOR_GEARSET_36
@@ -283,7 +282,8 @@ namespace ace::launch {
 	{
 		float msec;
 		float rpm;
-		float set_rpm;
+		float set_volt;
+		bool vis_disk;
 	};
 
 

@@ -69,10 +69,9 @@
             textAlign(CENTER, TOP);
             for (let i = 0; i <= maxX; i++) {
                 if (i % 250 == 0) {
-                    strokeWeight(0);
-                    text(i, posX(i), graphPosY + graphSizeY + 5);
                     strokeWeight(1);
                     stroke(225);
+                    if (i % 1000 == 0) stroke(150);
                     line(posX(i), graphPosY, posX(i), graphPosY + graphSizeY + 2);
                     stroke(0);
                 }
@@ -81,12 +80,35 @@
             textAlign(RIGHT, CENTER);
             for (let i = 0; i <= 3600; i++) {
                 if (i % 400 == 0) {
-                    strokeWeight(0);
-                    text(i, graphPosX - 5, posY(i));
                     strokeWeight(1);
                     stroke(225);
                     line(graphPosX + graphSizeX, posY(i), graphPosX - 2, posY(i));
                     stroke(0);
+                }
+            }
+
+            /* ========================================================================== */
+            /*                   Highlighted Section For Detected Disks                   */
+            /* ========================================================================== */
+
+            for (let i = 1; i < test.length; i++) {
+                if (test[i]["diskDetected"]) {
+                    var end = 0;
+                    while (test[i + end + 1]["diskDetected"]) {
+                        end += 1;
+                    }
+
+                    strokeWeight(0);
+                    fill(255, 255, 0, 65);
+                    rect(
+                        posX(test[i]["msec"]),
+                        graphPosY,
+                        posX(test[i + end]["msec"]) - posX(test[i]["msec"]),
+                        graphSizeY
+                    );
+                    strokeWeight(1);
+
+                    i += end;
                 }
             }
 
@@ -125,7 +147,12 @@
                 const prev_element = test[i - 1];
 
                 stroke(color(0, 255, 0));
-                drawLine(element["msec"], element["set_rpm"], prev_element["msec"], prev_element["set_rpm"]);
+                drawLine(
+                    element["msec"],
+                    element["set_volt"] / 3.3333,
+                    prev_element["msec"],
+                    prev_element["set_volt"] / 3.3333
+                );
             }
 
             // Points
@@ -135,7 +162,12 @@
 
                     stroke(color(60, 155, 0));
                     strokeWeight(4);
-                    drawLine(element["msec"], element["set_rpm"], element["msec"], element["set_rpm"]);
+                    drawLine(
+                        element["msec"],
+                        element["set_volt"] / 3.3333,
+                        element["msec"],
+                        element["set_volt"] / 3.3333
+                    );
                     strokeWeight(2);
                 }
             }
@@ -171,11 +203,22 @@
             }
             // Y Axis
             textAlign(RIGHT, CENTER);
+            fill(0);
+            text("RPM", graphPosX - 10, graphPosY - 25);
+            strokeWeight(0);
+            fill(255, 0, 0, 100);
+            rect(graphPosX - 5, graphPosY - 10, -40, graphSizeY + 20);
+            fill(0);
+            strokeWeight(1);
+            text("Volts", graphPosX - 60, graphPosY - 25);
+            strokeWeight(0);
+            fill(0, 255, 0, 100);
+            rect(graphPosX - 55, graphPosY - 10, -40, graphSizeY + 20);
             for (let i = 0; i <= 3600; i++) {
                 if (i % 400 == 0) {
-                    strokeWeight(0);
-                    text(i, graphPosX - 5, posY(i));
-                    strokeWeight(1);
+                    fill(0);
+                    text(i, graphPosX - 10, posY(i));
+                    text(round(i * 3.33), graphPosX - 60, posY(i));
                     line(graphPosX + 2, posY(i), graphPosX - 2, posY(i));
                 }
             }
@@ -203,7 +246,6 @@
             const reader = new FileReader();
             reader.addEventListener("load", (event) => {
                 formattedString = reader.result;
-                console.log(formattedString);
                 jsonObject = JSON.parse(formattedString);
                 drawGraph();
             });

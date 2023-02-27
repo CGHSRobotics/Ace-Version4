@@ -1,0 +1,9 @@
+{ 
+"array": [ 
+ 
+ { "msec": 100, "rpm": 2040, "set_volt": 10000, "diskDetected": 0},
+ { "msec": 200, "rpm": 2430, "set_volt": 10000, "diskDetected": 1},
+ { "msec": 300, "rpm": 2120, "set_volt": 12000, "diskDetected": 1},
+ { "msec": 400, "rpm": 2220, "set_volt": 0, "diskDetected": 0},
+ { "msec": 500, "rpm": 2220, "set_volt": 0, "diskDetected": 0}
+] }

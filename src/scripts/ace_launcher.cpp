@@ -133,7 +133,8 @@ namespace ace::launch {
 					l_data_point curr_point;
 					curr_point.msec = launcherTime;
 					curr_point.rpm = launcherMotor.get_actual_velocity() * 6;
-					curr_point.set_rpm = launcherMotor.get_target_velocity() * 6;
+					curr_point.set_volt = launcherMotor.get_voltage();
+					curr_point.vis_disk = diskSeen;
 					l_data_array.push_back(curr_point);
 
 
@@ -161,26 +162,25 @@ namespace ace::launch {
 	/* ========================================================================== */
 	void saveLauncherData() {
 
-		remove(launcherFile_path);
+		printf(("Delete File: " + std::to_string(remove(launcherFile_path))).c_str());
 
 		FILE* launcherFile;
 		launcherFile = fopen(launcherFile_path, "a");
 
-		fprintf(launcherFile, "\n/start data");
+		fprintf(launcherFile, "\n/start data\n");
 		for (size_t i = 0; i < l_data_array.size(); i++)
 		{
-			fprintf(launcherFile, "\n{");
-			fprintf(launcherFile, ("'msec': " + std::to_string(l_data_array[i].msec)).c_str());
-			fprintf(launcherFile, (", 'rpm': " + std::to_string(l_data_array[i].rpm)).c_str());
-			fprintf(launcherFile, (", 'set_rpm': " + std::to_string(l_data_array[i].set_rpm)).c_str());
-			fprintf(launcherFile, "}");
-
-			if (i != l_data_array.size() - 1)
-				fprintf(launcherFile, ",");
-
+			fprintf(launcherFile, (std::to_string((int)l_data_array[i].msec)).c_str());
+			fprintf(launcherFile, " ");
+			fprintf(launcherFile, (std::to_string((int)l_data_array[i].rpm)).c_str());
+			fprintf(launcherFile, " ");
+			fprintf(launcherFile, (std::to_string((int)l_data_array[i].set_volt)).c_str());
+			fprintf(launcherFile, " ");
+			fprintf(launcherFile, (std::to_string(l_data_array[i].vis_disk)).c_str());
+			fprintf(launcherFile, " \n");
 		}
 
-		fprintf(launcherFile, "\n/end data");
+		fprintf(launcherFile, "\n/end data\n");
 
 		fclose(launcherFile);
 	}

@@ -16,11 +16,21 @@ namespace ace::launch {
 	float launcherTimerDelay = 0;
 	// launcherEnabledBool
 	bool launcherEnabled = false;
+	bool flapEnabled = false;
 
 	/* ========================================================================== */
 	/*                            Launch Disks Function                           */
 	/* ========================================================================== */
 	void launchDisks(float speed, bool isLongDist) {
+
+		if (var_launcher_enabled = true) {
+			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, 100);
+			
+		} else {
+			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
+		}
+		
+		
 
 		// If want to run launcher
 		if (speed > 0.0) {
@@ -69,8 +79,12 @@ namespace ace::launch {
 			/* ------------------------- Short Distance ------------------------- */
 			if (!isLongDist) {
 
-				// Set pid to set velocity
-				spinMotor(launcherMotor, SPEED_LAUNCHER_SHORT);
+				if (var_launcher_enabled = true) {
+					spinMotor(launcherMotor, LAUNCHER_FLAP_SPEED);
+				} else {
+					// Set pid to set velocity
+					spinMotor(launcherMotor, SPEED_LAUNCHER_SHORT);			
+				}
 
 				// Spin intake and conveyor to launch disks
 				spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);

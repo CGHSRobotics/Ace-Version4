@@ -16,7 +16,7 @@
 
 #define BUTTON_ENDGAME DIGITAL_UP
 #define BUTTTON_STANDBY DIGITAL_LEFT
-#define BUTTON_A_BRAKE_TOGGLE DIGITAL_DOWN
+#define BUTTON_VAR_LAUNCHER DIGITAL_DOWN
 
 #define BUTTON_AUTON_INCREASE DIGITAL_RIGHT
 #define BUTTON_AUTON_DECREASE DIGITAL_X
@@ -100,6 +100,7 @@ namespace ace {
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_STANDBY = 50;
 	const float LAUNCHER_MIN_SPEED = 20.0;
+	const float LAUNCHER_FLAP_SPEED = 60;
 
 	extern bool LAUNCHER_STANDBY_ENABLED;
 
@@ -107,6 +108,8 @@ namespace ace {
 	const float VAR_LAUNCH_ANGLE_DOWN = 0.20 * 225.0;
 	const float VAR_LAUNCH_ANGLE_UP = 0.80 * 225.0;
 
+	extern bool var_launcher_enabled;
+	
 
 
 	/* ========================================================================== */

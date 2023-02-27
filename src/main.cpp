@@ -253,8 +253,13 @@ void opcontrol() {
 			endgameToggleEnabled = false;
 			ace::endgameToggle(false);
 		}
-		if (master.get_digital(BUTTTON_STANDBY)) {
+		
+		if (master.get_digital_new_press(BUTTTON_STANDBY)) {
 			ace::launch::set_standby(true);
+		}
+
+		if (master.get_digital_new_press(BUTTON_VAR_LAUNCHER)) {
+			ace::var_launcher_enabled = !ace::var_launcher_enabled;
 		}
 
 		pros::delay(ez::util::DELAY_TIME);

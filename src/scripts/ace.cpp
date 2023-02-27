@@ -27,6 +27,9 @@ namespace ace {
 
 	int autonIndex = 0;
 
+	// bool whether standby enabled or not
+	bool LAUNCHER_STANDBY_ENABLED = false;
+
 	/* -------------- Updates Auton Selection And Prints To Screen -------------- */
 	void updateAutonSelection() {
 		if (autonIndex < 0)

@@ -15,7 +15,7 @@ void screenUpdate() {
 
 		// 	Controller Text
 		std::string str_selectedAuton = ace::autonArray[ace::autonIndex];
-		master.set_text(2, 0, (str_selectedAuton + "          ").c_str());
+		master.set_text(2, 0, (str_selectedAuton + "  Standby: " +  std::to_string(ace::LAUNCHER_STANDBY_ENABLED)).c_str());
 
 		//	Tab 2 - Auton
 		lv_label_set_text(auton_label, ((string)"Selected: " + str_selectedAuton).c_str());
@@ -252,6 +252,9 @@ void opcontrol() {
 		if (endgameToggleEnabled && !master.get_digital(BUTTON_ENDGAME)) {
 			endgameToggleEnabled = false;
 			ace::endgameToggle(false);
+		}
+		if (master.get_digital(BUTTTON_STANDBY)) {
+			ace::launch::set_standby(true);
 		}
 
 		pros::delay(ez::util::DELAY_TIME);

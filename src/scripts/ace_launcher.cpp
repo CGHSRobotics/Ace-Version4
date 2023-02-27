@@ -24,13 +24,13 @@ namespace ace::launch {
 	void launchDisks(float speed, bool isLongDist) {
 
 		if (var_launcher_enabled = true) {
-			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, 100);
-			
-		} else {
+			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_UP, 100);
+		}
+		else {
 			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
 		}
-		
-		
+
+
 
 		// If want to run launcher
 		if (speed > 0.0) {
@@ -40,12 +40,6 @@ namespace ace::launch {
 			launch::recordLauncherStatistics();
 			diskCheck();
 			launcherEnabled = true;
-
-			if (isLongDist)
-				varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
-			else
-				varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_UP, 100);
-
 
 			/* --------------------------- If Less Than Cutoff -------------------------- */
 			if (launcherMotor.get_actual_velocity() / 6.0 <= speed - LAUNCHER_MIN_SPEED) {
@@ -80,10 +74,11 @@ namespace ace::launch {
 			if (!isLongDist) {
 
 				if (var_launcher_enabled = true) {
-					spinMotor(launcherMotor, LAUNCHER_FLAP_SPEED);
-				} else {
+					spinMotor(launcherMotor, SPEED_LAUNCHER_FLAP);
+				}
+				else {
 					// Set pid to set velocity
-					spinMotor(launcherMotor, SPEED_LAUNCHER_SHORT);			
+					spinMotor(launcherMotor, SPEED_LAUNCHER_SHORT);
 				}
 
 				// Spin intake and conveyor to launch disks

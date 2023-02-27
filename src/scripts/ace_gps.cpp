@@ -22,9 +22,8 @@ namespace ace::gps {
 
 			// dont do anything if not in autonomous
 			if (true) {
-
 				if (gpsSensor.get_error() < err_gps_max) {
-					chassis.imu.set_heading(gpsSensor.get_heading());
+					chassis.imu.set_rotation(gpsSensor.get_heading());
 				}
 			}
 
@@ -69,6 +68,13 @@ namespace ace::gps {
 		//	if already at position, return
 		if (std::abs(mag) <= err_pos_max)
 			return;
+
+		printf(("\nCurr X " + std::to_string(gps_x)).c_str());
+		printf(("\nCurr Y " + std::to_string(gps_y)).c_str());
+		printf(("\nTurning to " + std::to_string(theta)).c_str());
+		printf(("\nMove X " + std::to_string(distX)).c_str());
+		printf(("\nMove Y " + std::to_string(distY)).c_str());
+		printf("\n\n");
 
 		// Turn to angle
 		chassis.set_turn_pid(theta, curr_turnSpeed);

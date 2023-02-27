@@ -96,11 +96,11 @@ namespace ace {
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	/* ----------------------------- Launcher Motor ----------------------------- */
+	const float SPEED_LAUNCHER_FLAP = 70;
 	const float SPEED_LAUNCHER_SHORT = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_STANDBY = 50;
 	const float LAUNCHER_MIN_SPEED = 20.0;
-	const float LAUNCHER_FLAP_SPEED = 60;
 
 	extern bool LAUNCHER_STANDBY_ENABLED;
 

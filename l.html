@@ -91,10 +91,10 @@
             /*                   Highlighted Section For Detected Disks                   */
             /* ========================================================================== */
 
-            for (let i = 1; i < test.length; i++) {
+            for (let i = 0; i < test.length; i++) {
                 if (test[i]["diskDetected"]) {
-                    var end = 0;
-                    while (test[i + end + 1]["diskDetected"]) {
+                    var end = 1;
+                    while (test[i + end]["diskDetected"]) {
                         end += 1;
                     }
 

@@ -30,6 +30,8 @@ namespace ace {
 	// bool whether standby enabled or not
 	bool LAUNCHER_STANDBY_ENABLED = false;
 
+	bool var_launcher_enabled = false;
+
 	/* -------------- Updates Auton Selection And Prints To Screen -------------- */
 	void updateAutonSelection() {
 		if (autonIndex < 0)

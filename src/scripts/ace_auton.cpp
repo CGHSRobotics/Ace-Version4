@@ -8,7 +8,10 @@ namespace ace {
 	/* ========================================================================== */
 	void auton::skills_Auto() {
 
+		chassis.imu.set_rotation(gpsSensor.get_heading());
+
 		printf(("\n GPS  " + std::to_string(gpsSensor.get_heading())).c_str());
+		printf(("\n GPS ERROR  " + std::to_string(gpsSensor.get_error())).c_str());
 		printf(("\n IMU  " + std::to_string(chassis.get_gyro())).c_str());
 
 		gps::set_turn(45, SPEED_TURN_AUTO);
@@ -28,22 +31,23 @@ namespace ace {
 		gps::set_turn(180, SPEED_TURN_AUTO);
 
 		// Get Roller 2
-		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(12, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(6, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		gps::set_turn(90, SPEED_TURN_AUTO);
 
-		chassis.set_drive_pid(52, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(70, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		gps::set_turn(85, SPEED_TURN_AUTO);
 		intakeToggle(false);
 
+		var_launcher_enabled = true;
 		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
 
 		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
@@ -52,11 +56,13 @@ namespace ace {
 		gps::set_turn(180, SPEED_TURN_AUTO);
 		intakeToggle(true);
 
-		gps::set_waypoint(-36, -12);
+		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
 
 		gps::set_turn(135, SPEED_TURN_AUTO, false);
 
-		gps::set_waypoint(-12, 12);
+		chassis.set_drive_pid(24 * 1.41, SPEED_DRIVE_AUTO);
+		chassis.wait_drive();
 
 		gps::set_turn(45, SPEED_TURN_AUTO, true);
 

@@ -17,9 +17,12 @@ def main():
     start_line = -1
     end_line = -1
 
+    print(line_arr)
+
     # find start / end lines
     for line in line_arr:
         if "/start data" in line:
+            print("yay")
             start_line = line_arr.index(line)
 
         if "/end data" in line:

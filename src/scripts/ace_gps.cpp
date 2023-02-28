@@ -54,13 +54,13 @@ namespace ace::auton {
 		target_pos.y += y;
 		curr_driveSpeed = speed;
 
-		vec2 nums;
+		vec2 nums(0, 0);
 
 		if (gps::ENABLE_GPS)
 		{
-			nums = gps::get_drive_nums();
+			//nums = gps::get_drive_nums();
 		}
-		else if (!gps::ENABLE_GPS || nums == NULL)
+		else if (!gps::ENABLE_GPS || (nums.x == 0 && nums.y == 0))
 		{
 			// set drive pid
 			chassis.set_drive_pid(distance, speed);
@@ -109,7 +109,7 @@ namespace ace::auton {
 /* ========================================================================== */
 namespace ace::gps {
 
-	pros::c::gps_status_s_t currentState = NULL;
+	pros::c::gps_status_s_t currentState;
 	bool error_is_okay = false;
 
 	float startAngle = 0;
@@ -144,18 +144,12 @@ namespace ace::gps {
 				currentStatus.y = to_inch(currentStatus.y / 1000.0);
 			}
 
-			if (currentStatus == NULL)
-				continue;
 
 		}
 	}
 
 	/* ----------------- Get New Turn Angle Based On Adjustments ---------------- */
 	float get_turn_angle(float angle) {
-
-		// if no state, return input
-		if (currentStatus == NULL)
-			return angle;
 
 		// if too much error
 		if (!error_is_okay)
@@ -165,16 +159,14 @@ namespace ace::gps {
 
 		if (diff > err_degree_max)
 			return angle + diff;
+
+		return angle;
 	}
 
 	/* --------------------- Get Drive Nums; Angle, Mag Etc --------------------- */
 	vec2 get_drive_nums() {
 
 		vec2 output(0, 0);
-
-		// if no state, return input
-		if (currentStatus == NULL)
-			return output;
 
 		// if too much error
 		if (!error_is_okay)

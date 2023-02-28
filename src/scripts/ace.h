@@ -105,11 +105,11 @@ namespace ace {
 	extern bool LAUNCHER_STANDBY_ENABLED;
 
 	/* ---------------------------- Variable Launcher --------------------------- */
-	const float VAR_LAUNCH_ANGLE_DOWN = 0.20 * 225.0;
+	const float VAR_LAUNCH_ANGLE_DOWN = 0.10 * 225.0;
 	const float VAR_LAUNCH_ANGLE_UP = 0.80 * 225.0;
 
 	extern bool var_launcher_enabled;
-	
+
 
 
 	/* ========================================================================== */

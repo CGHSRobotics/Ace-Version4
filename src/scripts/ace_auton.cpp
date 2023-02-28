@@ -36,7 +36,7 @@ namespace ace {
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
-		chassis.set_drive_pid(6, SPEED_DRIVE_AUTO);
+		chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
 		chassis.wait_drive();
 
 		gps::set_turn(90, SPEED_TURN_AUTO);
@@ -67,6 +67,7 @@ namespace ace {
 		gps::set_turn(45, SPEED_TURN_AUTO, true);
 
 		intakeToggle(false);
+		var_launcher_enabled = false;
 		launch::launchDisks_Auto(80, SPEED_LAUNCHER_SHORT);
 
 		launcherMotor.move_voltage(0);

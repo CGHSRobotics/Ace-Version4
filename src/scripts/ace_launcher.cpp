@@ -23,15 +23,6 @@ namespace ace::launch {
 	/* ========================================================================== */
 	void launchDisks(float speed, bool isLongDist) {
 
-		if (var_launcher_enabled = true) {
-			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_UP, 100);
-		}
-		else {
-			ace::varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
-		}
-
-
-
 		// If want to run launcher
 		if (speed > 0.0) {
 
@@ -55,6 +46,8 @@ namespace ace::launch {
 			/* ---------------------------- Long Distance ---------------------------- */
 			if (isLongDist) {
 
+				var_launcher_enabled = false;
+
 				// Set pid to set velocity
 				launcherMotor.move_velocity(speed * 6);
 
@@ -73,7 +66,7 @@ namespace ace::launch {
 			/* ------------------------- Short Distance ------------------------- */
 			if (!isLongDist) {
 
-				if (var_launcher_enabled = true) {
+				if (var_launcher_enabled) {
 					spinMotor(launcherMotor, SPEED_LAUNCHER_FLAP);
 				}
 				else {

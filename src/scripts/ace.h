@@ -35,7 +35,7 @@ namespace ace {
 	/*                                Global Stuff                                */
 	/* ========================================================================== */
 
-	extern int autonIndex;
+
 	extern int alliance;	// inits to 0; aka red alliance
 
 	extern bool activeBreakEnabled;
@@ -44,9 +44,8 @@ namespace ace {
 
 	extern string operation_mode;
 
-	extern int autonIndex;
-	const int numAutons = 7;
-	const std::string autonArray[10] = { "Skills", "Shebang", "Null", "Blue Three", "Blue Two", "Red Three", "Red Two" };
+	const double rad2 = std::sqrt(2);
+
 
 	/* ========================================================================== */
 	/*                             Port Configurations                            */
@@ -90,7 +89,6 @@ namespace ace {
 	const float SPEED_ROLLER = 100;
 	const float SPEED_ROLLER_AUTO = 10;
 	const float SPEED_ROLLER_AUTO_SKILLS = 55;
-	const float SPEED_ROLLER_LAUNCHER = 100;
 
 	const float ROLLER_TIME_AUTO = 200;
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
@@ -177,20 +175,29 @@ namespace ace {
 
 	extern void diskCheck();
 
+	/* ----------------------------- Vector 2 Class ----------------------------- */
+	class vec2
+	{
+		public:
 
-	/* ========================================================================== */
-	/*                        Autonomous Selector Functions                       */
-	/* ========================================================================== */
+		float x;
+		float y;
 
-	/**
-	 *     @brief Update Auton Selection
-	 */
-	extern void updateAutonSelection();
+		vec2(float x, float y);
 
-	/**
-	 *     @brief Check Buttons for change in Auton
-	 */
-	extern void checkAutonButtons();
+		float mag() { return x * x + y * y; };
+		void set(float x, float y) {
+			x = x;
+			y = y;
+		}
+		float dir() { return atan2(y, x); }
+	};
+
+	vec2::vec2(float x, float y)
+	{
+		set(x, y);
+	}
+
 
 
 	/* ========================================================================== */
@@ -240,10 +247,15 @@ namespace ace {
 	// reverses Intake
 	extern void intakeReverse(bool enabled);
 
+	// Rollers
 	extern void rollerForward(bool enabled, float speed);
 	extern void rollerReverse(bool enabled, float speed);
 
+	// Endgame Toggle
 	extern void endgameToggle(bool enabled);
+
+	//Variable Launcher
+	extern void varLauncherMove();
 
 }
 
@@ -253,7 +265,64 @@ namespace ace {
 /* ========================================================================== */
 namespace ace::auton {
 
-	// Autonomous Routines
+	/* ========================================================================== */
+	/*                              Global Variables                              */
+	/* ========================================================================== */
+
+	extern float target_angle;
+	extern vec2 target_pos;
+
+	extern float curr_turnSpeed;
+	extern float curr_driveSpeed;
+
+	extern float imu_start_angle;
+
+	extern int autonIndex;
+	const int numAutons = 7;
+	const std::string autonArray[10] = {
+		"Skills",
+		"Shebang",
+		"Null",
+		"3-B",
+		"2-B",
+		"3-R",
+		"2-R"
+	};
+
+
+	/* ========================================================================== */
+	/*                           Miscellaneous Functions                          */
+	/* ========================================================================== */
+
+	/**
+	 * 	Turns robot to absolute degrees, tracks angle and speed data
+	 * @param angle
+	 *		absolute angle to turn robot to
+	 * @param speed
+	 *		speed (0-127) at which robot should turn
+	 * @param waitUntilFinished
+	 *		Boolean, if true runs chassis.waitDrive();
+	 */
+	extern void set_turn(float angle, float speed, bool waitUntilFinished = true);
+
+	extern void set_drive(float distance, float speed, bool waitUntilFinished = true);
+
+
+	/**
+	 *     @brief Update Auton Selection
+	 */
+	extern void updateAutonSelection();
+
+	/**
+	 *     @brief Check Buttons for change in Auton
+	 */
+	extern void checkAutonButtons();
+
+
+	/* ========================================================================== */
+	/*                             Autonomous Routines                            */
+	/* ========================================================================== */
+
 	extern void skills_Auto();
 	extern void null_Auto();
 	extern void threeSide_Auto();
@@ -328,38 +397,33 @@ namespace ace::gps {
 	/*                            Variable Declarations                           */
 	/* ========================================================================== */
 
-	extern pros::Task task_turn_gps;
+	extern pros::Task __task_gps;
 
-	const float err_degree_max = 2;
+	const float err_degree_max = 1;
 	const float err_pos_max = 4;
-	const float err_gps_max = 0.25;
+	const double err_gps_max = 0.025;
 
-	extern void init();
+	const bool ENABLE_GPS = false;
 
-	extern float curr_turnAngle;
-	extern float curr_turnSpeed;
+	extern float startAngle;
 
-	extern float imu_start_angle;
+	extern pros::c::gps_status_s_t currentStatus;
+	extern bool error_is_okay;
+
+	extern void init(float startAngle);
 
 	/* ========================================================================== */
-	/*                            Function Definitions                            */
+	/*                            Function Declarations                           */
 	/* ========================================================================== */
 
 	/**
 	 *	Task that runs every 50 ms and fact checks imu angle
 	 */
-	extern void __task_gps_factcheck_angle();
+	extern void __task_gps_factcheck();
 
-	/**
-	 * 	Turns robot to absolute degrees, tracks angle and speed data as well as compensates for gps
-	 * @param angle
-	 *		absolute angle to turn robot to
-	 * @param speed
-	 *		speed (0-127) at which robot should turn
-	 * @param waitUntilFinished
-	 *		Boolean, if true runs chassis.waitDrive();
-	 */
-	extern void set_turn(float angle, float speed, bool waitUntilFinished = true);
+	extern float get_turn_angle(float angle);
+
+	extern vec2 get_drive_nums();
 
 	/**
 	 *	Tell Robot to go to absolute position if not there already

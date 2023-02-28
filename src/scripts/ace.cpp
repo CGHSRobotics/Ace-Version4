@@ -17,7 +17,6 @@ Drive chassis(
 
 namespace ace {
 
-
 	/* ========================================================================== */
 	/*                                 Global Vars                                */
 	/* ========================================================================== */
@@ -25,48 +24,16 @@ namespace ace {
 	int alliance = 0;
 	string operation_mode = "no";
 
-	int autonIndex = 0;
-
 	// bool whether standby enabled or not
 	bool LAUNCHER_STANDBY_ENABLED = false;
 
 	bool var_launcher_enabled = false;
 
-	/* -------------- Updates Auton Selection And Prints To Screen -------------- */
-	void updateAutonSelection() {
-		if (autonIndex < 0)
-		{
-			autonIndex += numAutons;
-		}
-		if (autonIndex >= numAutons)
-		{
-			autonIndex -= numAutons;
-		}
-
-		std::string str = ace::autonArray[ace::autonIndex];
-
-		printf("\n Auton Changed To: %s", str.c_str());
-	}
-
-	/* -------------------- Adjust Auton Based Off Of Buttons ------------------- */
-	void checkAutonButtons() {
-
-		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))
-		{
-			autonIndex++;
-			updateAutonSelection();
-		}
-		if (master.get_digital_new_press(BUTTON_AUTON_DECREASE))
-		{
-			autonIndex--;
-			updateAutonSelection();
-		}
-	}
-
 
 	/* ========================================================================== */
 	/*                              Utility Functions                             */
 	/* ========================================================================== */
+
 
 	int launchCount = 0;
 	int areaCutoff = 100;
@@ -158,7 +125,6 @@ namespace ace {
 	/* ---------------------------- Reset All Inputs ---------------------------- */
 	void resetMotors() {
 		launcherMotor.move_voltage(0);
-		//rollerMotor.move_voltage(0);
 		conveyorMotor.move_voltage(0);
 		intakeMotor.move_voltage(0);
 
@@ -215,4 +181,16 @@ namespace ace {
 			endgamePneumatics.set_value(0);
 		}
 	}
+
+	/* ---------------------------- Variable Launcher --------------------------- */
+	void varLauncherMove() {
+		if (var_launcher_enabled) {
+			varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_UP, 100);
+		}
+		else {
+			varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
+		}
+	}
+
+
 }  // namespace ace

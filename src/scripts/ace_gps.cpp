@@ -1,52 +1,194 @@
 
 #include "ace.h"
 
-/**
- *
- *	Drive / Turn with GPS Namespace
- *
- */
-namespace ace::gps {
 
-	float curr_turnSpeed = SPEED_TURN_AUTO;
-	float curr_turnAngle = 0;
+/* ========================================================================== */
+/*                        Miscellaneous Auton Functions                       */
+/* ========================================================================== */
+namespace ace::auton {
 
-	// init tasks
-	void init() {
-		pros::Task task_turn_gps(__task_gps_factcheck_angle, TASK_PRIORITY_DEFAULT - 1, TASK_STACK_DEPTH_DEFAULT, "Turning GPS");
-	}
+	/* ========================================================================== */
+	/*                              Global Variables                              */
+	/* ========================================================================== */
 
-	// Set Turn with GPS
-	void __task_gps_factcheck_angle() {
-		while (true) {
 
-			// dont do anything if not in autonomous
-			if (true) {
-				if (gpsSensor.get_error() < err_gps_max) {
-					chassis.imu.set_rotation(gpsSensor.get_heading());
-				}
-			}
+	int autonIndex = 0;
 
-			// Delay 10 ms
-			pros::delay(50);
-		}
-	}
+	float target_angle = 0;
+	vec2 target_pos(0, 0);
 
-	// Set Turn
+	float curr_turnSpeed = 0;
+	float curr_driveSpeed = 0;
+
+	/* ========================================================================== */
+	/*                            Function Definitions                            */
+	/* ========================================================================== */
+
+
+	/* -------------------------------- Set Turn -------------------------------- */
 	void set_turn(float angle, float speed, bool waitUntilFinished) {
-		curr_turnAngle = angle;
+
+		// Update target values
+		target_angle = angle;
 		curr_turnSpeed = speed;
 
+		// get corrective angle from gps
+		if (gps::ENABLE_GPS)
+			angle = gps::get_turn_angle(angle);
+
+		// set chassis pid
 		chassis.set_turn_pid(angle, speed);
 
+		// wait drive if desired
 		if (waitUntilFinished)
-		{
 			chassis.wait_drive();
+	}
+
+	/* -------------------------------- Set Move -------------------------------- */
+	void set_drive(float distance, float speed, bool waitUntilFinished) {
+
+		// find new constant values
+		float x = distance * -cos(target_angle);
+		float y = distance * sin(target_angle);
+		target_pos.x += x;
+		target_pos.y += y;
+		curr_driveSpeed = speed;
+
+		vec2 nums;
+
+		if (gps::ENABLE_GPS)
+		{
+			nums = gps::get_drive_nums();
+		}
+		else if (!gps::ENABLE_GPS || nums == NULL)
+		{
+			// set drive pid
+			chassis.set_drive_pid(distance, speed);
+		}
+
+		// wait drive if desired
+		if (waitUntilFinished)
+			chassis.wait_drive();
+	}
+
+	/* -------------- Updates Auton Selection And Prints To Screen -------------- */
+	void updateAutonSelection() {
+		if (autonIndex < 0)
+		{
+			autonIndex += numAutons;
+		}
+		if (autonIndex >= numAutons)
+		{
+			autonIndex -= numAutons;
+		}
+
+		std::string str = autonArray[autonIndex];
+
+		printf("\n Auton Changed To: %s", str.c_str());
+	}
+
+	/* -------------------- Adjust Auton Based Off Of Buttons ------------------- */
+	void checkAutonButtons() {
+
+		if (master.get_digital_new_press(BUTTON_AUTON_INCREASE))
+		{
+			autonIndex++;
+			updateAutonSelection();
+		}
+		if (master.get_digital_new_press(BUTTON_AUTON_DECREASE))
+		{
+			autonIndex--;
+			updateAutonSelection();
+		}
+	}
+}
+
+
+/* ========================================================================== */
+/*                       Drive / Turn With GPS Namespace                      */
+/* ========================================================================== */
+namespace ace::gps {
+
+	pros::c::gps_status_s_t currentState = NULL;
+	bool error_is_okay = false;
+
+	float startAngle = 0;
+
+
+	/* ------------------------------- Init Tasks ------------------------------- */
+	void init(float startAngle) {
+
+		pros::Task __task_gps(__task_gps_factcheck, TASK_PRIORITY_DEFAULT - 1, TASK_STACK_DEPTH_DEFAULT, "GPS");
+
+		startAngle = startAngle;
+	}
+
+	/* -------------------------------- GPS Task -------------------------------- */
+	void __task_gps_factcheck() {
+
+		while (true) {
+
+			// Delay 10 ms
+			pros::delay(20);
+
+			if (!ENABLE_GPS)
+				continue;
+
+			error_is_okay = gpsSensor.get_error() < err_gps_max;
+
+			if (error_is_okay) {
+				currentStatus = gpsSensor.get_status();
+
+				// Convert meters to inch
+				currentStatus.x = to_inch(currentStatus.x / 1000.0);
+				currentStatus.y = to_inch(currentStatus.y / 1000.0);
+			}
+
+			if (currentStatus == NULL)
+				continue;
+
 		}
 	}
 
-	//	Set Waypoint pos to go to
+	/* ----------------- Get New Turn Angle Based On Adjustments ---------------- */
+	float get_turn_angle(float angle) {
+
+		// if no state, return input
+		if (currentStatus == NULL)
+			return angle;
+
+		// if too much error
+		if (!error_is_okay)
+			return angle;
+
+		float diff = (currentStatus.yaw - startAngle) - chassis.imu.get_rotation();
+
+		if (diff > err_degree_max)
+			return angle + diff;
+	}
+
+	/* --------------------- Get Drive Nums; Angle, Mag Etc --------------------- */
+	vec2 get_drive_nums() {
+
+		vec2 output(0, 0);
+
+		// if no state, return input
+		if (currentStatus == NULL)
+			return output;
+
+		// if too much error
+		if (!error_is_okay)
+			return output;
+
+		output.x = auton::target_pos.x - currentStatus.x;
+		output.y = auton::target_pos.y - currentStatus.x;
+
+		return output;
+	}
+
+	/* ------------------------ Set Waypoint Pos To Go To ----------------------- */
 	void set_waypoint(float x, float y) {
+
 
 		// 	GPS has too much error, either no tape or no view
 		if (gpsSensor.get_error() > err_gps_max)
@@ -77,7 +219,7 @@ namespace ace::gps {
 		printf("\n\n");
 
 		// Turn to angle
-		chassis.set_turn_pid(theta, curr_turnSpeed);
+		chassis.set_turn_pid(theta, ace::auton::curr_turnSpeed);
 		chassis.wait_drive();
 
 		// Drive to position
@@ -108,11 +250,11 @@ namespace ace::gps {
 
 			if (std::abs(theta) - std::abs(new_theta) > 18) {
 				// Turn to angle
-				chassis.set_turn_pid(theta + 18 * (new_theta / std::abs(new_theta)), curr_turnSpeed);
+				chassis.set_turn_pid(theta + 18 * (new_theta / std::abs(new_theta)), ace::auton::curr_turnSpeed);
 			}
 			else {
 				// Turn to angle
-				chassis.set_turn_pid(new_theta, curr_turnSpeed);
+				chassis.set_turn_pid(new_theta, ace::auton::curr_turnSpeed);
 			}
 
 			chassis.set_drive_pid(mag, SPEED_DRIVE_AUTO);

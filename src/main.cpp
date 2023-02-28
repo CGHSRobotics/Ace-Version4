@@ -14,7 +14,7 @@ void screenUpdate() {
 	while (true) {
 
 		// 	Controller Text
-		std::string str_selectedAuton = ace::autonArray[ace::autonIndex];
+		std::string str_selectedAuton = ace::auton::autonArray[ace::auton::autonIndex];
 		master.set_text(2, 0, (str_selectedAuton + "  Standby: " + std::to_string(ace::LAUNCHER_STANDBY_ENABLED)).c_str());
 
 		//	Tab 2 - Auton
@@ -77,9 +77,6 @@ void initialize() {
 	// Start screen update task, runs every 50 ms
 	pros::Task __task_screenUpdate(screenUpdate);
 	__task_screenUpdate.set_priority(TASK_PRIORITY_DEFAULT - 1);
-
-	// init gps logic
-	ace::gps::init();
 }
 
 
@@ -91,7 +88,7 @@ void disabled() {
 
 	while (true) {
 		ace::resetMotors();
-		ace::checkAutonButtons();
+		ace::auton::checkAutonButtons();
 
 		pros::delay(ez::util::DELAY_TIME);
 	}
@@ -112,11 +109,12 @@ void autonomous() {
 
 	ace::resetMotors();
 
-	chassis.reset_pid_targets();                // Resets PID targets to 0                      // Reset gyro position to 0
+	chassis.reset_pid_targets();                // Resets PID targets to 0
+	chassis.reset_gyro();						// Reset gyro position to 0
 	chassis.reset_drive_sensor();               // Reset drive sensors to 0
 	chassis.set_drive_brake(MOTOR_BRAKE_HOLD);  // Set motors to hold.  This helps autonomous consistency.
 
-	std::string str = ace::autonArray[ace::autonIndex];
+	std::string str = ace::auton::autonArray[ace::auton::autonIndex];
 
 	printf("\n\nCalling Auton...	%s \n\n", str.c_str());
 
@@ -128,11 +126,11 @@ void autonomous() {
 	{
 		ace::auton::null_Auto();
 	}
-	else if (str == "Blue Three")
+	else if (str == "3-B")
 	{
 		ace::auton::threeSide_Auto();
 	}
-	else if (str == "Blue Two")
+	else if (str == "2-B")
 	{
 		ace::auton::twoSide_Auto();
 	}
@@ -140,11 +138,11 @@ void autonomous() {
 	{
 		ace::auton::theWholeShebang_Auto();
 	}
-	else if (str == "Red Two")
+	else if (str == "2-R")
 	{
 		ace::auton::twoSide_Auto();
 	}
-	else if (str == "Red Three")
+	else if (str == "3-R")
 	{
 		ace::auton::theWholeShebang_Auto();
 	}
@@ -177,14 +175,9 @@ void opcontrol() {
 
 	while (true) {
 
-		ace::checkAutonButtons();
+		ace::auton::checkAutonButtons();
 
 		chassis.tank();  // Tank control
-
-		// active break Intake
-		/*if (master.get_digital_new_press(BUTTON_A_BRAKE_TOGGLE)) {
-			ace::activeBreakEnabled = !ace::activeBreakEnabled;
-		}*/
 
 		/* ------------------------------ Toggle Intake ----------------------------- */
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
@@ -254,19 +247,15 @@ void opcontrol() {
 			ace::endgameToggle(false);
 		}
 
+		/* ---------------------------- Launcher Standby ---------------------------- */
 		if (master.get_digital_new_press(BUTTTON_STANDBY)) {
 			ace::LAUNCHER_STANDBY_ENABLED = !ace::LAUNCHER_STANDBY_ENABLED;
 		}
 
+		/* ---------------------------- Variable Launcher --------------------------- */
 		if (master.get_digital_new_press(BUTTON_VAR_LAUNCHER)) {
 			ace::var_launcher_enabled = !ace::var_launcher_enabled;
-		}
-
-		if (ace::var_launcher_enabled) {
-			ace::varLauncherMotor.move_absolute(ace::VAR_LAUNCH_ANGLE_UP, 100);
-		}
-		else {
-			ace::varLauncherMotor.move_absolute(ace::VAR_LAUNCH_ANGLE_DOWN, -100);
+			ace::varLauncherMove();
 		}
 
 		pros::delay(ez::util::DELAY_TIME);

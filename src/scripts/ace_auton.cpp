@@ -1,84 +1,150 @@
 
 #include "ace.h"
 
-namespace ace {
+namespace ace::auton {
 
 	/* ========================================================================== */
 	/*                                 Skills Auto                                */
 	/* ========================================================================== */
-	void auton::skills_Auto() {
+	void skills_Auto() {
 
-		chassis.imu.set_rotation(gpsSensor.get_heading());
+		/* -------------------------------- Init GPS -------------------------------- */
+		gps::init(45);
 
-		printf(("\n GPS  " + std::to_string(gpsSensor.get_heading())).c_str());
-		printf(("\n GPS ERROR  " + std::to_string(gpsSensor.get_error())).c_str());
-		printf(("\n IMU  " + std::to_string(chassis.get_gyro())).c_str());
-
-		gps::set_turn(45, SPEED_TURN_AUTO);
+		set_turn(0, SPEED_TURN_AUTO);
 
 		launch::set_standby(true);
-
-		// Get Roller 1
-		chassis.set_drive_pid(-4, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO_SKILLS);
-		rollerForward(false, 0);
-		intakeToggle(true);
-		chassis.set_drive_pid(16, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		gps::set_turn(180, SPEED_TURN_AUTO);
-
-		// Get Roller 2
-		chassis.set_drive_pid(-12, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
-		pros::delay(ROLLER_TIME_AUTO_SKILLS);
-		rollerForward(false, 0);
-		chassis.set_drive_pid(4, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		gps::set_turn(90, SPEED_TURN_AUTO);
-
-		chassis.set_drive_pid(70, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		gps::set_turn(85, SPEED_TURN_AUTO);
-		intakeToggle(false);
-
 		var_launcher_enabled = true;
+		set_drive(-4, SPEED_DRIVE_AUTO);
+
+		/* ------------------------------ Get Roller 1 ------------------------------ */
+
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+
+		/* ------------------- Intake 1 Disk / Move To 2nd Roller ------------------- */
+		intakeToggle(true);
+		set_drive(16, SPEED_DRIVE_AUTO);
+
+		set_turn(135, SPEED_TURN_AUTO);
+		set_drive(-12, SPEED_DRIVE_AUTO);
+
+		/* ------------------------------ Get Roller 2 ------------------------------ */
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+
+		set_drive(4, SPEED_DRIVE_AUTO);
+
+		/* -------------------------- Move To Red High Goal ------------------------- */
+		set_turn(45, SPEED_TURN_AUTO);
+		set_drive(70, SPEED_DRIVE_AUTO);
+
+		/* ------------------------------ Shoot 3 Disks ----------------------------- */
+		intakeToggle(false);
+		set_turn(40, SPEED_TURN_AUTO);
 		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
 
-		chassis.set_drive_pid(-16, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		gps::set_turn(180, SPEED_TURN_AUTO);
+		/* ------------------ Intake 3 Disks Along Edge Of Low Goal ----------------- */
+		set_turn(45, SPEED_TURN_AUTO);
+		set_drive(-8, SPEED_DRIVE_AUTO);
 		intakeToggle(true);
 
-		chassis.set_drive_pid(24, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
+		set_turn(135, SPEED_TURN_AUTO);
+		set_drive(30, SPEED_DRIVE_AUTO);
+		set_drive(-30, SPEED_DRIVE_AUTO);
+		set_turn(45, SPEED_TURN_AUTO);
 
-		gps::set_turn(135, SPEED_TURN_AUTO, false);
+		set_drive(8, SPEED_DRIVE_AUTO);
+		set_turn(45, SPEED_TURN_AUTO);
 
-		chassis.set_drive_pid(24 * 1.41, SPEED_DRIVE_AUTO);
-		chassis.wait_drive();
-
-		gps::set_turn(45, SPEED_TURN_AUTO, true);
-
+		/* ------------------------ Shoot 2nd Set Of 3 Disks ------------------------ */
 		intakeToggle(false);
+		set_turn(40, SPEED_TURN_AUTO);
+		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
+
+		/* -------------------------- Intake Diagonal Disks ------------------------- */
+		set_turn(45, SPEED_TURN_AUTO);
+		set_drive(-36, SPEED_DRIVE_AUTO);
+
+		set_turn(135, SPEED_TURN_AUTO);
+		intakeToggle(true);
+
+		set_drive(24, SPEED_DRIVE_AUTO);
+		set_turn(90, SPEED_TURN_AUTO);
+
+		set_drive(48 * rad2, SPEED_DRIVE_AUTO);
+
+
+		/* --------------------- Shoot 3rd Set Of 3 Without Flap -------------------- */
+		set_turn(-5, SPEED_TURN_AUTO);
 		var_launcher_enabled = false;
-		launch::launchDisks_Auto(80, SPEED_LAUNCHER_SHORT);
+		varLauncherMove();
+		pros::delay(2000);
+		intakeToggle(false);
+		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
 
-		launcherMotor.move_voltage(0);
+		/* --------------- Intake Other 3 Disks Along Edge Of Low Goal -------------- */
+		intakeToggle(true);
+		set_drive(4 * rad2, SPEED_DRIVE_AUTO);
+		set_turn(45, SPEED_TURN_AUTO);
 
+		set_drive(48, SPEED_DRIVE_AUTO);
+
+		set_drive(-8, SPEED_DRIVE_AUTO);
+
+		/* ---------------------- Shoot 4th Set Of 3 With Flap ---------------------- */
+		set_turn(-55, SPEED_TURN_AUTO);
+		var_launcher_enabled = true;
+		varLauncherMove();
+		pros::delay(2000);
+		intakeToggle(false);
+		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
+		set_turn(-45, SPEED_TURN_AUTO);
+
+		/* ---------------------------- Move To Roller 3 ---------------------------- */
+
+		set_drive(60, SPEED_DRIVE_AUTO);
+
+		set_turn(-135, SPEED_TURN_AUTO);
+
+		set_drive(-6, SPEED_DRIVE_AUTO);
+
+		/* ------------------------------ Get Roller 3 ------------------------------ */
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+
+		set_drive(4, SPEED_DRIVE_AUTO);
+
+		/* ---------------------------- Move To Roller 4 ---------------------------- */
+		intakeToggle(true);
+
+		set_turn(-180, SPEED_TURN_AUTO);
+
+		set_drive(16 * rad2, SPEED_DRIVE_AUTO);
+
+		set_turn(-45, SPEED_TURN_AUTO);
+
+		set_drive(6, SPEED_DRIVE_AUTO);
+
+		/* ------------------------------ Get Roller 4 ------------------------------ */
+		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
+		pros::delay(ROLLER_TIME_AUTO_SKILLS);
+		rollerForward(false, 0);
+
+		set_drive(4, SPEED_DRIVE_AUTO);
+
+
+		resetMotors();
 	}
 
 
 	/* ========================================================================== */
 	/*                               Three Side Auto                              */
 	/* ========================================================================== */
-	void auton::threeSide_Auto() {
+	void threeSide_Auto() {
 
 		// Get Roller
 		chassis.set_drive_pid(-4, 0.5 * 127.0, false);
@@ -129,7 +195,7 @@ namespace ace {
 	/* ========================================================================== */
 	/*                                Two Side Auto                               */
 	/* ========================================================================== */
-	void auton::twoSide_Auto() {
+	void twoSide_Auto() {
 
 		// Fire two low goals
 		//launchDisksShort_Auto(1500, 60);
@@ -175,7 +241,7 @@ namespace ace {
 	/* ========================================================================== */
 	/*                           The Whole Shebang Auto                           */
 	/* ========================================================================== */
-	void auton::theWholeShebang_Auto() {
+	void theWholeShebang_Auto() {
 
 		chassis.set_drive_pid(-24, SPEED_DRIVE_AUTO, true);
 		chassis.wait_drive();
@@ -241,7 +307,7 @@ namespace ace {
 	/* ========================================================================== */
 	/*                                  Null Auto                                 */
 	/* ========================================================================== */
-	void auton::null_Auto() {
+	void null_Auto() {
 
 		gps::set_waypoint(-24, -24);
 

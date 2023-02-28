@@ -53,8 +53,8 @@ static lv_fs_res_t pcfs_tell(void* file_p, uint32_t* pos_p);
 // Function called when option on ddlist is selected
 static lv_res_t btnm_action(lv_obj_t* btnm, const char* txt)
 {
-	ace::autonIndex = lv_btnm_get_pressed(btnm);
-	ace::updateAutonSelection();
+	ace::auton::autonIndex = lv_btnm_get_pressed(btnm);
+	ace::auton::updateAutonSelection();
 	return LV_RES_OK; 	//	Return OK if the drop down list is not deleted
 }
 
@@ -220,7 +220,7 @@ static void init_lv_screen() {
 	style_btnm.body.padding.inner = 5;
 
 	autonBtnMtrx = lv_btnm_create(tab2, NULL);
-	static const char* btnm_map[] = { "Skills", "Shebang", "Null", "\n", "Blue Three", "Blue Two", "\n", "Red Three", "Red Two", "" };
+	static const char* btnm_map[] = { "Skills", "Shebang", "Null", "\n", "3-B", "2-B", "\n", "3-R", "2-R", "" };
 	lv_btnm_set_map(autonBtnMtrx, btnm_map);
 	lv_btnm_set_action(autonBtnMtrx, btnm_action);
 	lv_obj_set_size(autonBtnMtrx, 300, 120);

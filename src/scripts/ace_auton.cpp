@@ -58,7 +58,9 @@ namespace ace::auton {
 		set_turn(85, SPEED_TURN_AUTO);
 		set_drive(36, SPEED_DRIVE_AUTO_INTAKE);
 		set_turn(90, SPEED_TURN_AUTO);
-		set_drive(-35, SPEED_DRIVE_AUTO);
+		set_drive(-35, SPEED_DRIVE_AUTO, false);
+		chassis.wait_until(24);
+		chassis.set_max_speed(SPEED_DRIVE_AUTO_INTAKE);
 		set_turn(0, SPEED_TURN_AUTO);
 
 		set_drive(8, SPEED_DRIVE_AUTO);
@@ -84,7 +86,7 @@ namespace ace::auton {
 
 		/* --------------------- Shoot 3rd Set Of 3 Without Flap -------------------- */
 		set_turn(-45, SPEED_TURN_AUTO);
-		set_drive(3.5 * rad2, SPEED_DRIVE_AUTO);
+		set_drive(2 * rad2, SPEED_DRIVE_AUTO);
 		var_launcher_enabled = false;
 		varLauncherMove();
 		set_turn(-55, SPEED_TURN_AUTO);

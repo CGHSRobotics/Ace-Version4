@@ -60,7 +60,7 @@ namespace ace {
 	const int CONVEYOR_PORT = 14;
 	const int INTAKE_PORT = 18;
 
-	const int IMU_PORT = 18;
+	const int IMU_PORT = 16;
 	const int VISION_PORT = 10;
 	const int GPS_PORT = 2;
 
@@ -82,7 +82,7 @@ namespace ace {
 
 	/* ----------------------------- Conveyor Motor ----------------------------- */
 	const float SPEED_CONVEYOR_INTAKE = 100;
-	const float SPEED_CONVEYOR_LAUNCHER = 100;
+	const float SPEED_CONVEYOR_LAUNCHER = 50;
 	const float SPEED_CONVEYOR_LAUNCHER_LONG = 50;
 
 	/* ------------------------------ Roller Motor ------------------------------ */

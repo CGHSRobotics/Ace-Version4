@@ -9,13 +9,14 @@ namespace ace::auton {
 	void skills_Auto() {
 
 		/* -------------------------------- Init GPS -------------------------------- */
-		gps::init(45);
+		gps::init(0);
 
 		set_turn(0, SPEED_TURN_AUTO);
 
 		launch::set_standby(true);
-		var_launcher_enabled = true;
-		set_drive(-4, SPEED_DRIVE_AUTO);
+		launch::launchDisks(0, false);
+		set_var_launcher(true);
+		set_drive(-3, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Get Roller 1 ------------------------------ */
 
@@ -24,90 +25,97 @@ namespace ace::auton {
 		rollerForward(false, 0);
 
 		/* ------------------- Intake 1 Disk / Move To 2nd Roller ------------------- */
+		set_drive(5, SPEED_DRIVE_AUTO);
 		intakeToggle(true);
-		set_drive(16, SPEED_DRIVE_AUTO);
+		set_turn(-45, SPEED_TURN_AUTO);
+		set_drive(12 * rad2, SPEED_DRIVE_AUTO);
 
-		set_turn(135, SPEED_TURN_AUTO);
-		set_drive(-12, SPEED_DRIVE_AUTO);
+		set_turn(90, SPEED_TURN_AUTO);
+		set_drive(-14, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Get Roller 2 ------------------------------ */
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 
-		set_drive(4, SPEED_DRIVE_AUTO);
+		set_drive(5.5, SPEED_DRIVE_AUTO);
 
 		/* -------------------------- Move To Red High Goal ------------------------- */
-		set_turn(45, SPEED_TURN_AUTO);
+		set_turn(0, SPEED_TURN_AUTO);
 		set_drive(70, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Shoot 3 Disks ----------------------------- */
 		intakeToggle(false);
-		set_turn(40, SPEED_TURN_AUTO);
-		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
+		set_turn(-5, SPEED_TURN_AUTO);
+		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_SHORT);
 
 		/* ------------------ Intake 3 Disks Along Edge Of Low Goal ----------------- */
-		set_turn(45, SPEED_TURN_AUTO);
-		set_drive(-8, SPEED_DRIVE_AUTO);
+
+		set_turn(0, SPEED_TURN_AUTO);
+		set_drive(-10, SPEED_DRIVE_AUTO);
 		intakeToggle(true);
 
-		set_turn(135, SPEED_TURN_AUTO);
-		set_drive(30, SPEED_DRIVE_AUTO);
-		set_drive(-30, SPEED_DRIVE_AUTO);
-		set_turn(45, SPEED_TURN_AUTO);
+		set_turn(85, SPEED_TURN_AUTO);
+		set_drive(36, SPEED_DRIVE_AUTO_INTAKE);
+		set_turn(90, SPEED_TURN_AUTO);
+		set_drive(-35, SPEED_DRIVE_AUTO);
+		set_turn(0, SPEED_TURN_AUTO);
 
 		set_drive(8, SPEED_DRIVE_AUTO);
-		set_turn(45, SPEED_TURN_AUTO);
+		set_turn(0, SPEED_TURN_AUTO);
 
 		/* ------------------------ Shoot 2nd Set Of 3 Disks ------------------------ */
 		intakeToggle(false);
-		set_turn(40, SPEED_TURN_AUTO);
-		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
+		set_turn(-5, SPEED_TURN_AUTO);
+		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_SHORT);
 
 		/* -------------------------- Intake Diagonal Disks ------------------------- */
-		set_turn(45, SPEED_TURN_AUTO);
-		set_drive(-36, SPEED_DRIVE_AUTO);
+		set_turn(0, SPEED_TURN_AUTO);
+		set_drive(-38, SPEED_DRIVE_AUTO);
 
-		set_turn(135, SPEED_TURN_AUTO);
+		set_turn(90, SPEED_TURN_AUTO);
 		intakeToggle(true);
 
 		set_drive(24, SPEED_DRIVE_AUTO);
-		set_turn(90, SPEED_TURN_AUTO);
+		set_turn(45, SPEED_TURN_AUTO);
 
-		set_drive(48 * rad2, SPEED_DRIVE_AUTO);
+		set_drive(24 * rad2, SPEED_DRIVE_AUTO);
 
 
 		/* --------------------- Shoot 3rd Set Of 3 Without Flap -------------------- */
-		set_turn(-5, SPEED_TURN_AUTO);
+		set_turn(-45, SPEED_TURN_AUTO);
+		set_drive(3.5 * rad2, SPEED_DRIVE_AUTO);
 		var_launcher_enabled = false;
 		varLauncherMove();
-		pros::delay(2000);
+		set_turn(-55, SPEED_TURN_AUTO);
+		pros::delay(1000);
 		intakeToggle(false);
-		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
+		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_SHORT);
+		set_turn(-45, SPEED_TURN_AUTO);
 
 		/* --------------- Intake Other 3 Disks Along Edge Of Low Goal -------------- */
 		intakeToggle(true);
-		set_drive(4 * rad2, SPEED_DRIVE_AUTO);
-		set_turn(45, SPEED_TURN_AUTO);
 
-		set_drive(48, SPEED_DRIVE_AUTO);
-
-		set_drive(-8, SPEED_DRIVE_AUTO);
-
-		/* ---------------------- Shoot 4th Set Of 3 With Flap ---------------------- */
-		set_turn(-55, SPEED_TURN_AUTO);
-		var_launcher_enabled = true;
-		varLauncherMove();
-		pros::delay(2000);
-		intakeToggle(false);
-		launch::launchDisks_Auto(8000, SPEED_LAUNCHER_SHORT);
-		set_turn(-45, SPEED_TURN_AUTO);
-
-		/* ---------------------------- Move To Roller 3 ---------------------------- */
+		set_turn(-5, SPEED_TURN_AUTO);
 
 		set_drive(60, SPEED_DRIVE_AUTO);
 
-		set_turn(-135, SPEED_TURN_AUTO);
+		set_drive(-6, SPEED_DRIVE_AUTO);
+		set_turn(-90, SPEED_TURN_AUTO);
+
+		/* ---------------------- Shoot 4th Set Of 3 Without Flap ---------------------- */
+		set_var_launcher(false);
+		set_turn(-110, SPEED_TURN_AUTO);
+		pros::delay(1000);
+		intakeToggle(false);
+		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_SHORT);
+		set_turn(-90, SPEED_TURN_AUTO);
+
+		/* ---------------------------- Move To Roller 3 ---------------------------- */
+
+		set_drive(-44, SPEED_DRIVE_AUTO);
+
+		set_turn(-180, SPEED_TURN_AUTO);
 
 		set_drive(-6, SPEED_DRIVE_AUTO);
 
@@ -115,21 +123,23 @@ namespace ace::auton {
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
+		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_LONG, true);
 
 		set_drive(4, SPEED_DRIVE_AUTO);
 
 		/* ---------------------------- Move To Roller 4 ---------------------------- */
 		intakeToggle(true);
 
-		set_turn(-180, SPEED_TURN_AUTO);
+		set_turn(-225, SPEED_TURN_AUTO);
 
 		set_drive(16 * rad2, SPEED_DRIVE_AUTO);
 
-		set_turn(-45, SPEED_TURN_AUTO);
+		set_turn(-90, SPEED_TURN_AUTO);
 
 		set_drive(6, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Get Roller 4 ------------------------------ */
+		launch::launchDisks(SPEED_LAUNCHER_LONG, true);
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);

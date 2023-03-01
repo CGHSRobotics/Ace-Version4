@@ -53,12 +53,12 @@ namespace ace {
 
 	const int DRIVE_LEFT_FRONT_PORT = 11;
 	const int DRIVE_LEFT_BACK_PORT = 12;
-	const int DRIVE_RIGHT_FRONT_PORT = 1;
+	const int DRIVE_RIGHT_FRONT_PORT = 4;
 	const int DRIVE_RIGHT_BACK_PORT = 20;
-	const int LAUNCHER_PORT = 17;
-	const int VAR_LAUNCHER_PORT = 4;
-	const int CONVEYOR_PORT = 15;
-	const int INTAKE_PORT = 16;
+	const int LAUNCHER_PORT = 19;
+	const int VAR_LAUNCHER_PORT = 1;
+	const int CONVEYOR_PORT = 14;
+	const int INTAKE_PORT = 18;
 
 	const int IMU_PORT = 18;
 	const int VISION_PORT = 10;
@@ -71,7 +71,7 @@ namespace ace {
 
 	/* --------------------------- Drive Constants --------------------------- */
 	const float SPEED_DRIVE_AUTO = 0.87 * 127.0;
-	const float SPEED_DRIVE_AUTO_INTAKE = 0.2 * 127.0;
+	const float SPEED_DRIVE_AUTO_INTAKE = 0.4 * 127.0;
 	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.7 * 127.0;
@@ -82,29 +82,29 @@ namespace ace {
 
 	/* ----------------------------- Conveyor Motor ----------------------------- */
 	const float SPEED_CONVEYOR_INTAKE = 100;
-	const float SPEED_CONVEYOR_LAUNCHER = 50;
+	const float SPEED_CONVEYOR_LAUNCHER = 100;
 	const float SPEED_CONVEYOR_LAUNCHER_LONG = 50;
 
 	/* ------------------------------ Roller Motor ------------------------------ */
 	const float SPEED_ROLLER = 100;
 	const float SPEED_ROLLER_AUTO = 10;
-	const float SPEED_ROLLER_AUTO_SKILLS = 55;
+	const float SPEED_ROLLER_AUTO_SKILLS = 75;
 
 	const float ROLLER_TIME_AUTO = 200;
 	const float ROLLER_TIME_AUTO_SKILLS = 300;
 
 	/* ----------------------------- Launcher Motor ----------------------------- */
-	const float SPEED_LAUNCHER_FLAP = 70;
+	const float SPEED_LAUNCHER_FLAP = 75;
 	const float SPEED_LAUNCHER_SHORT = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
-	const float SPEED_LAUNCHER_STANDBY = 50;
-	const float LAUNCHER_MIN_SPEED = 20.0;
+	const float SPEED_LAUNCHER_STANDBY = 75;
+	const float LAUNCHER_MIN_SPEED = 15.0;
 
 	extern bool LAUNCHER_STANDBY_ENABLED;
 
 	/* ---------------------------- Variable Launcher --------------------------- */
-	const float VAR_LAUNCH_ANGLE_DOWN = 0.10 * 225.0;
-	const float VAR_LAUNCH_ANGLE_UP = 0.80 * 225.0;
+	const float VAR_LAUNCH_ANGLE_DOWN = 0.15 * 225.0;
+	const float VAR_LAUNCH_ANGLE_UP = 0.82 * 225.0;
 
 	extern bool var_launcher_enabled;
 
@@ -178,7 +178,7 @@ namespace ace {
 	/* ----------------------------- Vector 2 Class ----------------------------- */
 	class vec2
 	{
-		public:
+	public:
 
 		float x;
 		float y;
@@ -257,6 +257,7 @@ namespace ace {
 	//Variable Launcher
 	extern void varLauncherMove();
 
+	extern void set_var_launcher(bool enabled);
 }
 
 
@@ -280,9 +281,9 @@ namespace ace::auton {
 	extern int autonIndex;
 	const int numAutons = 7;
 	const std::string autonArray[10] = {
-		"Skills",
-		"Shebang",
-		"Null",
+		"Skls",
+		"Shbng",
+		"Nll",
 		"3-B",
 		"2-B",
 		"3-R",

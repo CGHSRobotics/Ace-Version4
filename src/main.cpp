@@ -15,7 +15,7 @@ void screenUpdate() {
 
 		// 	Controller Text
 		std::string str_selectedAuton = ace::auton::autonArray[ace::auton::autonIndex];
-		master.set_text(2, 0, (str_selectedAuton + "  Standby: " + std::to_string(ace::LAUNCHER_STANDBY_ENABLED)).c_str());
+		master.set_text(2, 0, (str_selectedAuton + " Stnby: " + std::to_string(ace::LAUNCHER_STANDBY_ENABLED) + " Flp: " + std::to_string(ace::var_launcher_enabled) + "       ").c_str());
 
 		//	Tab 2 - Auton
 		lv_label_set_text(auton_label, ((string)"Selected: " + str_selectedAuton).c_str());
@@ -118,11 +118,11 @@ void autonomous() {
 
 	printf("\n\nCalling Auton...	%s \n\n", str.c_str());
 
-	if (str == "Skills")
+	if (str == "Skls")
 	{
 		ace::auton::skills_Auto();
 	}
-	else if (str == "Null")
+	else if (str == "Nll")
 	{
 		ace::auton::null_Auto();
 	}
@@ -134,7 +134,7 @@ void autonomous() {
 	{
 		ace::auton::twoSide_Auto();
 	}
-	else if (str == "Shebang")
+	else if (str == "Shbng")
 	{
 		ace::auton::theWholeShebang_Auto();
 	}
@@ -161,6 +161,7 @@ void opcontrol() {
 
 	ace::operation_mode = "user";
 	ace::resetMotors();
+	ace::launch::launchDisks(0, false);
 
 	// This is preference to what you like to drive on.
 	chassis.set_drive_brake(MOTOR_BRAKE_COAST);
@@ -178,6 +179,18 @@ void opcontrol() {
 		ace::auton::checkAutonButtons();
 
 		chassis.tank();  // Tank control
+
+		/* ---------------------------- Launcher Standby ---------------------------- */
+		if (master.get_digital_new_press(BUTTTON_STANDBY)) {
+			ace::LAUNCHER_STANDBY_ENABLED = !ace::LAUNCHER_STANDBY_ENABLED;
+			ace::launch::launchDisks(0, false);
+		}
+
+		/* ---------------------------- Variable Launcher --------------------------- */
+		if (master.get_digital_new_press(BUTTON_VAR_LAUNCHER)) {
+			ace::var_launcher_enabled = !ace::var_launcher_enabled;
+			ace::varLauncherMove();
+		}
 
 		/* ------------------------------ Toggle Intake ----------------------------- */
 		if (master.get_digital_new_press(BUTTON_INTAKE_TOGGLE)) {
@@ -245,17 +258,6 @@ void opcontrol() {
 		if (endgameToggleEnabled && !master.get_digital(BUTTON_ENDGAME)) {
 			endgameToggleEnabled = false;
 			ace::endgameToggle(false);
-		}
-
-		/* ---------------------------- Launcher Standby ---------------------------- */
-		if (master.get_digital_new_press(BUTTTON_STANDBY)) {
-			ace::LAUNCHER_STANDBY_ENABLED = !ace::LAUNCHER_STANDBY_ENABLED;
-		}
-
-		/* ---------------------------- Variable Launcher --------------------------- */
-		if (master.get_digital_new_press(BUTTON_VAR_LAUNCHER)) {
-			ace::var_launcher_enabled = !ace::var_launcher_enabled;
-			ace::varLauncherMove();
 		}
 
 		pros::delay(ez::util::DELAY_TIME);

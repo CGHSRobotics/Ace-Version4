@@ -220,7 +220,7 @@ static void init_lv_screen() {
 	style_btnm.body.padding.inner = 5;
 
 	autonBtnMtrx = lv_btnm_create(tab2, NULL);
-	static const char* btnm_map[] = { "Skills", "Shebang", "Null", "\n", "3-B", "2-B", "\n", "3-R", "2-R", "" };
+	static const char* btnm_map[] = { "Skls", "Shbng", "Nll", "\n", "3-B", "2-B", "\n", "3-R", "2-R", "" };
 	lv_btnm_set_map(autonBtnMtrx, btnm_map);
 	lv_btnm_set_action(autonBtnMtrx, btnm_action);
 	lv_obj_set_size(autonBtnMtrx, 300, 120);

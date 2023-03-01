@@ -59,7 +59,7 @@ namespace ace::launch {
 
 					// Spin intake and conveyor to launch disks
 					spinMotor(intakeMotor, SPEED_INTAKE_LAUNCHER);
-					spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER);
+					spinMotor(conveyorMotor, -SPEED_CONVEYOR_LAUNCHER_LONG);
 				}
 			}
 

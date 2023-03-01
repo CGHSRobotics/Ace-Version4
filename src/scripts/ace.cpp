@@ -128,6 +128,8 @@ namespace ace {
 		conveyorMotor.move_voltage(0);
 		intakeMotor.move_voltage(0);
 
+		LAUNCHER_STANDBY_ENABLED = false;
+
 		endgamePneumatics.set_value(false);
 	}
 
@@ -190,6 +192,11 @@ namespace ace {
 		else {
 			varLauncherMotor.move_absolute(VAR_LAUNCH_ANGLE_DOWN, -100);
 		}
+	}
+
+	void set_var_launcher(bool enabled) {
+		var_launcher_enabled = enabled;
+		varLauncherMove();
 	}
 
 

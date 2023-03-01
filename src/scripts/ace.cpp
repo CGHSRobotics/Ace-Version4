@@ -44,12 +44,11 @@ namespace ace {
 		pros::vision_object_s_t detectedDisk = visionSensor.get_by_sig(0, diskCode);
 
 		if (detectedDisk.height * detectedDisk.width >= areaCutoff) {
-			launchCount = launchCount + 1;
 			diskSeen = true;
 		}
 		else if (diskSeen) {
 			diskSeen = false;
-			launchCount = launchCount + 1;
+			//launchCount = launchCount + 1;
 			master.rumble(".");
 		}
 	}

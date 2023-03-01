@@ -42,7 +42,7 @@ namespace ace::auton {
 
 		/* -------------------------- Move To Red High Goal ------------------------- */
 		set_turn(0, SPEED_TURN_AUTO);
-		set_drive(70, SPEED_DRIVE_AUTO);
+		set_drive(72, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Shoot 3 Disks ----------------------------- */
 		intakeToggle(false);
@@ -52,7 +52,7 @@ namespace ace::auton {
 		/* ------------------ Intake 3 Disks Along Edge Of Low Goal ----------------- */
 
 		set_turn(0, SPEED_TURN_AUTO);
-		set_drive(-10, SPEED_DRIVE_AUTO);
+		set_drive(-12, SPEED_DRIVE_AUTO);
 		intakeToggle(true);
 
 		set_turn(85, SPEED_TURN_AUTO);
@@ -100,7 +100,7 @@ namespace ace::auton {
 
 		set_turn(-5, SPEED_TURN_AUTO);
 
-		set_drive(60, SPEED_DRIVE_AUTO);
+		set_drive(60, SPEED_DRIVE_AUTO_INTAKE);
 
 		set_drive(-6, SPEED_DRIVE_AUTO);
 		set_turn(-90, SPEED_TURN_AUTO);

@@ -81,8 +81,8 @@ namespace ace {
 	const float SPEED_INTAKE_LAUNCHER = 100;
 
 	/* ----------------------------- Conveyor Motor ----------------------------- */
-	const float SPEED_CONVEYOR_INTAKE = 100;
-	const float SPEED_CONVEYOR_LAUNCHER = 50;
+	const float SPEED_CONVEYOR_INTAKE = 50;
+	const float SPEED_CONVEYOR_LAUNCHER = 100;
 	const float SPEED_CONVEYOR_LAUNCHER_LONG = 50;
 
 	/* ------------------------------ Roller Motor ------------------------------ */
@@ -97,7 +97,7 @@ namespace ace {
 	const float SPEED_LAUNCHER_FLAP = 75;
 	const float SPEED_LAUNCHER_SHORT = 80;
 	const float SPEED_LAUNCHER_LONG = 100;
-	const float SPEED_LAUNCHER_STANDBY = 75;
+	const float SPEED_LAUNCHER_STANDBY = 80;
 	const float LAUNCHER_MIN_SPEED = 15.0;
 
 	extern bool LAUNCHER_STANDBY_ENABLED;

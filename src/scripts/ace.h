@@ -168,7 +168,7 @@ namespace ace {
 	 */
 	extern void resetMotors();
 
-	const int diskCode = 0;
+	const int diskCode = 1;
 	extern int launchCount;
 	extern int areaCutoff;
 	extern bool diskSeen;

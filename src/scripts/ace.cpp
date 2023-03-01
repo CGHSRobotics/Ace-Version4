@@ -48,7 +48,7 @@ namespace ace {
 		}
 		else if (diskSeen) {
 			diskSeen = false;
-			//launchCount = launchCount + 1;
+			launchCount = launchCount + 1;
 			master.rumble(".");
 		}
 	}

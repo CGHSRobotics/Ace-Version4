@@ -36,7 +36,7 @@ namespace ace {
 
 
 	int launchCount = 0;
-	int areaCutoff = 100;
+	int areaCutoff = 1000;
 	bool diskSeen = false;
 	/* ------------------- Checks For Disk Using Vision Sensor ------------------ */
 	void diskCheck() {

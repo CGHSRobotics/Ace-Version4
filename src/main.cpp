@@ -15,10 +15,11 @@ void screenUpdate() {
 
 		// 	Controller Text
 		std::string str_selectedAuton = ace::auton::autonArray[ace::auton::autonIndex];
-		master.set_text(2, 0, (str_selectedAuton + " Stnby: " + std::to_string(ace::LAUNCHER_STANDBY_ENABLED) + " Flp: " + std::to_string(ace::var_launcher_enabled) + "       ").c_str());
-
+		// master.set_text(2, 0, (str_selectedAuton + " Stnby: " + std::to_string(ace::LAUNCHER_STANDBY_ENABLED) + " Flp: " + std::to_string(ace::var_launcher_enabled) + "       ").c_str());
+		master.set_text(2, 0, ("L Count: " + std::to_string(ace::launchCount)).c_str());
 		//	Tab 2 - Auton
 		lv_label_set_text(auton_label, ((string)"Selected: " + str_selectedAuton).c_str());
+
 
 		//	Tab 3 - Temp
 		lv_label_set_text(labelTemp, (

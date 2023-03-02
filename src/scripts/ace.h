@@ -51,18 +51,18 @@ namespace ace {
 	/*                             Port Configurations                            */
 	/* ========================================================================== */
 
-	const int DRIVE_LEFT_FRONT_PORT = 11;
-	const int DRIVE_LEFT_BACK_PORT = 12;
-	const int DRIVE_RIGHT_FRONT_PORT = 4;
-	const int DRIVE_RIGHT_BACK_PORT = 20;
-	const int LAUNCHER_PORT = 19;
-	const int VAR_LAUNCHER_PORT = 1;
-	const int CONVEYOR_PORT = 14;
-	const int INTAKE_PORT = 18;
+	const int DRIVE_LEFT_FRONT_PORT = 19;
+	const int DRIVE_LEFT_BACK_PORT = 18;
+	const int DRIVE_RIGHT_FRONT_PORT = 20;
+	const int DRIVE_RIGHT_BACK_PORT = 17;
+	const int LAUNCHER_PORT = 2;
+	const int VAR_LAUNCHER_PORT = 5;
+	const int CONVEYOR_PORT = 16;
+	const int INTAKE_PORT = 1;
 
-	const int IMU_PORT = 16;
-	const int VISION_PORT = 10;
-	const int GPS_PORT = 2;
+	const int IMU_PORT = 6;
+	const int VISION_PORT = 11;
+	const int GPS_PORT = 4;
 
 
 	/* ========================================================================== */

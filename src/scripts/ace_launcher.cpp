@@ -102,7 +102,7 @@ namespace ace::launch {
 		float currTime = 0;
 		while (currTime < time) {
 			launch::launchDisks(speed, isLongDist);
-			if (launchCount == 3) {
+			if (launchCount >= 3) {
 				break;
 			}
 			currTime += ez::util::DELAY_TIME;

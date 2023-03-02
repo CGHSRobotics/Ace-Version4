@@ -37,9 +37,16 @@ namespace ace {
 
 	int launchCount = 0;
 	int areaCutoff = 1000;
+	const int betweenDiskTimer_max = 5;
+	int betweenDiskTimer = betweenDiskTimer_max;
 	bool diskSeen = false;
 	/* ------------------- Checks For Disk Using Vision Sensor ------------------ */
 	void diskCheck() {
+
+		if (betweenDiskTimer < betweenDiskTimer_max) {
+			betweenDiskTimer++;
+			return;
+		}
 
 		pros::vision_object_s_t detectedDisk = visionSensor.get_by_sig(0, diskCode);
 
@@ -49,7 +56,8 @@ namespace ace {
 		else if (diskSeen) {
 			diskSeen = false;
 			launchCount = launchCount + 1;
-			master.rumble(".");
+			master.rumble("-");
+			betweenDiskTimer = 0;
 		}
 	}
 

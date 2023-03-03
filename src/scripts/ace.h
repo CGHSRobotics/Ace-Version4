@@ -71,8 +71,9 @@ namespace ace {
 
 	/* --------------------------- Drive Constants --------------------------- */
 	const float SPEED_DRIVE_AUTO = 0.87 * 127.0;
+	const float SPEED_DRIVE_ULTRA_FAST = 0.95 * 127.0;
 	const float SPEED_DRIVE_AUTO_INTAKE = 0.4 * 127.0;
-	const float SPEED_DRIVE_AUTO_ROLLER = 0.25 * 127.0;
+	const float SPEED_DRIVE_AUTO_ROLLER = 0.5 * 127.0;
 
 	const float SPEED_TURN_AUTO = 0.7 * 127.0;
 
@@ -81,8 +82,8 @@ namespace ace {
 	const float SPEED_INTAKE_LAUNCHER = 100;
 
 	/* ----------------------------- Conveyor Motor ----------------------------- */
-	const float SPEED_CONVEYOR_INTAKE = 50;
-	const float SPEED_CONVEYOR_LAUNCHER = 100;
+	const float SPEED_CONVEYOR_INTAKE = 100;
+	const float SPEED_CONVEYOR_LAUNCHER = 50;
 	const float SPEED_CONVEYOR_LAUNCHER_LONG = 50;
 
 	/* ------------------------------ Roller Motor ------------------------------ */
@@ -95,7 +96,7 @@ namespace ace {
 
 	/* ----------------------------- Launcher Motor ----------------------------- */
 	const float SPEED_LAUNCHER_FLAP = 75;
-	const float SPEED_LAUNCHER_SHORT = 80;
+	const float SPEED_LAUNCHER_SHORT = 85;
 	const float SPEED_LAUNCHER_LONG = 100;
 	const float SPEED_LAUNCHER_STANDBY = 80;
 	const float LAUNCHER_MIN_SPEED = 15.0;
@@ -104,7 +105,7 @@ namespace ace {
 
 	/* ---------------------------- Variable Launcher --------------------------- */
 	const float VAR_LAUNCH_ANGLE_DOWN = 0.15 * 225.0;
-	const float VAR_LAUNCH_ANGLE_UP = 0.82 * 225.0;
+	const float VAR_LAUNCH_ANGLE_UP = 0.75 * 225.0;
 
 	extern bool var_launcher_enabled;
 

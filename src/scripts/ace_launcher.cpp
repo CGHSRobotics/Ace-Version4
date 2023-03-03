@@ -29,7 +29,7 @@ namespace ace::launch {
 			/* ------------------------------ General Stuff ----------------------------- */
 
 			launch::recordLauncherStatistics();
-			diskCheck();
+			//diskCheck();
 			launcherEnabled = true;
 
 			/* --------------------------- If Less Than Cutoff -------------------------- */
@@ -80,6 +80,8 @@ namespace ace::launch {
 			}
 		}
 		else {
+			diskSeen = false;
+
 			launcherEnabled = false;
 
 			spinMotor(intakeMotor, 0);

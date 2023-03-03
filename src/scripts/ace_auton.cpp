@@ -15,8 +15,8 @@ namespace ace::auton {
 
 		launch::set_standby(true);
 		launch::launchDisks(0, false);
-		set_var_launcher(true);
-		set_drive(-3, SPEED_DRIVE_AUTO);
+		set_var_launcher(false);
+		set_drive(-3, SPEED_DRIVE_AUTO_ROLLER);
 
 		/* ------------------------------ Get Roller 1 ------------------------------ */
 
@@ -31,7 +31,7 @@ namespace ace::auton {
 		set_drive(12 * rad2, SPEED_DRIVE_AUTO);
 
 		set_turn(90, SPEED_TURN_AUTO);
-		set_drive(-14, SPEED_DRIVE_AUTO);
+		set_drive(-14, SPEED_DRIVE_AUTO_ROLLER);
 
 		/* ------------------------------ Get Roller 2 ------------------------------ */
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
@@ -42,7 +42,7 @@ namespace ace::auton {
 
 		/* -------------------------- Move To Red High Goal ------------------------- */
 		set_turn(0, SPEED_TURN_AUTO);
-		set_drive(72, SPEED_DRIVE_AUTO);
+		set_drive(60, SPEED_DRIVE_ULTRA_FAST);
 
 		/* ------------------------------ Shoot 3 Disks ----------------------------- */
 		intakeToggle(false);
@@ -52,18 +52,16 @@ namespace ace::auton {
 		/* ------------------ Intake 3 Disks Along Edge Of Low Goal ----------------- */
 
 		set_turn(0, SPEED_TURN_AUTO);
-		set_drive(-12, SPEED_DRIVE_AUTO);
+		set_drive(0, SPEED_DRIVE_AUTO);
 		intakeToggle(true);
 
-		set_turn(85, SPEED_TURN_AUTO);
+		set_turn(88, SPEED_TURN_AUTO);
 		set_drive(36, SPEED_DRIVE_AUTO_INTAKE);
 		set_turn(90, SPEED_TURN_AUTO);
-		set_drive(-35, SPEED_DRIVE_AUTO, false);
-		chassis.wait_until(24);
-		chassis.set_max_speed(SPEED_DRIVE_AUTO_INTAKE);
+		set_drive(-35, SPEED_DRIVE_AUTO);
 		set_turn(0, SPEED_TURN_AUTO);
 
-		set_drive(8, SPEED_DRIVE_AUTO);
+		set_drive(0, SPEED_DRIVE_AUTO);
 		set_turn(0, SPEED_TURN_AUTO);
 
 		/* ------------------------ Shoot 2nd Set Of 3 Disks ------------------------ */
@@ -73,24 +71,23 @@ namespace ace::auton {
 
 		/* -------------------------- Intake Diagonal Disks ------------------------- */
 		set_turn(0, SPEED_TURN_AUTO);
-		set_drive(-38, SPEED_DRIVE_AUTO);
+		set_drive(-26, SPEED_DRIVE_ULTRA_FAST);
 
 		set_turn(90, SPEED_TURN_AUTO);
 		intakeToggle(true);
 
-		set_drive(24, SPEED_DRIVE_AUTO);
+		set_drive(24, SPEED_DRIVE_ULTRA_FAST);
 		set_turn(45, SPEED_TURN_AUTO);
 
-		set_drive(24 * rad2, SPEED_DRIVE_AUTO);
+		set_drive(24 * rad2, SPEED_DRIVE_ULTRA_FAST);
 
 
 		/* --------------------- Shoot 3rd Set Of 3 Without Flap -------------------- */
 		set_turn(-45, SPEED_TURN_AUTO);
-		set_drive(2 * rad2, SPEED_DRIVE_AUTO);
+		set_drive(2.5 * rad2, SPEED_DRIVE_AUTO);
 		var_launcher_enabled = false;
 		varLauncherMove();
-		set_turn(-55, SPEED_TURN_AUTO);
-		pros::delay(1000);
+		set_turn(-60, SPEED_TURN_AUTO);
 		intakeToggle(false);
 		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_SHORT);
 		set_turn(-45, SPEED_TURN_AUTO);
@@ -98,9 +95,9 @@ namespace ace::auton {
 		/* --------------- Intake Other 3 Disks Along Edge Of Low Goal -------------- */
 		intakeToggle(true);
 
-		set_turn(-5, SPEED_TURN_AUTO);
+		set_turn(-2, SPEED_TURN_AUTO);
 
-		set_drive(60, SPEED_DRIVE_AUTO_INTAKE);
+		set_drive(54, SPEED_DRIVE_AUTO_INTAKE);
 
 		set_drive(-6, SPEED_DRIVE_AUTO);
 		set_turn(-90, SPEED_TURN_AUTO);
@@ -115,7 +112,7 @@ namespace ace::auton {
 
 		/* ---------------------------- Move To Roller 3 ---------------------------- */
 
-		set_drive(-44, SPEED_DRIVE_AUTO);
+		set_drive(-50, SPEED_DRIVE_ULTRA_FAST);
 
 		set_turn(-180, SPEED_TURN_AUTO);
 
@@ -125,7 +122,6 @@ namespace ace::auton {
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
-		launch::launchDisks_Auto(4000, SPEED_LAUNCHER_LONG, true);
 
 		set_drive(4, SPEED_DRIVE_AUTO);
 
@@ -138,16 +134,22 @@ namespace ace::auton {
 
 		set_turn(-90, SPEED_TURN_AUTO);
 
-		set_drive(6, SPEED_DRIVE_AUTO);
+		set_drive(-12, SPEED_DRIVE_AUTO);
 
 		/* ------------------------------ Get Roller 4 ------------------------------ */
-		launch::launchDisks(SPEED_LAUNCHER_LONG, true);
 		rollerForward(true, SPEED_ROLLER_AUTO_SKILLS);
 		pros::delay(ROLLER_TIME_AUTO_SKILLS);
 		rollerForward(false, 0);
 
-		set_drive(4, SPEED_DRIVE_AUTO);
+		set_drive(20, SPEED_DRIVE_AUTO);
 
+		set_turn(-135, SPEED_TURN_AUTO);
+
+		set_drive(-12, SPEED_DRIVE_AUTO);
+
+		endgameToggle(true);
+		pros::delay(200);
+		endgameToggle(false);
 
 		resetMotors();
 	}
